@@ -11,8 +11,12 @@ class Program
         Check("normal-incidence refraction preserves direction", Optics.Refract(new V(1,0),new V(-1,0),1,1.5,out refracted) && (refracted-new V(1,0)).Length<0.0001);
         Check("glass-to-air critical angle reflects internally", !Optics.Refract(new V(0.5,0.8660254),new V(-1,0),1.5,1,out refracted));
         Check("blue glass refracts more than red", Optics.Index(0)>Optics.Index(6));
+        var sphereTest=Optics.Solve(new Level{Source=new V(-3,0),Direction=new V(1,0),Width=0.6,Goals=new[]{new Goal(new V(0.95,0),-1){Radius=0.3,Threshold=0.5}}}, new[]{new Piece(Kind.Sphere,new V(0,0),0)});
+        Check("sphere focuses wide beam onto focal goal", sphereTest.Complete);
+        var waterLevel=new Level{Source=new V(-3,1),Direction=new V(1,0),Goals=new[]{new Goal(new V(3,1),-1)},WaterZones=new[]{new WaterZone(new V(-1,-2),new V(1,2),1.333)}};
+        Check("normal-incidence through water reaches goal", Optics.Solve(waterLevel,new Piece[0]).Complete);
         var levels=Levels.Create();
-        Check("five levels", levels.Length==5);
+        Check("eight levels", levels.Length==8);
         foreach(var level in levels) {
             var initial=Optics.Solve(level, level.Initial);
             Check(level.Name+" begins unsolved", !initial.Complete);
@@ -39,6 +43,10 @@ class Program
         var directResult=Optics.Solve(direct,new Piece[0]);
         Check("broad-spectrum energy is normalized",Math.Abs(directResult.Energy[0]-1)<1e-6);
         Check("green receiver rejects red-only route",Optics.Solve(new Level{Source=new V(-4,0),Direction=new V(1,0),Goals=new[]{new Goal(new V(0,3),3)}},new[]{new Piece(Kind.Red,new V(0,0),45)}).Energy[0]==0);
+
+
+
+
         var timer=System.Diagnostics.Stopwatch.StartNew();for(int i=0;i<100;i++)Optics.Solve(levels[4],levels[4].Solution);timer.Stop();Console.WriteLine("INFO Desktop core mean solve: "+(timer.Elapsed.TotalMilliseconds/100).ToString("F3")+" ms (not a mobile benchmark)");
         Environment.ExitCode=failures==0?0:1;
     }

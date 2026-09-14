@@ -1,0 +1,11 @@
+namespace Prism {
+public static class Levels {
+ public static Level[] Create()=>new[]{
+  new Level {Name="İlk yansıma",Lesson="Işığa yeni bir yön ver.",Hint="Aynayı ışığın üzerine koy. 45° ile yukarı yansıt.",Source=new V(-4,-2),Direction=new V(1,0),Stock=new[]{Kind.Mirror},Goals=new[]{new Goal(new V(0,3),-1)},Solution=new[]{new Piece(Kind.Mirror,new V(0,-2),45)}},
+  new Level {Name="Beyazın içindeki",Lesson="Prizma ile renkleri ortaya çıkar.",Hint="Prizmayı ışığın üzerine taşı ve renk yelpazesini hedefe çevir.",Source=new V(-4,0),Direction=new V(1,0),Stock=new[]{Kind.Prism},Goals=new[]{new Goal(new V(3,-2),3)},Solution=new[]{new Piece(Kind.Prism,new V(0,0),90)}},
+  new Level {Name="Bir ışık, iki yol",Lesson="Yeşili ayır, kırmızıyı geçir.",Hint="Yeşil seçici ayna yeşili yansıtır, diğer renkleri geçirir.",Source=new V(-4,0),Direction=new V(1,0),Stock=new[]{Kind.Green},Goals=new[]{new Goal(new V(-1,3),3),new Goal(new V(3,0),6)},Solution=new[]{new Piece(Kind.Green,new V(-1,0),45)}},
+  new Level {Name="Odak noktası",Lesson="Geniş ışığı küçük bir hedefte topla.",Hint="Lensi dik tut. Odak noktası lensten 2,4 birim uzakta.",Source=new V(-4,0),Direction=new V(1,0),Width=1.2,Stock=new[]{Kind.Lens},Goals=new[]{new Goal(new V(2.4,0),-1){Radius=0.17,Threshold=0.8}},Solution=new[]{new Piece(Kind.Lens,new V(0,0),90)}},
+  new Level {Name="Işık bahçesi",Lesson="Üç parçayla iki hedefi birlikte aydınlat.",Hint="Önce aynayla yukarı dön. Yeşili sağa ayır, kalan ışığı lensle topla.",Source=new V(-4,-3),Direction=new V(1,0),Width=0.75,Stock=new[]{Kind.Mirror,Kind.Green,Kind.Lens},Goals=new[]{new Goal(new V(2.5,0),3),new Goal(new V(-2,3.4),6){Radius=0.19,Threshold=0.75}},Walls=new[]{new Wall(new V(-0.5,-4),new V(-0.5,-1))},Solution=new[]{new Piece(Kind.Mirror,new V(-2,-3),45),new Piece(Kind.Green,new V(-2,0),45),new Piece(Kind.Lens,new V(-2,1),0)}}
+ };
+}
+}

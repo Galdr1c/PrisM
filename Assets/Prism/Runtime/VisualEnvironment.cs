@@ -4,6 +4,8 @@ using UnityEngine.Rendering.Universal;
 namespace Prism {
 public static class VisualEnvironment {
  static GameObject root;
+ [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+ static void Bootstrap(){Configure(Camera.main);}
  public static void Configure(Camera camera){
   if(camera==null)return;
   camera.allowHDR=true;

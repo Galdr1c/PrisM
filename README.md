@@ -5,10 +5,10 @@ Unity ile geliştirilen, beş özgün bölümlük mobil optik bulmaca prototipi.
 ## Mevcut durum
 Optik çekirdek ve beş bölümün bilinen çözümleri bağımsız C# testlerinden geçiyor. Unity arayüzü, dokunmatik/fare girişi, envanter, açı kontrolü, geri alma, sıfırlama, ipuçları ve yerel ilerleme kaydı kaynak kodda mevcut.
 
-**Henüz Unity derlemesi ve ekran doğrulaması yapılmadı:** kurulu Unity 6000.6.0f1 etkin lisans bulamadığı için editör derleme başlamadan çıkıyor. Android/iOS derleme modülleri de bu bilgisayarda kurulu değil. Prototipin telefon performansı doğrulanmış değildir.
+Unity Hub'daki Personal lisansı mevcut. İlk komut satırı denemesinde editör yanlış lisans IPC kanalına bağlanıyordu; derleme aracına Hub'ın `Unity-LicenseClient-<kullanıcı>` kanalı eklenerek erişim düzeltildi. Windows derleme ve ekran doğrulaması sürüyor. Android/iOS modülleri bu bilgisayarda kurulu değil; telefon performansı doğrulanmış değildir.
 
 ## Açma
-1. Unity Hub içinde hesabının uygun lisansını etkinleştir.
+1. Unity Hub'ı mevcut Personal lisansının bağlı olduğu hesapla açık tut.
 2. Add project from disk ile `D:\PrisM` klasörünü ekle; Unity 6000.6.0f1 ile aç.
 3. Paketler yüklendikten sonra `Assets/Scenes/Prism.unity` sahnesini aç.
 4. Game görünümünü 900 × 1340 veya benzer dikey oran yap ve Play'e bas.

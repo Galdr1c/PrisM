@@ -39,7 +39,7 @@ public class BoardRenderer : MonoBehaviour {
    }
    else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);Line(p.Position+axis*(t*.9)+side*w,p.Position+axis*(t2*.9)+side*w2,.03,white);Line(p.Position+axis*(t*.9)-side*w,p.Position+axis*(t2*.9)-side*w2,.03,white);}}
    else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];Line(p.Position-axis*.65,p.Position+axis*.65,.13,new Color(c.r,c.g,c.b,.15f));Line(p.Position-axis*.65,p.Position+axis*.65,.045,c);}
-   if(i==selected){Ring(p.Position,p.Kind==Kind.Sphere?.85:1.02,.014,new Color(.9f,.77f,.46f,.7f));Disc(p.Position+axis*(p.Kind==Kind.Sphere?.85:1.02),.065,new Color(1,.83f,.5f));}
+   if(i==selected){double radius=PieceInfo.SelectionRadius(p.Kind);Ring(p.Position,radius,.014,new Color(.9f,.77f,.46f,.7f));if(PieceInfo.CanRotate(p.Kind))Disc(p.Position+axis*radius,.065,new Color(1,.83f,.5f));}
   }
   mesh.Clear();mesh.SetVertices(vertices);mesh.SetColors(colors);mesh.SetTriangles(indices,0);mesh.RecalculateBounds();
  }

@@ -1,25 +1,47 @@
 # PrisM Işık Atölyesi
 
-Unity ile geliştirilen, beş özgün bölümlük mobil optik bulmaca prototipi.
+Unity ile geliştirilen, sekiz özgün bölümlük mobil optik bulmaca prototipi.
 
 ## Mevcut durum
-Optik çekirdek ve beş bölümün bilinen çözümleri bağımsız C# testlerinden geçiyor. Unity arayüzü, dokunmatik/fare girişi, envanter, açı kontrolü, geri alma, sıfırlama, ipuçları ve yerel ilerleme kaydı kaynak kodda mevcut.
+Optik çekirdek ve sekiz bölümün bilinen çözümleri bağımsız C# testlerinden geçiyor. Unity arayüzü, dokunmatik/fare girişi, envanter, açı kontrolü, geri alma, sıfırlama, ipuçları ve yerel ilerleme kaydı kaynak kodda mevcut.
 
-Unity Hub'daki Personal lisansı mevcut. İlk komut satırı denemesinde editör yanlış lisans IPC kanalına bağlanıyordu; derleme aracına Hub'ın `Unity-LicenseClient-<kullanıcı>` kanalı eklenerek erişim düzeltildi. Windows derleme ve ekran doğrulaması sürüyor. Android/iOS modülleri bu bilgisayarda kurulu değil; telefon performansı doğrulanmış değildir.
+İlerleme artık sabit bölüm kimlikleriyle versioned JSON olarak `Application.persistentDataPath/progress.json` altında tutulur. Eski `PlayerPrefs` bit mask kaydı varsa ilk açılışta otomatik olarak yeni formata taşınır. Böylece bölüm sayısı 32 ile sınırlı değildir ve bölüm sırası değişse bile tamamlanma bilgisi korunabilir.
+
+Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması geliştirme aracıyla yapılabiliyor. Android/iOS modülleri bu bilgisayarda kurulu değil; gerçek telefon performansı doğrulanmış değildir.
 
 ## Açma
 1. Unity Hub'ı mevcut Personal lisansının bağlı olduğu hesapla açık tut.
-2. Add project from disk ile `D:\PrisM` klasörünü ekle; Unity 6000.6.0f1 ile aç.
+2. Add project from disk ile proje klasörünü ekle; Unity 6000.6.0f1 ile aç.
 3. Paketler yüklendikten sonra `Assets/Scenes/Prism.unity` sahnesini aç.
 4. Game görünümünü 900 × 1340 veya benzer dikey oran yap ve Play'e bas.
 
 ## Kontroller
 - Envanterden parça seç, oyun alanına dokunarak yerleştir.
-- Parçanın ortasından sürükle; seçili parçanın çevresindeki halkayı kullanarak döndür.
-- Alt bardaki ±1° / ±15° düğmeleriyle ince ayar yap. Fare tekerleği de 1° ayarlar.
+- Parçanın ortasından sürükle; döndürülebilir parçalarda seçili parçanın çevresindeki halkayı kullanarak döndür.
+- Alt bardaki ±1° / ±15° düğmeleriyle ince ayar yap. Fare tekerleği de döndürülebilir parçalarda 1° ayarlar.
+- Cam küre dönel simetriktir; açı kontrolü gösterilmez.
 - Kaldır, parçayı envantere geri verir. Geri al son düzenlemeyi geri getirir.
 - Hedeflerin tamamı yeterli ışığı 0,65 saniye alınca bölüm tamamlanır.
-- Bölüm düğmeleri prototipte serbesttir; tamamlanan bölümler yerel olarak kaydedilir.
+- Bölüm düğmeleri prototipte serbesttir; görünür bölüm sayfası dinamik olarak ilerler.
+
+## Optik kapsam
+- Düz ayna yansıması
+- Üçgen prizma, spektral kırılma ve tam iç yansıma
+- Yeşil/kırmızı seçici aynalar
+- Paraksiyal ince lens
+- Cam küre kırılması ve odaklama
+- Su bölgelerinde Snell kırılması
+- Duvar engelleri ve renk hedefleri
+- Yedi spektral bant, kaynak genişliği boyunca 13 örnek ve en fazla 24 etkileşim
+
+## Mimari
+- `Assets/Prism/Core`: Unity bağımsız matematik, optik solver, parça metadata/capability bilgisi ve built-in level provider.
+- `Assets/Prism/Runtime`: giriş, oturum, UI, ilerleme ve oyun akışı.
+- `Assets/Prism/Rendering`: prosedürel tahta ve ışık şeridi çizimi.
+- `Assets/Prism/Editor`: sahne/derleme otomasyonu.
+- `Tests`: Unity'den bağımsız çekirdek doğrulama.
+
+`ILevelProvider` runtime ile mevcut hard-coded katalog arasında bir ayrım noktası oluşturur. Sonraki veri-mimari adımı, bu arayüzün ScriptableObject tabanlı bir authoring/catalog uygulamasıyla beslenmesidir.
 
 ## Test ve derleme
 `dotnet run --project Tests/CoreTests.csproj` (.NET 10 SDK; harici NuGet paketi yok).
@@ -28,9 +50,7 @@ Unity Hub'daki Personal lisansı mevcut. İlk komut satırı denemesinde editör
 
 Başarılı derleme `Builds/Windows/PrisM.exe` üretir. Windows paketi taşınırken yanındaki veri klasörü ve DLL dosyaları da birlikte taşınmalıdır.
 
-`Tools/Smoke-Windows.ps1` geliştirme paketini açar; beş çözümü, stok yerleşimini ve sıfırlamayı doğrular. Ekran görüntüleri ile sonuçları `TestResults/` altına yazar. Bu otomasyon gerçek dokunmatik giriş testi yerine geçmez.
+`Tools/Smoke-Windows.ps1` geliştirme paketini açar; bütün built-in çözümleri, stok yerleşimini ve sıfırlamayı doğrular. Ekran görüntüleri ile sonuçları `TestResults/` altına yazar. Bu otomasyon gerçek dokunmatik giriş testi yerine geçmez.
 
-## Sınırlar
-Lens paraxial ince lens yaklaşımıdır; prizma doğrudan kırılma ve tam iç yansıma içerir, Fresnel ikincil yansımaları henüz yoktur. Yedi spektral bant ve kaynak genişliği boyunca 13 örnek kullanılır. Grafikler prosedürel şerit meshlerdir; referanstaki hacimsel görünüm ve gelişmiş bloom henüz hedeflenmemiştir. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Su, kara delik, ses ve haptik eklenmedi.
-
-`Assets/Prism/Core` motor bağımsız hesaplar; `Runtime` etkileşim; `Rendering` prosedürel çizim; `Editor` sahne/derleme otomasyonu içerir.
+## Bilinen sınırlar
+Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları henüz yoktur. Grafikler prosedürel şerit meshlerdir; referanstaki hacimsel ışık, gelişmiş HDR bloom, caustics ve cam/refraction shader katmanı henüz hedeflenmemiştir. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.

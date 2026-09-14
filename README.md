@@ -5,7 +5,9 @@ Unity ile geliştirilen, sekiz özgün bölümlük mobil optik bulmaca prototipi
 ## Mevcut durum
 Optik çekirdek ve sekiz bölümün bilinen çözümleri bağımsız C# testlerinden geçiyor. Unity arayüzü, dokunmatik/fare girişi, envanter, açı kontrolü, geri alma, sıfırlama, ipuçları ve yerel ilerleme kaydı kaynak kodda mevcut.
 
-İlerleme artık sabit bölüm kimlikleriyle versioned JSON olarak `Application.persistentDataPath/progress.json` altında tutulur. Eski `PlayerPrefs` bit mask kaydı varsa ilk açılışta otomatik olarak yeni formata taşınır. Böylece bölüm sayısı 32 ile sınırlı değildir ve bölüm sırası değişse bile tamamlanma bilgisi korunabilir.
+İlerleme sabit bölüm kimlikleriyle versioned JSON olarak `Application.persistentDataPath/progress.json` altında tutulur. Eski `PlayerPrefs` bit mask kaydı varsa ilk açılışta otomatik olarak yeni formata taşınır. Böylece bölüm sayısı 32 ile sınırlı değildir ve bölüm sırası değişse bile tamamlanma bilgisi korunabilir.
+
+Phase 2 görsel vertical slice ile tahta, geometri, su, ışık alanı ve optik cam ayrı render katmanlarına ayrıldı. Grid tek procedural quad'a taşındı; ışık yolları additive HDR shader ile çiziliyor; URP Bloom + ACES tonemapping çalışma zamanında etkinleşiyor. Prizma/lens/cam küre ve su kendi düşük maliyetli procedural shader katmanlarını kullanıyor.
 
 Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması geliştirme aracıyla yapılabiliyor. Android/iOS modülleri bu bilgisayarda kurulu değil; gerçek telefon performansı doğrulanmış değildir.
 
@@ -34,10 +36,20 @@ Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması 
 - Duvar engelleri ve renk hedefleri
 - Yedi spektral bant, kaynak genişliği boyunca 13 örnek ve en fazla 24 etkileşim
 
+## Görsel katman
+- `PrismBoard`: tek quad üzerinde procedural grid ve vignette.
+- `PrismBeam`: additive HDR beam; halo/glow/core profilleri ve bloom besleyen yüksek dinamik aralık.
+- `PrismGlass`: prizma, lens ve cam küre için stylized rim/spectral glass görünümü.
+- `PrismWater`: texture gerektirmeyen hareketli su highlight/caustic-benzeri desen.
+- `VisualEnvironment`: URP post-processing, düşük maliyetli Bloom, ACES tonemapping ve color adjustment kurulumu.
+
+Fizik ve görsel sunum ayrıdır: `Optics` gerçek ışık yolunu çözer, shader katmanı sonucu görselleştirir. Görsel efektlerin hiçbiri bulmaca çözümünü değiştirmez.
+
 ## Mimari
 - `Assets/Prism/Core`: Unity bağımsız matematik, optik solver, parça metadata/capability bilgisi ve built-in level provider.
-- `Assets/Prism/Runtime`: giriş, oturum, UI, ilerleme ve oyun akışı.
-- `Assets/Prism/Rendering`: prosedürel tahta ve ışık şeridi çizimi.
+- `Assets/Prism/Runtime`: giriş, oturum, UI, ilerleme, oyun akışı ve runtime görsel ortam kurulumu.
+- `Assets/Prism/Rendering`: katmanlı prosedürel tahta/ışık/cam/su çizimi.
+- `Assets/Prism/Resources`: URP shaderları.
 - `Assets/Prism/Editor`: sahne/derleme otomasyonu.
 - `Tests`: Unity'den bağımsız çekirdek doğrulama.
 
@@ -52,5 +64,7 @@ Başarılı derleme `Builds/Windows/PrisM.exe` üretir. Windows paketi taşını
 
 `Tools/Smoke-Windows.ps1` geliştirme paketini açar; bütün built-in çözümleri, stok yerleşimini ve sıfırlamayı doğrular. Ekran görüntüleri ile sonuçları `TestResults/` altına yazar. Bu otomasyon gerçek dokunmatik giriş testi yerine geçmez.
 
+Phase 2 görsel doğrulama adımları `docs/visual-vertical-slice.md` içindedir.
+
 ## Bilinen sınırlar
-Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları henüz yoktur. Grafikler prosedürel şerit meshlerdir; referanstaki hacimsel ışık, gelişmiş HDR bloom, caustics ve cam/refraction shader katmanı henüz hedeflenmemiştir. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.
+Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları solver tarafında henüz yoktur. Yeni cam ve su shaderları stylized/procedural görsel katmandır; gerçek screen-space background refraction veya fiziksel ray-traced caustics henüz yoktur. Görsel değerler gerçek Android/iOS cihaz GPU/thermal testi yapılmadan final kabul edilmemelidir. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.

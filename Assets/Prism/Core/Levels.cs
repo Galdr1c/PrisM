@@ -1,4 +1,6 @@
 namespace Prism {
+public interface ILevelProvider { Level[] Load(); }
+public sealed class BuiltInLevelProvider : ILevelProvider { public Level[] Load()=>Levels.Create(); }
 public static class Levels {
  public static Level[] Create()=>new[]{
   new Level {Id="reflection-01",Name="İlk yansıma",Lesson="Işığa yeni bir yön ver.",Hint="Aynayı ışığın üzerine koy. 45° ile yukarı yansıt.",Source=new V(-4,-2),Direction=new V(1,0),Stock=new[]{Kind.Mirror},Goals=new[]{new Goal(new V(0,3),-1)},Solution=new[]{new Piece(Kind.Mirror,new V(0,-2),45)}},

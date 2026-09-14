@@ -15,9 +15,8 @@ public class PrismGame : MonoBehaviour {
  string SavePath=>Path.Combine(Application.persistentDataPath,"progress.json");
  public static string PieceName(Kind k)=>PieceInfo.Name(k);
  void Start(){
-  Application.targetFrameRate=60;Screen.sleepTimeout=SleepTimeout.NeverSleep;font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-  levels=Levels.Create();LoadProgress();cam=Camera.main;if(!cam){cam=new GameObject("Camera").AddComponent<Camera>();cam.tag="MainCamera";}cam.orthographic=true;cam.transform.position=new Vector3(0,0,-10);cam.backgroundColor=new Color(.025f,.042f,.06f);cam.clearFlags=CameraClearFlags.SolidColor;
-  smoke=Array.IndexOf(Environment.GetCommandLineArgs(),"-prismSmoke")>=0;
+  Application.targetFrameRate=60;Screen.sleepTimeout=SleepTimeout.NeverSleep;font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");smoke=Array.IndexOf(Environment.GetCommandLineArgs(),"-prismSmoke")>=0;
+  levels=new BuiltInLevelProvider().Load();LoadProgress();cam=Camera.main;if(!cam){cam=new GameObject("Camera").AddComponent<Camera>();cam.tag="MainCamera";}cam.orthographic=true;cam.transform.position=new Vector3(0,0,-10);cam.backgroundColor=new Color(.025f,.042f,.06f);cam.clearFlags=CameraClearFlags.SolidColor;
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();Load(FindLevel(progress.lastLevelId));
   if(smoke)StartCoroutine(Smoke());
  }
@@ -30,7 +29,7 @@ public class PrismGame : MonoBehaviour {
   bool migrated=false;
   if(PlayerPrefs.HasKey("prism.completed")){uint mask=unchecked((uint)PlayerPrefs.GetInt("prism.completed",0));for(int i=0;i<levels.Length&&i<32;i++)if((mask&(1u<<i))!=0)completedLevelIds.Add(levels[i].Id);migrated=true;}
   if(string.IsNullOrEmpty(progress.lastLevelId)&&PlayerPrefs.HasKey("prism.last")){int old=Mathf.Clamp(PlayerPrefs.GetInt("prism.last",0),0,levels.Length-1);progress.lastLevelId=levels[old].Id;migrated=true;}
-  if(migrated){SaveProgress();PlayerPrefs.DeleteKey("prism.completed");PlayerPrefs.DeleteKey("prism.last");PlayerPrefs.Save();}
+  if(migrated&&!smoke){SaveProgress();PlayerPrefs.DeleteKey("prism.completed");PlayerPrefs.DeleteKey("prism.last");PlayerPrefs.Save();}
  }
  void SaveProgress(){
   if(smoke)return;

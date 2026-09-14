@@ -18,10 +18,10 @@ public class PrismGame : MonoBehaviour {
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();completedMask=PlayerPrefs.GetInt("prism.completed",0);Load(Mathf.Clamp(PlayerPrefs.GetInt("prism.last",0),0,levels.Length-1));
   if(smoke)StartCoroutine(Smoke());
  }
- void Layout(){scale=Mathf.Min(Screen.width/900f,Screen.height/1340f);offsetX=(Screen.width-900*scale)/2;offsetY=(Screen.height-1340*scale)/2;cam.orthographicSize=Screen.height/(scale*160);cam.transform.position=new Vector3((Screen.width*.5f-offsetX-450)/(80*scale),-(Screen.height*.5f-offsetY-600)/(80*scale),-10);}
- void Load(int index){levelIndex=index;session=new Session(levels[index]);selected=-1;armed=null;showHint=false;won=false;settle=0;dirty=true;if(!smoke){PlayerPrefs.SetInt("prism.last",index);PlayerPrefs.Save();}}
+ void Layout(){scale=Mathf.Min(Screen.width/900f,Screen.height/1340f);offsetX=(Screen.width-900f*scale)*0.5f;offsetY=(Screen.height-1340f*scale)*0.5f;cam.orthographicSize=Screen.height/(scale*160f);cam.transform.position=new Vector3(0,(offsetY+600f*scale-Screen.height*0.5f)/(80f*scale),-10f);}
+ void Load(int index){levelIndex=index;session=new Session(levels[index]);selected=-1;armed=null;showHint=false;won=false;settle=0;dirty=false;Solve();if(!smoke){PlayerPrefs.SetInt("prism.last",index);PlayerPrefs.Save();}}
  void Solve(){result=Optics.Solve(session.Level,session.Pieces);board.Draw(session.Level,session.Pieces,result,selected);dirty=false;}
- void Update(){if(session==null)return;Layout();if(!smoke)Pointer();if(dirty)Solve();if(!won&&result.Complete){settle+=Time.deltaTime;if(settle>.65f){won=true;if(!smoke){completedMask|=1<<levelIndex;PlayerPrefs.SetInt("prism.completed",completedMask);PlayerPrefs.Save();}}}else if(!result.Complete)settle=0;}
+ void Update(){if(session==null)return;Layout();if(!smoke)Pointer();if(dirty)Solve();if(!won&&result!=null&&result.Complete){settle+=Time.deltaTime;if(settle>.65f){won=true;if(!smoke){completedMask|=1<<levelIndex;PlayerPrefs.SetInt("prism.completed",completedMask);PlayerPrefs.Save();}}}else if(result==null||!result.Complete)settle=0;}
  Vector2 Design(Vector2 screen)=>new Vector2((screen.x-offsetX)/scale,(Screen.height-screen.y-offsetY)/scale);
  V World(Vector2 p)=>new V((p.x-450)/80,(600-p.y)/80);
  void Pointer(){
@@ -53,12 +53,12 @@ public class PrismGame : MonoBehaviour {
   Box(new Rect(50,74,800,1),new Color(.17f,.23f,.26f));
   Text(new Rect(50,90,570,25),"DENEY  "+(levelIndex+1).ToString("00")+" / 05",13,gold);
   Text(new Rect(50,120,670,44),session.Level.Name,34,ink,FontStyle.Bold);Text(new Rect(50,164,700,27),session.Level.Lesson,17,muted);
-  int lit=0;if(result!=null)for(int i=0;i<result.Energy.Length;i++)if(result.Energy[i]>=session.Level.Goals[i].Threshold)lit++;
+  int lit=0;if(result!=null&&result.Energy!=null){int count=Mathf.Min(result.Energy.Length,session.Level.Goals.Length);for(int i=0;i<count;i++)if(result.Energy[i]>=session.Level.Goals[i].Threshold)lit++;}
   Text(new Rect(730,124,120,42),lit+" / "+session.Level.Goals.Length,24,gold,FontStyle.Normal,TextAnchor.MiddleRight);
   Color border=new Color(.17f,.25f,.29f);Box(new Rect(49,199,802,1),border);Box(new Rect(49,1000,802,1),border);Box(new Rect(49,200,1,800),border);Box(new Rect(850,200,1,800),border);
   if(armed.HasValue)Text(new Rect(70,216,650,30),PieceName(armed.Value)+" yerleştirmek için alana dokun",16,gold);
   else if(session.Pieces.Count==0)Text(new Rect(70,216,650,30),"Başlamak için aşağıdan bir parça seç",16,muted);
-  if(result!=null)for(int i=0;i<session.Level.Goals.Length;i++){var g=session.Level.Goals[i];float gx=450+(float)g.Position.X*80,gy=600-(float)g.Position.Y*80;int percent=Mathf.Min(100,Mathf.RoundToInt((float)(result.Energy[i]/g.Threshold)*100));Text(new Rect(gx-45,gy+(float)g.Radius*80+10,90,22),percent+"%",12,muted,FontStyle.Normal,TextAnchor.MiddleCenter);}
+  if(result!=null&&result.Energy!=null){int count=Mathf.Min(result.Energy.Length,session.Level.Goals.Length);for(int i=0;i<count;i++){var g=session.Level.Goals[i];float gx=450+(float)g.Position.X*80,gy=600-(float)g.Position.Y*80;int percent=Mathf.Min(100,Mathf.RoundToInt((float)(result.Energy[i]/g.Threshold)*100));Text(new Rect(gx-45,gy+(float)g.Radius*80+10,90,22),percent+"%",12,muted,FontStyle.Normal,TextAnchor.MiddleCenter);}}
   Box(new Rect(50,1018,800,72),panel);
   if(selected>=0&&selected<session.Pieces.Count&&!won){var p=session.Pieces[selected];Text(new Rect(70,1026,215,26),PieceName(p.Kind),18,ink);Text(new Rect(70,1053,200,22),"Sürükle · Halkayla döndür",12,muted);if(Button(new Rect(310,1030,68,48),"−15°"))Rotate(-15);if(Button(new Rect(384,1030,56,48),"−1°"))Rotate(-1);Text(new Rect(443,1030,122,48),p.Angle.ToString("0.0")+"°",23,gold,FontStyle.Normal,TextAnchor.MiddleCenter);if(Button(new Rect(568,1030,56,48),"+1°"))Rotate(1);if(Button(new Rect(630,1030,68,48),"+15°"))Rotate(15);if(Button(new Rect(718,1030,114,48),"Kaldır")){session.Remove(selected);selected=-1;dirty=true;}}
   else{Text(new Rect(72,1030,750,46),won?"Bütün hedefler aydınlandı.":"Parçayı seç, yerleştir ve ışığın yolunu değiştir.",17,won?gold:muted);}
@@ -75,7 +75,7 @@ public class PrismGame : MonoBehaviour {
  IEnumerator Smoke(){
   string output=Path.Combine(Application.dataPath,"../../TestResults");var args=Environment.GetCommandLineArgs();int arg=Array.IndexOf(args,"-captureDir");if(arg>=0&&arg+1<args.Length)output=args[arg+1];Directory.CreateDirectory(output);yield return null;
   Load(0);yield return new WaitForSeconds(.3f);ScreenCapture.CaptureScreenshot(Path.Combine(output,"01-start.png"));yield return new WaitForSeconds(.3f);
-  var checks=new List<string>();for(int i=0;i<levels.Length;i++){Load(i);foreach(var piece in levels[i].Solution){bool placed=session.Place(piece.Kind,piece.Position);if(!placed)throw new Exception("Inventory failure");session.BeginEdit();session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;session.EndEdit();}dirty=true;yield return null;if(!result.Complete)throw new Exception("Unsolved level "+i);checks.Add("PASS runtime level "+(i+1));session.Undo();dirty=true;yield return null;session.Reset();dirty=true;yield return null;if(result.Complete)throw new Exception("Reset failed");checks.Add("PASS runtime reset "+(i+1));}
+  var checks=new List<string>();for(int i=0;i<levels.Length;i++){Load(i);foreach(var piece in levels[i].Solution){bool placed=session.Place(piece.Kind,piece.Position);if(!placed)throw new Exception("Inventory failure");session.BeginEdit();session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;session.EndEdit();}dirty=true;yield return null;if(!result.Complete)throw new Exception("Unsolved level "+i);checks.Add("PASS runtime level "+(i+1));ScreenCapture.CaptureScreenshot(Path.Combine(output,string.Format("level-{0:00}-solved.png",i+1)));yield return new WaitForSeconds(.2f);session.Undo();dirty=true;yield return null;session.Reset();dirty=true;yield return null;if(result.Complete)throw new Exception("Reset failed");checks.Add("PASS runtime reset "+(i+1));}
   Load(4);session.Reveal();selected=1;dirty=true;yield return null;ScreenCapture.CaptureScreenshot(Path.Combine(output,"02-optics.png"));yield return new WaitForSeconds(1);ScreenCapture.CaptureScreenshot(Path.Combine(output,"03-complete.png"));yield return new WaitForSeconds(.5f);File.WriteAllLines(Path.Combine(output,"runtime-smoke.txt"),checks);Application.Quit(0);
  }
 }

@@ -9,7 +9,8 @@ public static class VisualEnvironment {
  public static void Configure(Camera camera){
   if(camera==null)return;
   camera.allowHDR=true;
-  var data=camera.GetUniversalAdditionalCameraData();
+  var data=camera.GetComponent<UniversalAdditionalCameraData>();
+  if(data==null)data=camera.gameObject.AddComponent<UniversalAdditionalCameraData>();
   data.renderPostProcessing=true;
   data.renderShadows=false;
   data.dithering=true;

@@ -1,6 +1,6 @@
 # Doğrulama durumu
 
-14 Eylül 2026
+15 Eylül 2026
 
 ## Otomatik çekirdek doğrulaması
 - `Tests/CoreTests.csproj` artık 45 sözleşme/regresyon kontrolü içerir.
@@ -17,11 +17,15 @@
 - Cam küre UI'da `Cam küre` olarak görünür ve gereksiz açı kontrolleri gösterilmez.
 - İlerleme kaydı stabil level ID'leriyle versioned JSON'a taşınmıştır; eski `PlayerPrefs` completion mask'i destekleniyorsa ilk normal açılışta migrate edilir. Smoke modu kullanıcı ilerlemesini değiştirmez.
 
-## Önceden doğrulanan Unity/Windows durumu
-- Unity 6000.6.0f1 StandaloneWindows64 derlemesi daha önce `Tools/Build-Windows.ps1` ile başarıyla tamamlandı.
-- Önceki 5-level runtime smoke çalışması kamera hizası, OnGUI dizi sınırı, çözüm ve reset akışını doğruladı.
+## Unity ve Windows doğrulaması
+- Unity 6000.6.0f1 StandaloneWindows64 geliştirme derlemesi güncel kaynaklarla `Tools/Build-Windows.ps1` üzerinden başarıyla tamamlandı.
+- Güncel 8-level runtime smoke bütün built-in çözümleri ve her bölümde reset davranışını doğruladı.
+- Başlangıç, her çözülmüş bölüm ve tamamlanma paneli için ekran görüntüsü üretildi ve görsel olarak incelendi.
+- Linear color space içinde doğrudan kullanılan vertex renklerinin tahtayı gereğinden açık göstermesi düzeltildi; shader sRGB değerlerini lineara çeviriyor.
+- Spektral bantlar additive birleşerek beyaz ışığı oluşturuyor. Her çizimin parlaklığı solver enerji değerine bağlandı; prizma sonrası renk ayrışması korunuyor.
+- Smoke oyuncu günlüğünde hata, exception veya warning bulunmadı.
+- Build otomasyonu artık mevcut oyun sahnesini açıyor; her build sırasında sahneyi yeniden üretip dosya kimliklerini değiştirmiyor.
 
 ## Hâlâ gerekli doğrulamalar
-- Bu branch'teki 8-level runtime değişiklikleri Unity/Windows smoke ile yeniden çalıştırılmalıdır.
 - Android/iOS modülleri ve gerçek telefon cihazlarıyla build, safe-area, touch, thermal ve GPU/CPU profiling henüz yapılmadı.
 - Üretim kalitesindeki HDR beam/bloom/refraction görsel katmanı ayrı vertical-slice aşamasıdır.

@@ -9,6 +9,8 @@ Optik çekirdek ve sekiz bölümün bilinen çözümleri bağımsız C# testleri
 
 Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması geliştirme aracıyla yapılabiliyor. Android/iOS modülleri bu bilgisayarda kurulu değil; gerçek telefon performansı doğrulanmış değildir.
 
+Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm/reset testinden geçti. Koyu tahta ve ışık renkleri Linear color space için düzeltilmiş; üst üste gelen spektral bantlar beyaz ışık oluşturacak şekilde enerjiye bağlı çizilir.
+
 ## Açma
 1. Unity Hub'ı mevcut Personal lisansının bağlı olduğu hesapla açık tut.
 2. Add project from disk ile proje klasörünü ekle; Unity 6000.6.0f1 ile aç.

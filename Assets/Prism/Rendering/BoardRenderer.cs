@@ -18,11 +18,11 @@ public class BoardRenderer : MonoBehaviour {
    Color wBorder=new Color(.22f,.62f,.78f,.45f);Line(new V(wz.Min.X,wz.Min.Y),new V(wz.Max.X,wz.Min.Y),.03,wBorder);Line(new V(wz.Max.X,wz.Min.Y),new V(wz.Max.X,wz.Max.Y),.03,wBorder);Line(new V(wz.Max.X,wz.Max.Y),new V(wz.Min.X,wz.Max.Y),.03,wBorder);Line(new V(wz.Min.X,wz.Max.Y),new V(wz.Min.X,wz.Min.Y),.03,wBorder);
   }
   foreach(var beam in result.Beams){
-   Color c=Spectrum[beam.Band];
-   c.a=.035f;Line(beam.A,beam.B,.16,c);
-   c.a=.22f;Line(beam.A,beam.B,.045,c);
-   c.a=.65f;Line(beam.A,beam.B,.014,c);
-   Color core=Color.Lerp(c,Color.white,.65f);core.a=.85f;Line(beam.A,beam.B,.005,core);
+   Color c=Spectrum[beam.Band];float intensity=Mathf.Clamp01((float)beam.Power*2.2f);
+   c.a=.055f*intensity;Line(beam.A,beam.B,.18,c);
+   c.a=.26f*intensity;Line(beam.A,beam.B,.055,c);
+   c.a=.62f*intensity;Line(beam.A,beam.B,.018,c);
+   Color core=Color.Lerp(c,Color.white,.72f);core.a=.78f*intensity;Line(beam.A,beam.B,.006,core);
   }
   foreach(var wall in level.Walls){Line(wall.A,wall.B,.2,new Color(.12f,.18f,.22f));Line(wall.A,wall.B,.026,new Color(.3f,.4f,.44f));}
   Color white=new Color(.91f,.98f,1);V dir=level.Direction.Unit;

@@ -172,7 +172,7 @@ PlayerSettings:
   applicationIdentifier:
     Android: com.prismstudio.lightworkshop
     Standalone: com.Unity-Technologies.com.unity.template.urp-blank
-    iPhone: com.Unity-Technologies.com.unity.template.urp-blank
+    iPhone: com.prismstudio.lightworkshop
   buildNumber:
     Standalone: 0
     VisionOS: 0
@@ -272,7 +272,7 @@ PlayerSettings:
   useCustomGradlePropertiesTemplate: 0
   useCustomGradleSettingsTemplate: 0
   useCustomProguardFile: 0
-  AndroidTargetArchitectures: 1
+  AndroidTargetArchitectures: 2
   AndroidSplashScreenScale: 0
   androidSplashScreen: {fileID: 0}
   AndroidKeystoreName: 

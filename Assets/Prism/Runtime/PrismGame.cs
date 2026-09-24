@@ -496,7 +496,10 @@ public class PrismGame : MonoBehaviour {
    yield return null;
    if(!session.IsComplete(result))throw new Exception("Unsolved runtime level "+(i+1));
    checks.Add("PASS runtime level "+(i+1));
-   if(i==0||i%10==9)ScreenCapture.CaptureScreenshot(Path.Combine(output,string.Format("level-{0:000}-solved.png",i+1)));
+   if(i==0||i%10==9){
+    ScreenCapture.CaptureScreenshot(Path.Combine(output,string.Format("level-{0:000}-solved.png",i+1)));
+    yield return new WaitForSeconds(.12f);
+   }
 
    session.Reset();dirty=true;yield return null;
    if(session.IsComplete(result))throw new Exception("Reset failed in level "+(i+1));

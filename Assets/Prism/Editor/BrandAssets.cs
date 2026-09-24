@@ -57,7 +57,7 @@ public static class BrandAssets {
  static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D texture){
   var slots=PlayerSettings.GetPlatformIcons(target,kind);
   for(int i=0;i<slots.Length;i++){
-   int layers=Mathf.Max(1,slots[i].maxLayerCount);
+   int layers=Mathf.Max(1,slots[i].minLayerCount);
    var textures=new Texture2D[layers];
    for(int layer=0;layer<layers;layer++)textures[layer]=texture;
    slots[i].SetTextures(textures);

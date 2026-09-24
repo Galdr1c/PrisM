@@ -451,19 +451,28 @@ public class PrismGame : MonoBehaviour {
    selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;won=false;settle=0;dirty=true;
    yield return null;
    yield return new WaitForSeconds(.18f);
-   ScreenCapture.CaptureScreenshot(Path.Combine(output,names[n]+".png"));
-   yield return new WaitForSeconds(.22f);
+   yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,names[n]+".png")));
+   yield return new WaitForSeconds(.08f);
   }
 
   Load(49,true);
   showLevelMap=true;
   yield return null;
   yield return new WaitForSeconds(.18f);
-  ScreenCapture.CaptureScreenshot(Path.Combine(output,"06-level-map.png"));
-  yield return new WaitForSeconds(.22f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"06-level-map.png")));
+  yield return new WaitForSeconds(.08f);
 
   File.WriteAllText(Path.Combine(output,"capture-complete.txt"),"PrisM store capture complete: "+DateTime.UtcNow.ToString("O"));
   Application.Quit(0);
+ }
+
+ IEnumerator CaptureStoreFrame(string path){
+  yield return new WaitForEndOfFrame();
+  var texture=new Texture2D(Screen.width,Screen.height,TextureFormat.RGB24,false);
+  texture.ReadPixels(new Rect(0,0,Screen.width,Screen.height),0,0,false);
+  texture.Apply(false,false);
+  File.WriteAllBytes(path,texture.EncodeToPNG());
+  Destroy(texture);
  }
 
  string CaptureOutputDirectory(string fallbackFolder){

@@ -17,6 +17,7 @@ public static class BuildProject {
  public static void Build(){BuildWindowsDevelopment();}
 
  public static void BuildWindowsDevelopment(){
+  if(EditorUserBuildSettings.activeBuildTarget!=BuildTarget.StandaloneWindows64)throw new Exception("Windows build must launch Unity with -buildTarget win64.");
   ConfigureCommon();
   Directory.CreateDirectory("Builds/Windows");
   var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{

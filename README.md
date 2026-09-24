@@ -9,7 +9,7 @@ Optik çekirdek ve sekiz bölümün bilinen çözümleri bağımsız C# testleri
 
 Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması geliştirme aracıyla yapılabiliyor. Android/iOS modülleri bu bilgisayarda kurulu değil; gerçek telefon performansı doğrulanmış değildir.
 
-Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm/reset testinden geçti. Koyu tahta ve ışık renkleri Linear color space için düzeltilmiş; üst üste gelen spektral bantlar beyaz ışık oluşturacak şekilde enerjiye bağlı çizilir.
+Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm/reset testinden geçti. Render katmanı tahta, geometri, su, ışın ve cam için ayrılmış shader/mesh katmanları kullanır; ışınlar enerjiye bağlı additive HDR çizilir ve runtime URP Bloom + ACES tonemapping ile işlenir. Koyu tahta ve ışık renkleri Linear color space için düzeltilmiştir.
 
 ## Açma
 1. Unity Hub'ı mevcut Personal lisansının bağlı olduğu hesapla açık tut.
@@ -18,7 +18,7 @@ Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm
 4. Game görünümünü 900 × 1340 veya benzer dikey oran yap ve Play'e bas.
 
 ## Kontroller
-- Envanterden parça seç, oyun alanına dokunarak yerleştir.
+- Envanterden parça seç, oyun alanına dokunarak yerleştir. Kaynak, hedef, duvar veya başka bir optik parçayla çakışan konumlar kabul edilmez.
 - Parçanın ortasından sürükle; döndürülebilir parçalarda seçili parçanın çevresindeki halkayı kullanarak döndür.
 - Alt bardaki ±1° / ±15° düğmeleriyle ince ayar yap. Fare tekerleği de döndürülebilir parçalarda 1° ayarlar.
 - Cam küre dönel simetriktir; açı kontrolü gösterilmez.
@@ -55,4 +55,4 @@ Başarılı derleme `Builds/Windows/PrisM.exe` üretir. Windows paketi taşını
 `Tools/Smoke-Windows.ps1` geliştirme paketini açar; bütün built-in çözümleri, stok yerleşimini ve sıfırlamayı doğrular. Ekran görüntüleri ile sonuçları `TestResults/` altına yazar. Bu otomasyon gerçek dokunmatik giriş testi yerine geçmez.
 
 ## Bilinen sınırlar
-Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları henüz yoktur. Grafikler prosedürel şerit meshlerdir; referanstaki hacimsel ışık, gelişmiş HDR bloom, caustics ve cam/refraction shader katmanı henüz hedeflenmemiştir. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.
+Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları henüz yoktur. Phase 2 görsel katmanda additive HDR ışın, Bloom/ACES, prosedürel su ve cam shader'ları vardır; gerçek hacimsel ışık, sahne tabanlı refraction/caustics ve cihaz bazlı kalite ölçekleme hâlâ geliştirme konusudur. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.

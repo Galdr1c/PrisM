@@ -139,8 +139,13 @@ public sealed class LevelCatalog : ScriptableObject {
    var runtime=definition.ToLevel();
    if(runtime.Direction.Length<1e-6){message="Level "+definition.Id+" has a zero light direction.";return false;}
    if(runtime.Goals==null||runtime.Goals.Length==0){message="Level "+definition.Id+" has no goals.";return false;}
+   var initialResult=Optics.Solve(runtime,runtime.Initial);
+   if(initialResult.Complete){message="Level "+definition.Id+" starts solved.";return false;}
+   var solutionResult=Optics.Solve(runtime,runtime.Solution);
+   if(!solutionResult.Complete){message="Level "+definition.Id+" known solution does not complete.";return false;}
+   if(solutionResult.Truncated){message="Level "+definition.Id+" known solution exceeds the optical interaction budget.";return false;}
   }
-  message=levels.Length+" levels valid.";
+  message=levels.Length+" levels valid, including known-solution checks.";
   return true;
  }
 }

@@ -98,7 +98,7 @@ public class PrismGame : MonoBehaviour {
    progress.lastLevelId=levels[old].Id;
    migrated=true;
   }
-  if(migrated&&!smoke){
+  if(migrated&&!smoke&&!storeCapture){
    SaveProgress();
    PlayerPrefs.DeleteKey("prism.completed");
    PlayerPrefs.DeleteKey("prism.last");
@@ -168,7 +168,7 @@ public class PrismGame : MonoBehaviour {
  void Update(){
   if(session==null)return;
   Layout();
-  if(!smoke){
+  if(!smoke&&!storeCapture){
    HandleBack();
    Pointer();
   }
@@ -179,7 +179,7 @@ public class PrismGame : MonoBehaviour {
    settle+=Time.deltaTime;
    if(settle>.65f){
     won=true;
-    if(!smoke){
+    if(!smoke&&!storeCapture){
      completedLevelIds.Add(session.Level.Id);
      SaveProgress();
      feedback?.Complete();

@@ -98,11 +98,11 @@ public static class BuildProject {
   EditorSceneManager.OpenScene(ScenePath,OpenSceneMode.Single);
 
   var pipeline=AssetDatabase.LoadAssetAtPath<RenderPipelineAsset>("Assets/Settings/Mobile_RPAsset.asset");
+  if(pipeline==null)throw new Exception("Mobile URP pipeline asset is missing.");
   GraphicsSettings.defaultRenderPipeline=pipeline;
-  for(int i=0;i<QualitySettings.names.Length;i++){
-   QualitySettings.SetQualityLevel(i);
-   QualitySettings.renderPipeline=pipeline;
-  }
+  int qualityIndex=EditorUserBuildSettings.activeBuildTarget==BuildTarget.Android?0:Mathf.Min(1,QualitySettings.names.Length-1);
+  QualitySettings.SetQualityLevel(qualityIndex,true);
+  QualitySettings.renderPipeline=pipeline;
   QualitySettings.vSyncCount=0;
 
   EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true)};

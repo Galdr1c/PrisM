@@ -20,18 +20,35 @@ class Program
         var waterLevel=new Level{Source=new V(-3,1),Direction=new V(1,0),Goals=new[]{new Goal(new V(3,1),-1)},WaterZones=new[]{new WaterZone(new V(-1,-2),new V(1,2),1.333)}};
         Check("normal-incidence through water reaches goal", Optics.Solve(waterLevel,new Piece[0]).Complete);
         var levels=Levels.Create();
-        Check("eight levels", levels.Length==8);
+        Check("one hundred levels", levels.Length==100);
         var ids=new HashSet<string>();
         bool validIds=true;
         foreach(var level in levels){if(string.IsNullOrWhiteSpace(level.Id)||!ids.Add(level.Id))validIds=false;}
         Check("level IDs are stable and unique",validIds);
-        foreach(var level in levels) {
+        bool chapterStructure=true,difficultyProgression=true;
+        var chapterCounts=new Dictionary<string,int>();
+        for(int i=0;i<levels.Length;i++){
+            var level=levels[i];
+            if(string.IsNullOrWhiteSpace(level.Chapter))chapterStructure=false;
+            if(!chapterCounts.ContainsKey(level.Chapter))chapterCounts[level.Chapter]=0;
+            chapterCounts[level.Chapter]++;
+            if(level.Difficulty!=1+i/10)difficultyProgression=false;
+
             var initial=Optics.Solve(level, level.Initial);
             Check(level.Name+" begins unsolved", !initial.Complete);
+
             var result=Optics.Solve(level,level.Solution);
-            Check(level.Name+" known solution completes",result.Complete);
+            Check(level.Name+" known solution reaches goals",result.Complete);
             Check(level.Name+" solver stays within budget",!result.Truncated);
+
+            var solvedSession=new Session(level);
+            solvedSession.Reveal();
+            Check(level.Name+" gameplay completion rules pass",solvedSession.IsComplete(Optics.Solve(level,solvedSession.Pieces)));
         }
+        foreach(var pair in chapterCounts)if(pair.Value!=10)chapterStructure=false;
+        Check("ten chapters contain ten levels each",chapterStructure&&chapterCounts.Count==10);
+        Check("difficulty rises once per chapter",difficultyProgression);
+
         bool solutionsRespectPlacement=true;
         foreach(var level in levels) {
             var placementSession=new Session(level);
@@ -40,8 +57,10 @@ class Program
                 placementSession.Pieces[placementSession.Pieces.Count-1].Angle=piece.Angle;
             }
             if(!solutionsRespectPlacement)break;
+            var placedResult=Optics.Solve(level,placementSession.Pieces);
+            if(!placementSession.IsComplete(placedResult)){solutionsRespectPlacement=false;break;}
         }
-        Check("known solutions obey placement rules",solutionsRespectPlacement);
+        Check("all 100 solutions obey placement and gameplay completion rules",solutionsRespectPlacement);
         var wallLevel=new Level { Source=new V(-3,0), Direction=new V(1,0), Goals=new[]{new Goal(new V(3,0),-1)}, Walls=new[]{new Wall(new V(0,-2),new V(0,2))} };
         Check("wall blocks all target energy", !Optics.Solve(wallLevel,new Piece[0]).Complete);
         var placementLevel=new Level {
@@ -74,7 +93,7 @@ class Program
         Check("broad-spectrum energy is normalized",Math.Abs(directResult.Energy[0]-1)<1e-6);
         Check("green receiver rejects red-only route",Optics.Solve(new Level{Source=new V(-4,0),Direction=new V(1,0),Goals=new[]{new Goal(new V(0,3),3)}},new[]{new Piece(Kind.Red,new V(0,0),45)}).Energy[0]==0);
 
-        var timer=System.Diagnostics.Stopwatch.StartNew();for(int i=0;i<100;i++)Optics.Solve(levels[4],levels[4].Solution);timer.Stop();Console.WriteLine("INFO Desktop core mean solve: "+(timer.Elapsed.TotalMilliseconds/100).ToString("F3")+" ms (not a mobile benchmark)");
+        var timer=System.Diagnostics.Stopwatch.StartNew();for(int i=0;i<100;i++)Optics.Solve(levels[79],levels[79].Solution);timer.Stop();Console.WriteLine("INFO Desktop core mean solve (chapter 8): "+(timer.Elapsed.TotalMilliseconds/100).ToString("F3")+" ms (not a mobile benchmark)");
         Environment.ExitCode=failures==0?0:1;
     }
 }

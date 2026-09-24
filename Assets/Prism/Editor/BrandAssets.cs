@@ -47,8 +47,6 @@ public static class BrandAssets {
 
 #if UNITY_ANDROID
   ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,loaded);
-  ApplyPlatformIcons(target,AndroidPlatformIconKind.Round,loaded);
-  ApplyPlatformIcons(target,AndroidPlatformIconKind.Legacy,loaded);
 #endif
 
   GenerateStoreAssets();

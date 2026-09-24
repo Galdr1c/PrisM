@@ -43,7 +43,7 @@ Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm
 - `Assets/Prism/Editor`: sahne/derleme otomasyonu.
 - `Tests`: Unity'den bağımsız çekirdek doğrulama.
 
-`ILevelProvider` runtime ile mevcut hard-coded katalog arasında bir ayrım noktası oluşturur. Sonraki veri-mimari adımı, bu arayüzün ScriptableObject tabanlı bir authoring/catalog uygulamasıyla beslenmesidir.
+`ILevelProvider` artık ScriptableObject tabanlı `LevelCatalog`/`LevelDefinition` authoring katmanıyla beslenebilir. Runtime `Resources/LevelCatalog` asset'ini tercih eder; asset henüz oluşturulmamışsa mevcut built-in kataloğa fallback yapar. Unity Editor'daki `PrisM/Authoring/Create or Refresh Default Level Catalog` komutu sekiz built-in bölümü authoring catalog'una aktarır ve temel validasyonları çalıştırır.
 
 ## Test ve derleme
 `dotnet run --project Tests/CoreTests.csproj` (.NET 10 SDK; harici NuGet paketi yok).

@@ -50,12 +50,12 @@ class Program
             Goals=new[]{new Goal(new V(3,0),-1)},
             Walls=new[]{new Wall(new V(0,-1),new V(0,1))}
         };
-        var placementSession=new Session(placementLevel);
-        Check("placement blocks source overlap",!placementSession.Place(Kind.Mirror,new V(-3,0)));
-        Check("placement blocks goal overlap",!placementSession.Place(Kind.Mirror,new V(3,0)));
-        Check("placement blocks wall overlap",!placementSession.Place(Kind.Mirror,new V(0,0)));
-        Check("placement accepts open board space",placementSession.Place(Kind.Mirror,new V(-1.2,1.5)));
-        Check("placement blocks piece overlap",!placementSession.Place(Kind.Mirror,new V(-1.1,1.5)));
+        var ruleSession=new Session(placementLevel);
+        Check("placement blocks source overlap",!ruleSession.Place(Kind.Mirror,new V(-3,0)));
+        Check("placement blocks goal overlap",!ruleSession.Place(Kind.Mirror,new V(3,0)));
+        Check("placement blocks wall overlap",!ruleSession.Place(Kind.Mirror,new V(0,0)));
+        Check("placement accepts open board space",ruleSession.Place(Kind.Mirror,new V(-1.2,1.5)));
+        Check("placement blocks piece overlap",!ruleSession.Place(Kind.Mirror,new V(-1.1,1.5)));
         var session=new Session(levels[0]);
         Check("stock starts available", session.Remaining(Kind.Mirror)==1);
         Check("can place available piece", session.Place(Kind.Mirror,new V(0,-2)));

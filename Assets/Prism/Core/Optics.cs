@@ -16,9 +16,9 @@ public class Piece { public Kind Kind; public V Position; public double Angle; p
 public class Goal { public V Position; public int Band; public double Radius=0.42; public double Threshold=0.24; public Goal(V p,int b){Position=p;Band=b;} }
 public struct Wall { public V A,B; public Wall(V a,V b){A=a;B=b;} }
 public struct WaterZone { public V Min,Max; public double Index; public WaterZone(V min,V max,double idx=1.333){Min=min;Max=max;Index=idx;} public bool Contains(V p)=>p.X>=Min.X-1e-5&&p.X<=Max.X+1e-5&&p.Y>=Min.Y-1e-5&&p.Y<=Max.Y+1e-5; }
-public class Level { public string Id="",Name="",Lesson="",Hint=""; public V Source,Direction; public Piece[] Initial=new Piece[0],Solution=new Piece[0]; public Goal[] Goals=new Goal[0]; public Wall[] Walls=new Wall[0]; public WaterZone[] WaterZones=new WaterZone[0]; public Kind[] Stock=new Kind[0]; public double Width=0.32; }
+public class Level { public string Id="",Name="",Lesson="",Hint="",Chapter=""; public int Difficulty=1,Par=0; public bool RequireAllPiecesActive; public V Source,Direction; public Piece[] Initial=new Piece[0],Solution=new Piece[0]; public Goal[] Goals=new Goal[0]; public Wall[] Walls=new Wall[0]; public WaterZone[] WaterZones=new WaterZone[0]; public Kind[] Stock=new Kind[0]; public double Width=0.32; }
 public struct Beam { public V A,B; public int Band; public double Power; public Beam(V a,V b,int band,double p){A=a;B=b;Band=band;Power=p;} }
-public class Result { public List<Beam> Beams=new List<Beam>(); public double[] Energy; public bool Complete,Truncated; }
+public class Result { public List<Beam> Beams=new List<Beam>(); public double[] Energy; public bool Complete,Truncated; public int ActivePieceCount; }
 public static class Optics {
  public static V Reflect(V d,V n)=>(d-n*(2*V.Dot(d,n))).Unit;
  public static bool Refract(V d,V n,double from,double to,out V r){
@@ -37,7 +37,7 @@ public static class Optics {
  }
  static double Circle(V o,V d,Goal g){V q=o-g.Position;double b=V.Dot(q,d),c=V.Dot(q,q)-g.Radius*g.Radius,disc=b*b-c;if(disc<0)return double.PositiveInfinity;double t=-b-Math.Sqrt(disc);return t>0.0001?t:double.PositiveInfinity;}
  public static Result Solve(Level level,IList<Piece> pieces){
-  var result=new Result {Energy=new double[level.Goals.Length]}; const int samples=13;
+  var result=new Result {Energy=new double[level.Goals.Length]}; var activePieces=new HashSet<Piece>(); const int samples=13;
   for(int band=0;band<7;band++)for(int sample=0;sample<samples;sample++){
    V d=level.Direction.Unit,o=level.Source+d.Perp*((sample/(double)(samples-1)-0.5)*level.Width);double power=1.0/samples;
    for(int bounce=0;bounce<24;bounce++){
@@ -71,6 +71,7 @@ public static class Optics {
      d=r;power*=0.99;
     }
     else if(hit!=null){
+     activePieces.Add(hit);
      if(hit.Kind==Kind.Prism){bool entering=V.Dot(d,normal)<0;V r;Refract(d,normal,entering?1:Index(band),entering?Index(band):1,out r);d=r;power*=0.98;}
      else if(hit.Kind==Kind.Sphere){
       bool entering=V.Dot(d,normal)<0;
@@ -87,6 +88,7 @@ public static class Optics {
     if(bounce==23)result.Truncated=true;
    }
   }
+  result.ActivePieceCount=activePieces.Count;
   result.Complete=level.Goals.Length>0;for(int i=0;i<level.Goals.Length;i++)if(result.Energy[i]<level.Goals[i].Threshold)result.Complete=false;
   return result;
  }

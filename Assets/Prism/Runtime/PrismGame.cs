@@ -51,16 +51,16 @@ public class PrismGame : MonoBehaviour {
   else return;
   Vector2 p=Design(raw);V w=World(p);bool onBoard=new Rect(50,200,800,800).Contains(p);
   if(down&&onBoard&&!won){
-   if(armed.HasValue){if(ValidPosition(w)&&session.Place(armed.Value,w)){selected=session.Pieces.Count-1;armed=null;dirty=true;}return;}
+   if(armed.HasValue){if(session.Place(armed.Value,w)){selected=session.Pieces.Count-1;armed=null;dirty=true;}return;}
    if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&(w-session.Pieces[selected].Position).Length>.8&&(w-session.Pieces[selected].Position).Length<1.25){rotating=true;dragging=false;startAngle=session.Pieces[selected].Angle;startDirection=w-session.Pieces[selected].Position;session.BeginEdit();}
    else{selected=-1;double closest=.7;for(int i=0;i<session.Pieces.Count;i++){double dist=(w-session.Pieces[i].Position).Length;if(dist<closest){closest=dist;selected=i;}}
     if(selected>=0){session.BeginEdit();dragging=true;V delta=session.Pieces[selected].Position-w;dragOffset=new Vector2((float)delta.X,(float)delta.Y);}dirty=true;
    }
   }
-  if(held&&selected>=0&&!won){var piece=session.Pieces[selected];if(dragging){V proposed=w+new V(dragOffset.x,dragOffset.y);proposed=new V(Math.Max(-4.25,Math.Min(4.25,proposed.X)),Math.Max(-4.25,Math.Min(4.25,proposed.Y)));if(ValidPosition(proposed)){piece.Position=proposed;dirty=true;}}if(rotating&&PieceInfo.CanRotate(piece.Kind)){V dir=w-piece.Position;piece.Angle=Normalize(startAngle+(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI);dirty=true;}}
+  if(held&&selected>=0&&!won){var piece=session.Pieces[selected];if(dragging){V proposed=w+new V(dragOffset.x,dragOffset.y);proposed=new V(Math.Max(-4.25,Math.Min(4.25,proposed.X)),Math.Max(-4.25,Math.Min(4.25,proposed.Y)));if(PlacementRules.IsValid(session.Level,session.Pieces,piece.Kind,proposed,selected)){piece.Position=proposed;dirty=true;}}if(rotating&&PieceInfo.CanRotate(piece.Kind)){V dir=w-piece.Position;piece.Angle=Normalize(startAngle+(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI);dirty=true;}}
   if(up&&(dragging||rotating)){session.EndEdit();dragging=rotating=false;}
  }
- bool ValidPosition(V p){if(Math.Abs(p.X)>4.25||Math.Abs(p.Y)>4.25)return false;foreach(var wall in session.Level.Walls){V e=wall.B-wall.A;double denom=V.Dot(e,e);if(denom<1e-10)continue;double t=Math.Max(0,Math.Min(1,V.Dot(p-wall.A,e)/denom));if((p-(wall.A+e*t)).Length<.3)return false;}return true;}
+
  static double Normalize(double angle)=>(angle%360+360)%360;
  GUIStyle TextStyle(int size,Color c,FontStyle weight=FontStyle.Normal,TextAnchor align=TextAnchor.MiddleLeft){return new GUIStyle(GUI.skin.label){font=font,fontSize=size,fontStyle=weight,alignment=align,normal={textColor=c},wordWrap=true};}
  void Text(Rect r,string text,int size,Color c,FontStyle weight=FontStyle.Normal,TextAnchor align=TextAnchor.MiddleLeft){GUI.Label(r,text,TextStyle(size,c,weight,align));}

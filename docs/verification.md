@@ -1,14 +1,14 @@
 # Doğrulama durumu
 
-15 Eylül 2026
+24 Eylül 2026\n\nWindows build/smoke bulguları 15 Eylül 2026 doğrulamasından; aşağıdaki çekirdek yerleştirme kontrolleri bu değişiklik paketinde eklenmiştir.
 
 ## Otomatik çekirdek doğrulaması
-- `Tests/CoreTests.csproj` artık 45 sözleşme/regresyon kontrolü içerir.
+- `Tests/CoreTests.csproj` artık 51 sözleşme/regresyon kontrolü içerir.
 - Yansıma, normal girişte kırılma, tam iç yansıma, spektral indis sıralaması, cam küre odaklaması ve su kırılması kontrol edilir.
 - Sekiz built-in level'in başlangıçta çözülmemiş olduğu, bilinen çözümlerinin bütün hedefleri etkinleştirdiği ve solver bounce bütçesini aşmadığı kontrol edilir.
 - Level ID'lerinin boş olmadığı ve benzersiz olduğu doğrulanır.
 - Parça capability metadata'sında cam kürenin ayrı adı ve döndürülemez davranışı, aynanın ise döndürülebilir davranışı kontrol edilir.
-- Duvar engellemesi, stok, yerleştirme, geri alma, enerji normalizasyonu, renk seçimi ve sonsuz yansıma döngüsü bütçesi kontrol edilir.
+- Duvar engellemesi, stok, yerleştirme, geri alma, enerji normalizasyonu, renk seçimi ve sonsuz yansıma döngüsü bütçesi kontrol edilir. Yerleştirme kuralları ayrıca kaynak/hedef/duvar/parça çakışmalarını reddeder ve sekiz bilinen çözümün bu kurallarla hâlâ yerleştirilebilir olduğunu doğrular.
 - `.github/workflows/core-tests.yml` pull request ve `main` push'larında aynı test projesini .NET 10 ile çalıştırır.
 
 ## Runtime doğrulaması
@@ -28,4 +28,4 @@
 
 ## Hâlâ gerekli doğrulamalar
 - Android/iOS modülleri ve gerçek telefon cihazlarıyla build, safe-area, touch, thermal ve GPU/CPU profiling henüz yapılmadı.
-- Üretim kalitesindeki HDR beam/bloom/refraction görsel katmanı ayrı vertical-slice aşamasıdır.
+- Phase 2 HDR beam/Bloom/ACES ve hafif cam/su shader katmanı eklendi; gerçek cihazda performans/termal profil, sahne tabanlı refraction/caustics ve kalite ölçekleme hâlâ doğrulanmalıdır.

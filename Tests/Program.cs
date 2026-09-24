@@ -32,8 +32,30 @@ class Program
             Check(level.Name+" known solution completes",result.Complete);
             Check(level.Name+" solver stays within budget",!result.Truncated);
         }
+        bool solutionsRespectPlacement=true;
+        foreach(var level in levels) {
+            var placementSession=new Session(level);
+            foreach(var piece in level.Solution) {
+                if(!placementSession.Place(piece.Kind,piece.Position)){solutionsRespectPlacement=false;break;}
+                placementSession.Pieces[placementSession.Pieces.Count-1].Angle=piece.Angle;
+            }
+            if(!solutionsRespectPlacement)break;
+        }
+        Check("known solutions obey placement rules",solutionsRespectPlacement);
         var wallLevel=new Level { Source=new V(-3,0), Direction=new V(1,0), Goals=new[]{new Goal(new V(3,0),-1)}, Walls=new[]{new Wall(new V(0,-2),new V(0,2))} };
         Check("wall blocks all target energy", !Optics.Solve(wallLevel,new Piece[0]).Complete);
+        var placementLevel=new Level {
+            Source=new V(-3,0),
+            Stock=new[]{Kind.Mirror,Kind.Mirror},
+            Goals=new[]{new Goal(new V(3,0),-1)},
+            Walls=new[]{new Wall(new V(0,-1),new V(0,1))}
+        };
+        var ruleSession=new Session(placementLevel);
+        Check("placement blocks source overlap",!ruleSession.Place(Kind.Mirror,new V(-3,0)));
+        Check("placement blocks goal overlap",!ruleSession.Place(Kind.Mirror,new V(3,0)));
+        Check("placement blocks wall overlap",!ruleSession.Place(Kind.Mirror,new V(0,0)));
+        Check("placement accepts open board space",ruleSession.Place(Kind.Mirror,new V(-1.2,1.5)));
+        Check("placement blocks piece overlap",!ruleSession.Place(Kind.Mirror,new V(-1.1,1.5)));
         var session=new Session(levels[0]);
         Check("stock starts available", session.Remaining(Kind.Mirror)==1);
         Check("can place available piece", session.Place(Kind.Mirror,new V(0,-2)));

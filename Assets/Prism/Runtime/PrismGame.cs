@@ -168,7 +168,10 @@ public class PrismGame : MonoBehaviour {
  void Update(){
   if(session==null)return;
   Layout();
-  if(!smoke)Pointer();
+  if(!smoke){
+   HandleBack();
+   Pointer();
+  }
   if(dirty)Solve();
 
   bool complete=session.IsComplete(result);
@@ -187,6 +190,17 @@ public class PrismGame : MonoBehaviour {
 
  Vector2 Design(Vector2 screen)=>new Vector2((screen.x-offsetX)/scale,(Screen.height-screen.y-offsetY)/scale);
  V World(Vector2 p)=>new V((p.x-450)/80,(600-p.y)/80);
+
+ void HandleBack(){
+  if(Keyboard.current==null||!Keyboard.current.escapeKey.wasPressedThisFrame)return;
+  if(showHint){showHint=false;return;}
+  if(showSettings){showSettings=false;return;}
+  if(showLevelMap){showLevelMap=false;return;}
+  if(won){won=false;showLevelMap=true;return;}
+  if(armed.HasValue){armed=null;return;}
+  if(selected>=0){selected=-1;dirty=true;return;}
+  showLevelMap=true;
+ }
 
  void Pointer(){
   if(showHint||showLevelMap||showSettings)return;

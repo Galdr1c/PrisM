@@ -92,7 +92,7 @@ public static class VisualEnvironment {
   int memory=SystemInfo.systemMemorySize;
   int graphics=SystemInfo.graphicsMemorySize;
   if((memory>0&&memory<3500)||(graphics>0&&graphics<1000))return VisualQualityTier.Low;
-  if((memory<=0||memory>=6000)&&(graphics<=0||graphics>=2000))return VisualQualityTier.High;
+  if(memory>=6000&&graphics>=2000)return VisualQualityTier.High;
   return VisualQualityTier.Medium;
  }
 

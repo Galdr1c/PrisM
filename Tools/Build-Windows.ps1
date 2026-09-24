@@ -8,6 +8,7 @@ $buildLog = Join-Path $projectRoot 'unity-build.log'
 $buildArgs = @(
     '-batchmode',
     '-quit',
+    '-buildTarget', 'win64',
     '-licensingIpc', ('Unity-LicenseClient-' + $env:USERNAME),
     '-projectPath', ('"' + $projectRoot + '"'),
     '-executeMethod', 'Prism.Editor.BuildProject.BuildWindowsDevelopment',

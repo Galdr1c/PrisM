@@ -45,9 +45,28 @@ public static class BrandAssets {
   for(int i=0;i<icons.Length;i++)icons[i]=loaded;
   PlayerSettings.SetIcons(target,icons,IconKind.Application);
 
+#if UNITY_ANDROID
+  ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,loaded);
+  ApplyPlatformIcons(target,AndroidPlatformIconKind.Round,loaded);
+  ApplyPlatformIcons(target,AndroidPlatformIconKind.Legacy,loaded);
+#endif
+
   GenerateStoreAssets();
   AssetDatabase.SaveAssets();
  }
+
+#if UNITY_ANDROID
+ static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D texture){
+  var slots=PlayerSettings.GetPlatformIcons(target,kind);
+  for(int i=0;i<slots.Length;i++){
+   int layers=Mathf.Max(1,slots[i].maxLayerCount);
+   var textures=new Texture2D[layers];
+   for(int layer=0;layer<layers;layer++)textures[layer]=texture;
+   slots[i].SetTextures(textures);
+  }
+  PlayerSettings.SetPlatformIcons(target,kind,slots);
+ }
+#endif
 
  static Texture2D CreateIcon(int size){
   var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,true);

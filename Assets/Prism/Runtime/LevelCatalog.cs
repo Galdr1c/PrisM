@@ -49,6 +49,10 @@ public sealed class LevelDefinition {
  [SerializeField] string displayName="";
  [SerializeField,TextArea] string lesson="";
  [SerializeField,TextArea] string hint="";
+ [SerializeField] string chapter="";
+ [SerializeField,Range(1,10)] int difficulty=1;
+ [SerializeField,Min(1)] int par=1;
+ [SerializeField] bool requireAllPiecesActive;
  [SerializeField] Vector2 source;
  [SerializeField] Vector2 direction=Vector2.right;
  [SerializeField] float sourceWidth=.32f;
@@ -68,6 +72,10 @@ public sealed class LevelDefinition {
    Name=displayName??"",
    Lesson=lesson??"",
    Hint=hint??"",
+   Chapter=chapter??"",
+   Difficulty=difficulty,
+   Par=par,
+   RequireAllPiecesActive=requireAllPiecesActive,
    Source=new V(source.x,source.y),
    Direction=new V(direction.x,direction.y),
    Width=sourceWidth,
@@ -86,6 +94,10 @@ public sealed class LevelDefinition {
   displayName=level.Name??"";
   lesson=level.Lesson??"";
   hint=level.Hint??"";
+  chapter=level.Chapter??"";
+  difficulty=level.Difficulty;
+  par=Math.Max(1,level.Par);
+  requireAllPiecesActive=level.RequireAllPiecesActive;
   source=new Vector2((float)level.Source.X,(float)level.Source.Y);
   direction=new Vector2((float)level.Direction.X,(float)level.Direction.Y);
   sourceWidth=(float)level.Width;
@@ -139,11 +151,14 @@ public sealed class LevelCatalog : ScriptableObject {
    var runtime=definition.ToLevel();
    if(runtime.Direction.Length<1e-6){message="Level "+definition.Id+" has a zero light direction.";return false;}
    if(runtime.Goals==null||runtime.Goals.Length==0){message="Level "+definition.Id+" has no goals.";return false;}
+   if(runtime.Difficulty<1||runtime.Difficulty>10){message="Level "+definition.Id+" has invalid difficulty.";return false;}
+   if(string.IsNullOrWhiteSpace(runtime.Chapter)){message="Level "+definition.Id+" has no chapter.";return false;}
    var initialResult=Optics.Solve(runtime,runtime.Initial);
    if(initialResult.Complete){message="Level "+definition.Id+" starts solved.";return false;}
    var solutionResult=Optics.Solve(runtime,runtime.Solution);
    if(!solutionResult.Complete){message="Level "+definition.Id+" known solution does not complete.";return false;}
    if(solutionResult.Truncated){message="Level "+definition.Id+" known solution exceeds the optical interaction budget.";return false;}
+   var session=new Session(runtime);session.Reveal();if(!session.IsComplete(Optics.Solve(runtime,session.Pieces))){message="Level "+definition.Id+" fails gameplay completion rules.";return false;}
   }
   message=levels.Length+" levels valid, including known-solution checks.";
   return true;

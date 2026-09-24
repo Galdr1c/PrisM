@@ -29,7 +29,12 @@ try {
 
     if ($missing.Count -eq 0) {
         Write-Host '== PrisM signed Android AAB =='
-        & (Join-Path $PSScriptRoot 'Build-Android-AAB.ps1')
+        $aab = & (Join-Path $PSScriptRoot 'Build-Android-AAB.ps1')
+        $aabPath = @($aab | Where-Object { $_ -like '*.aab' } | Select-Object -Last 1)
+        if ($aabPath.Count -eq 0) { throw 'Signed Android build did not return an AAB path.' }
+
+        Write-Host '== PrisM Android 16 KB page-size validation =='
+        & (Join-Path $PSScriptRoot 'Verify-Android-16K.ps1') -AabPath $aabPath[0]
     } elseif ($RequireAndroid) {
         throw ('Android signing variables are required: ' + ($missing -join ', '))
     } else {

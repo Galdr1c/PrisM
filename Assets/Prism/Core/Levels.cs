@@ -46,13 +46,13 @@ public static class Levels {
    "mastery-5a","Açıortay laboratuvarı",
    new V(-4,-3.05),
    new[]{new V(-2.85,-2.2),new V(-1.45,0.25),new V(0.0,-1.15),new V(1.25,1.45),new V(2.55,-0.15)},
-   new V(4.0,2.75),5),4);
+   new V(3.85,3.55),5),4);
 
   AddVariants(levels,MirrorChain(
    "mastery-5b","Ters geometri",
    new V(-3.9,3.15),
    new[]{new V(-2.55,2.15),new V(-1.05,-0.55),new V(0.45,1.15),new V(1.65,-1.55),new V(2.85,0.25)},
-   new V(4.0,-2.75),5),2);
+   new V(3.9,-3.75),5),2);
 
   AddVariants(levels,MirrorChain(
    "mastery-6","Son teorem",

@@ -169,9 +169,11 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
  readonly LevelCatalog catalog;
  public ScriptableObjectLevelProvider(LevelCatalog catalog){this.catalog=catalog;}
  public Level[] Load(){
-  if(catalog==null||catalog.Count==0)return Levels.Create();
-  var levels=catalog.Build();
-  return levels.Length>0?levels:Levels.Create();
+  var fallback=Levels.Create();
+  if(catalog==null||catalog.Count!=fallback.Length)return fallback;
+  if(!catalog.Validate(out string message)){Debug.LogWarning("PrisM LevelCatalog ignored: "+message);return fallback;}
+  var authored=catalog.Build();
+  return authored.Length==fallback.Length?authored:fallback;
  }
 }
 

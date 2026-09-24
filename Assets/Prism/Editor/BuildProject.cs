@@ -48,9 +48,16 @@ public static class BuildProject {
   PlayerSettings.SetScriptingBackend(NamedBuildTarget.Android,ScriptingImplementation.IL2CPP);
   PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,ApplicationId);
   PlayerSettings.defaultInterfaceOrientation=UIOrientation.Portrait;
+  PlayerSettings.Android.optimizedFramePacing=true;
+  PlayerSettings.Android.renderOutsideSafeArea=true;
+  PlayerSettings.Android.forceInternetPermission=false;
+  PlayerSettings.Android.forceSDCardPermission=false;
+  PlayerSettings.Android.predictiveBackSupport=true;
+  PlayerSettings.Android.startInFullscreen=true;
   PlayerSettings.use32BitDisplayBuffer=true;
   PlayerSettings.stripEngineCode=true;
   EditorUserBuildSettings.buildAppBundle=true;
+  BrandAssets.PrepareAndroidBranding();
 
   string keystore=RequireEnvironment("PRISM_KEYSTORE_PATH");
   string keystorePass=RequireEnvironment("PRISM_KEYSTORE_PASS");

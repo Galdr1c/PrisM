@@ -38,7 +38,7 @@ public static class BuildProject {
   string code=Environment.GetEnvironmentVariable("PRISM_VERSION_CODE");
   if(!string.IsNullOrWhiteSpace(code)&&!int.TryParse(code,out versionCode))throw new Exception("PRISM_VERSION_CODE must be an integer.");
 
-  if(!EditorUserBuildSettings.SwitchActiveBuildTarget(BuildTargetGroup.Android,BuildTarget.Android))throw new Exception("Could not switch Unity to Android build target.");
+  if(EditorUserBuildSettings.activeBuildTarget!=BuildTarget.Android)throw new Exception("Android release must launch Unity with -buildTarget android.");
 
   PlayerSettings.bundleVersion=version;
   PlayerSettings.Android.bundleVersionCode=versionCode;

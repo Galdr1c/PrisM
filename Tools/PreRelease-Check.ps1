@@ -18,6 +18,9 @@ try {
     Write-Host '== PrisM store assets =='
     & (Join-Path $PSScriptRoot 'Generate-Store-Assets.ps1')
 
+    Write-Host '== PrisM real gameplay store screenshots =='
+    & (Join-Path $PSScriptRoot 'Capture-Store-Screens.ps1')
+
     $required = @('PRISM_KEYSTORE_PATH','PRISM_KEYSTORE_PASS','PRISM_KEY_ALIAS','PRISM_KEY_ALIAS_PASS')
     $missing = @()
     foreach ($name in $required) {

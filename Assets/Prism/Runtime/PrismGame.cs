@@ -199,7 +199,11 @@ public class PrismGame : MonoBehaviour {
   if(won){won=false;showLevelMap=true;return;}
   if(armed.HasValue){armed=null;return;}
   if(selected>=0){selected=-1;dirty=true;return;}
+#if UNITY_ANDROID
+  Application.Quit();
+#else
   showLevelMap=true;
+#endif
  }
 
  void Pointer(){

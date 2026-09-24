@@ -49,6 +49,21 @@ class Program
         Check("ten chapters contain ten levels each",chapterStructure&&chapterCounts.Count==10);
         Check("difficulty rises once per chapter",difficultyProgression);
 
+        bool curriculumMetadata=true,masteryStructure=true,boundsValid=true;
+        for(int i=0;i<levels.Length;i++){
+            var level=levels[i];
+            if(level.Par!=Math.Max(1,level.Solution.Length))curriculumMetadata=false;
+            if(Math.Abs(level.Source.X)>4.5||Math.Abs(level.Source.Y)>4.5)boundsValid=false;
+            foreach(var goal in level.Goals)if(Math.Abs(goal.Position.X)>4.5||Math.Abs(goal.Position.Y)>4.5)boundsValid=false;
+            foreach(var piece in level.Solution)if(Math.Abs(piece.Position.X)>4.25||Math.Abs(piece.Position.Y)>4.25)boundsValid=false;
+            if(i>=80&&!level.RequireAllPiecesActive)masteryStructure=false;
+            if(i>=80&&i<90&&level.Solution.Length<3)masteryStructure=false;
+            if(i>=90&&level.Solution.Length<5)masteryStructure=false;
+        }
+        Check("curriculum par metadata matches known solutions",curriculumMetadata);
+        Check("final 20 levels enforce multi-piece geometry mastery",masteryStructure);
+        Check("sources goals and known solutions stay inside playable bounds",boundsValid);
+
         bool solutionsRespectPlacement=true;
         foreach(var level in levels) {
             var placementSession=new Session(level);

@@ -24,7 +24,7 @@ public class PrismGame : MonoBehaviour {
 
  int levelIndex,selected=-1;
  Kind? armed;
- bool dragging,rotating,showHint,showLevelMap,showSettings,won,dirty=true,smoke;
+ bool dragging,rotating,showHint,showLevelMap,showSettings,won,dirty=true,smoke,storeCapture;
  float settle;
  Vector2 dragOffset;
  double startAngle;
@@ -45,7 +45,7 @@ public class PrismGame : MonoBehaviour {
   Application.targetFrameRate=60;
   Screen.sleepTimeout=SleepTimeout.NeverSleep;
   font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-  smoke=Array.IndexOf(Environment.GetCommandLineArgs(),"-prismSmoke")>=0;
+  var commandLine=Environment.GetCommandLineArgs();\n  smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;\n  storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
 
   levels=LevelCatalogLoader.Load();
   if(levels==null||levels.Length==0)throw new Exception("PrisM has no playable levels.");
@@ -64,7 +64,7 @@ public class PrismGame : MonoBehaviour {
 
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();
   Load(FindLevel(progress.lastLevelId),true);
-  if(smoke)StartCoroutine(Smoke());
+  if(smoke)StartCoroutine(Smoke());\n  else if(storeCapture)StartCoroutine(StoreCapture());
  }
 
  int FindLevel(string id){
@@ -107,7 +107,7 @@ public class PrismGame : MonoBehaviour {
  }
 
  void SaveProgress(){
-  if(smoke)return;
+  if(smoke||storeCapture)return;
   progress.version=3;
   var ids=new List<string>(completedLevelIds);
   ids.Sort(StringComparer.Ordinal);
@@ -144,7 +144,7 @@ public class PrismGame : MonoBehaviour {
  }
 
  bool IsUnlocked(int index){
-  if(smoke)return true;
+  if(smoke||storeCapture)return true;
   if(index<0||index>=levels.Length)return false;
   return index<=HighestUnlocked()||completedLevelIds.Contains(levels[index].Id);
  }
@@ -156,7 +156,7 @@ public class PrismGame : MonoBehaviour {
   session=new Session(levels[levelIndex]);
   selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;won=false;settle=0;dirty=false;
   Solve();
-  if(!smoke){progress.lastLevelId=session.Level.Id;SaveProgress();}
+  if(!smoke&&!storeCapture){progress.lastLevelId=session.Level.Id;SaveProgress();}
  }
 
  void Solve(){
@@ -436,11 +436,46 @@ public class PrismGame : MonoBehaviour {
   }
  }
 
- IEnumerator Smoke(){
-  string output=Path.Combine(Application.dataPath,"../../TestResults");
+ IEnumerator StoreCapture(){
+  string output=CaptureOutputDirectory("StoreScreens");
+  Directory.CreateDirectory(output);
+  Screen.SetResolution(1080,1920,false);
+  yield return new WaitForSeconds(.5f);
+
+  int[] picks={0,29,49,69,99};
+  string[] names={"01-reflection","02-color","03-combination","04-water-glass","05-mastery"};
+  for(int n=0;n<picks.Length;n++){
+   int index=Mathf.Clamp(picks[n],0,levels.Length-1);
+   Load(index,true);
+   session.Reveal();
+   selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;won=false;settle=0;dirty=true;
+   yield return null;
+   yield return new WaitForSeconds(.18f);
+   ScreenCapture.CaptureScreenshot(Path.Combine(output,names[n]+".png"));
+   yield return new WaitForSeconds(.22f);
+  }
+
+  Load(49,true);
+  showLevelMap=true;
+  yield return null;
+  yield return new WaitForSeconds(.18f);
+  ScreenCapture.CaptureScreenshot(Path.Combine(output,"06-level-map.png"));
+  yield return new WaitForSeconds(.22f);
+
+  File.WriteAllText(Path.Combine(output,"capture-complete.txt"),"PrisM store capture complete: "+DateTime.UtcNow.ToString("O"));
+  Application.Quit(0);
+ }
+
+ string CaptureOutputDirectory(string fallbackFolder){
+  string output=Path.Combine(Application.dataPath,"../../"+fallbackFolder);
   var args=Environment.GetCommandLineArgs();
   int arg=Array.IndexOf(args,"-captureDir");
   if(arg>=0&&arg+1<args.Length)output=args[arg+1];
+  return output;
+ }
+
+ IEnumerator Smoke(){
+  string output=CaptureOutputDirectory("TestResults");
   Directory.CreateDirectory(output);
   yield return null;
 

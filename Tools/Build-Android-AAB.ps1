@@ -21,6 +21,7 @@ $buildLog = Join-Path $projectRoot 'unity-android-release.log'
 $args = @(
     '-batchmode',
     '-quit',
+    '-buildTarget', 'android',
     '-licensingIpc', ('Unity-LicenseClient-' + $env:USERNAME),
     '-projectPath', ('"' + $projectRoot + '"'),
     '-executeMethod', 'Prism.Editor.BuildProject.BuildAndroidRelease',

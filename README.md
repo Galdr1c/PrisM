@@ -1,58 +1,70 @@
-# PrisM Işık Atölyesi
+# PrisM — Işık Atölyesi
 
-Unity ile geliştirilen, sekiz özgün bölümlük mobil optik bulmaca prototipi.
+Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 
-## Mevcut durum
-Optik çekirdek ve sekiz bölümün bilinen çözümleri bağımsız C# testlerinden geçiyor. Unity arayüzü, dokunmatik/fare girişi, envanter, açı kontrolü, geri alma, sıfırlama, ipuçları ve yerel ilerleme kaydı kaynak kodda mevcut.
+## Pre-release kapsamı
+- **100 bölüm / 10 ünite**: yansıma, spektrum, seçici renk, odak, birleşik optik, kırılma, su/cam, senfoni, geometri ve ustalık.
+- İlk sekiz özgün mekanik seed'in stabil ID'leri korunur; mevcut ilerleme kayıtları bozulmadan 100 bölümlük kampanyaya geçebilir.
+- Son 20 bölümde 3–6 aynalı geometri zincirleri vardır. Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.
+- Çekirdek optik: ayna, prizma, renk seçici yüzeyler, ince lens, cam küre, su, duvarlar, renk hedefleri; 7 spektral bant ve kaynak genişliği örneklemesi.
+- Safe-area uyumlu dikey mobil layout, 10×10 bölüm haritası, sıralı kilit açma, ipucu, undo/reset, ayarlar, ses/titreşim ve Android geri davranışı.
+- Katmanlı URP renderer: prosedürel board, additive HDR ışın, Bloom + ACES, cam ve su shader'ları.
+- Auto / Düşük / Orta / Yüksek cihaz kalite profilleri. Grafik kalitesi optik çözümü değiştirmez.
+- Yerel, versioned JSON ilerleme kaydı; eski PlayerPrefs completion verisi otomatik migrate edilir.
+- Reklam, analytics, hesap, IAP veya zorunlu internet SDK'sı yoktur.
 
-İlerleme artık sabit bölüm kimlikleriyle versioned JSON olarak `Application.persistentDataPath/progress.json` altında tutulur. Eski `PlayerPrefs` bit mask kaydı varsa ilk açılışta otomatik olarak yeni formata taşınır. Böylece bölüm sayısı 32 ile sınırlı değildir ve bölüm sırası değişse bile tamamlanma bilgisi korunabilir.
+## İçerik doğrulaması
+`dotnet run --project Tests/CoreTests.csproj`
 
-Unity Hub'daki Personal lisansı mevcut. Windows derleme ve smoke doğrulaması geliştirme aracıyla yapılabiliyor. Android/iOS modülleri bu bilgisayarda kurulu değil; gerçek telefon performansı doğrulanmış değildir.
+CI bütün 100 bölüm için benzersiz ID, başlangıçta çözülmemiş durum, kayıtlı çözüm, solver etkileşim bütçesi, placement kuralları, chapter/difficulty yapısı ve mastery active-piece koşullarını doğrular.
 
-Güncel Windows geliştirme paketi sekiz bölümün tamamında otomatik çözüm/reset testinden geçti. Render katmanı tahta, geometri, su, ışın ve cam için ayrılmış shader/mesh katmanları kullanır; ışınlar enerjiye bağlı additive HDR çizilir ve runtime URP Bloom + ACES tonemapping ile işlenir. Koyu tahta ve ışık renkleri Linear color space için düzeltilmiştir.
+## Unity / Windows preflight
+```powershell
+.\Tools\PreRelease-Check.ps1
+```
 
-## Açma
-1. Unity Hub'ı mevcut Personal lisansının bağlı olduğu hesapla açık tut.
-2. Add project from disk ile proje klasörünü ekle; Unity 6000.6.0f1 ile aç.
-3. Paketler yüklendikten sonra `Assets/Scenes/Prism.unity` sahnesini aç.
-4. Game görünümünü 900 × 1340 veya benzer dikey oran yap ve Play'e bas.
+Preflight sırasıyla core testleri, Windows build, **100 çözüm + 100 reset** runtime smoke ve Play Store grafik üretimini çalıştırır. Android imza environment variable'ları mevcutsa signed AAB de üretir.
 
-## Kontroller
-- Envanterden parça seç, oyun alanına dokunarak yerleştir. Kaynak, hedef, duvar veya başka bir optik parçayla çakışan konumlar kabul edilmez.
-- Parçanın ortasından sürükle; döndürülebilir parçalarda seçili parçanın çevresindeki halkayı kullanarak döndür.
-- Alt bardaki ±1° / ±15° düğmeleriyle ince ayar yap. Fare tekerleği de döndürülebilir parçalarda 1° ayarlar.
-- Cam küre dönel simetriktir; açı kontrolü gösterilmez.
-- Kaldır, parçayı envantere geri verir. Geri al son düzenlemeyi geri getirir.
-- Hedeflerin tamamı yeterli ışığı 0,65 saniye alınca bölüm tamamlanır.
-- Bölüm düğmeleri prototipte serbesttir; görünür bölüm sayfası dinamik olarak ilerler.
+Tekil komutlar:
+```powershell
+.\Tools\Build-Windows.ps1
+.\Tools\Smoke-Windows.ps1
+.\Tools\Generate-Store-Assets.ps1
+.\Tools\Build-Android-AAB.ps1
+```
 
-## Optik kapsam
-- Düz ayna yansıması
-- Üçgen prizma, spektral kırılma ve tam iç yansıma
-- Yeşil/kırmızı seçici aynalar
-- Paraksiyal ince lens
-- Cam küre kırılması ve odaklama
-- Su bölgelerinde Snell kırılması
-- Duvar engelleri ve renk hedefleri
-- Yedi spektral bant, kaynak genişliği boyunca 13 örnek ve en fazla 24 etkileşim
+Unity yolu farklıysa `PRISM_UNITY_EDITOR` ile belirtilebilir.
+
+## Android / Google Play
+Release build sözleşmesi:
+- package: `com.prismstudio.lightworkshop`
+- sürüm: `0.9.0`, versionCode `90` (environment variable ile override edilebilir)
+- signed `.aab`
+- target API 36, min API 26
+- ARM64
+- IL2CPP
+- portrait
+- optimized frame pacing
+- edge-to-edge render + safe-area UI
+- release keystore yalnız environment variable üzerinden; parola/keystore repo'ya yazılmaz
+
+Ayrıntılı teslim sırası: `docs/google-play-release.md`  
+Store metinleri: `docs/store-listing.md`  
+Gizlilik politikası kaynağı: `docs/privacy-policy.md`
+
+## Level authoring
+`ILevelProvider` üzerinde ScriptableObject `LevelCatalog` / `LevelDefinition` authoring katmanı vardır. Unity Editor:
+
+`PrisM/Authoring/Create or Refresh Default Level Catalog`
+
+Runtime yalnız 100 bölüm sayısını ve tam catalog validasyonunu geçen authored catalog'u kabul eder; eski/bozuk asset bulunursa deterministik `Levels.Create()` kampanyasına fallback yapar.
 
 ## Mimari
-- `Assets/Prism/Core`: Unity bağımsız matematik, optik solver, parça metadata/capability bilgisi ve built-in level provider.
-- `Assets/Prism/Runtime`: giriş, oturum, UI, ilerleme ve oyun akışı.
-- `Assets/Prism/Rendering`: prosedürel tahta ve ışık şeridi çizimi.
-- `Assets/Prism/Editor`: sahne/derleme otomasyonu.
-- `Tests`: Unity'den bağımsız çekirdek doğrulama.
+- `Assets/Prism/Core`: Unity bağımsız geometri, optik solver, curriculum, placement/session.
+- `Assets/Prism/Runtime`: input, progress, UI, feedback, catalog ve kalite profili.
+- `Assets/Prism/Rendering`: prosedürel HDR board/beam/glass/water renderer.
+- `Assets/Prism/Editor`: authoring, branding ve Windows/Android release otomasyonu.
+- `Tests`: Unity bağımsız regresyon ve 100-level doğrulama.
 
-`ILevelProvider` artık ScriptableObject tabanlı `LevelCatalog`/`LevelDefinition` authoring katmanıyla beslenebilir. Runtime `Resources/LevelCatalog` asset'ini tercih eder; asset henüz oluşturulmamışsa mevcut built-in kataloğa fallback yapar. Unity Editor'daki `PrisM/Authoring/Create or Refresh Default Level Catalog` komutu sekiz built-in bölümü authoring catalog'una aktarır ve temel validasyonları çalıştırır.
-
-## Test ve derleme
-`dotnet run --project Tests/CoreTests.csproj` (.NET 10 SDK; harici NuGet paketi yok).
-
-`powershell -ExecutionPolicy Bypass -File Tools/Build-Windows.ps1`
-
-Başarılı derleme `Builds/Windows/PrisM.exe` üretir. Windows paketi taşınırken yanındaki veri klasörü ve DLL dosyaları da birlikte taşınmalıdır.
-
-`Tools/Smoke-Windows.ps1` geliştirme paketini açar; bütün built-in çözümleri, stok yerleşimini ve sıfırlamayı doğrular. Ekran görüntüleri ile sonuçları `TestResults/` altına yazar. Bu otomasyon gerçek dokunmatik giriş testi yerine geçmez.
-
-## Bilinen sınırlar
-Lens paraxial ince lens yaklaşımıdır; Fresnel ikincil yansımaları henüz yoktur. Phase 2 görsel katmanda additive HDR ışın, Bloom/ACES, prosedürel su ve cam shader'ları vardır; gerçek hacimsel ışık, sahne tabanlı refraction/caustics ve cihaz bazlı kalite ölçekleme hâlâ geliştirme konusudur. Unity IMGUI arayüzü ilk prototip içindir; mağaza sürümü öncesinde safe-area destekli kalıcı UI, erişilebilirlik ve gerçek telefon testleri gerekir. Kara delik, gelişmiş diffraction, ses ve haptik henüz eklenmedi.
+## Doğrulama sınırı
+GitHub Core CI Unity Editor'ü derlemez. Signed AAB üretimi, gerçek Android cihaz touch/cutout/thermal testi ve Play Console yüklemesi Unity Android Build Support ile release makinesinde yapılmalıdır. Bu nedenle repo pre-release teslim aşamasına hazırlanmıştır; gerçek cihaz ve signed-store artefact sonucu `docs/verification.md` içinde ancak çalıştırıldıktan sonra doğrulanmış sayılır.

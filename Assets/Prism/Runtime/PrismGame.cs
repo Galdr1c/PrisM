@@ -307,7 +307,7 @@ public class PrismGame : MonoBehaviour {
   string chapter="ÜNİTE "+(levelIndex/10+1).ToString("00")+" · "+session.Level.Chapter.ToUpperInvariant();
   Text(new Rect(50,88,430,25),chapter,13,gold);
   Text(new Rect(490,88,360,25),"DENEY "+(levelIndex+1).ToString("000")+" / "+levels.Length.ToString("000")+"   ·   ZORLUK "+session.Level.Difficulty+"/10",13,muted,FontStyle.Normal,TextAnchor.MiddleRight);
-  Text(new Rect(50,118,670,44),session.Level.Name,32,ink,FontStyle.Bold);
+  int titleSize=session.Level.Name.Length>46?18:session.Level.Name.Length>32?22:32;\n  Text(new Rect(50,118,670,40),session.Level.Name,titleSize,ink,FontStyle.Bold);
   Text(new Rect(50,160,690,30),session.Level.Lesson,16,muted);
 
   int lit=0;

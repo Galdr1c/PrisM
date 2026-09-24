@@ -51,10 +51,12 @@ public static class BuildProject {
   PlayerSettings.defaultInterfaceOrientation=UIOrientation.Portrait;
   PlayerSettings.Android.optimizedFramePacing=true;
   PlayerSettings.Android.renderOutsideSafeArea=true;
+  PlayerSettings.Android.requestedVisibleInsets=AndroidWindowInsetsType.None;
+  PlayerSettings.Android.systemBarsBehavior=AndroidSystemBarsBehavior.ShowTransientBarsBySwipe;
+  PlayerSettings.Android.fullscreenMode=FullScreenMode.FullScreenWindow;
   PlayerSettings.Android.forceInternetPermission=false;
   PlayerSettings.Android.forceSDCardPermission=false;
   PlayerSettings.Android.predictiveBackSupport=true;
-  PlayerSettings.Android.startInFullscreen=true;
   PlayerSettings.use32BitDisplayBuffer=true;
   PlayerSettings.stripEngineCode=true;
   EditorUserBuildSettings.buildAppBundle=true;

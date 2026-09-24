@@ -16,7 +16,7 @@ public class PrismGame : MonoBehaviour {
  public static string PieceName(Kind k)=>PieceInfo.Name(k);
  void Start(){
   Application.targetFrameRate=60;Screen.sleepTimeout=SleepTimeout.NeverSleep;font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");smoke=Array.IndexOf(Environment.GetCommandLineArgs(),"-prismSmoke")>=0;
-  levels=new BuiltInLevelProvider().Load();LoadProgress();cam=Camera.main;if(!cam){cam=new GameObject("Camera").AddComponent<Camera>();cam.tag="MainCamera";}cam.orthographic=true;cam.transform.position=new Vector3(0,0,-10);cam.backgroundColor=new Color(.025f,.042f,.06f);cam.clearFlags=CameraClearFlags.SolidColor;
+  levels=LevelCatalogLoader.Load();LoadProgress();cam=Camera.main;if(!cam){cam=new GameObject("Camera").AddComponent<Camera>();cam.tag="MainCamera";}cam.orthographic=true;cam.transform.position=new Vector3(0,0,-10);cam.backgroundColor=new Color(.025f,.042f,.06f);cam.clearFlags=CameraClearFlags.SolidColor;
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();Load(FindLevel(progress.lastLevelId));
   if(smoke)StartCoroutine(Smoke());
  }

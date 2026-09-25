@@ -163,7 +163,7 @@ public class PrismGame : MonoBehaviour {
  }
 
  void Solve(){
-  result=Optics.Solve(session.Level,session.Pieces);
+  result=Optics.Solve(session.Level,session.Pieces,result);
   board.Draw(session.Level,session.Pieces,result,selected);
   dirty=false;
  }

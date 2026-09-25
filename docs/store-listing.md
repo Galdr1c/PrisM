@@ -32,7 +32,7 @@ Pre-release test sürümü: 100 bölümlük tam ilerleme, yeni bölüm haritası
 PrisM — Light Workshop
 
 **Short description**  
-Bend, split and focus light through 100 increasingly challenging optical puzzles.
+Bend, split and focus light through 100 challenging optical puzzles.
 
 **Full description**  
 PrisM turns the behavior of light into a calm, tactile puzzle game.

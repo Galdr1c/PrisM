@@ -450,7 +450,7 @@ public class PrismGame : MonoBehaviour {
   Screen.SetResolution(1080,1920,false);
   yield return new WaitForSeconds(.5f);
 
-  int[] picks={0,29,49,69,99};
+  int[] picks={0,29,69,59,99};
   string[] names={"01-reflection","02-color","03-combination","04-water-glass","05-mastery"};
   for(int n=0;n<picks.Length;n++){
    int index=Mathf.Clamp(picks[n],0,levels.Length-1);

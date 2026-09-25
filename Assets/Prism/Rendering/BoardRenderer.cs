@@ -47,7 +47,7 @@ public class BoardRenderer : MonoBehaviour {
    beamMaterial.SetFloat("_Celebration",celebration);
   }
   if(glassMaterial!=null)glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low?1.15f:tier==VisualQualityTier.High?1.75f:1.5f);
-  if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low?.72f:tier==VisualQualityTier.High?1.2f:.96f);
+  if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low? .72f:tier==VisualQualityTier.High?1.2f: .96f);
   boardBuffer.Quad(new V(-5,-5),new V(5,-5),new V(5,5),new V(-5,5),Color.white);
   Color frame=new Color(.18f,.34f,.38f,.34f);
   double edge=4.72,mark=.34;

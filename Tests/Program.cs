@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Prism;
 class Program
 {
@@ -19,6 +20,28 @@ class Program
         Check("sphere focuses wide beam onto focal goal", sphereTest.Complete);
         var waterLevel=new Level{Source=new V(-3,1),Direction=new V(1,0),Goals=new[]{new Goal(new V(3,1),-1)},WaterZones=new[]{new WaterZone(new V(-1,-2),new V(1,2),1.333)}};
         Check("normal-incidence through water reaches goal", Optics.Solve(waterLevel,new Piece[0]).Complete);
+        string repoRoot=Directory.GetCurrentDirectory();
+        if(!Directory.Exists(Path.Combine(repoRoot,"Assets")))repoRoot=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../.."));
+        bool sourceHygiene=true;
+        string prismSource=Path.Combine(repoRoot,"Assets","Prism");
+        if(Directory.Exists(prismSource)){
+            foreach(var path in Directory.GetFiles(prismSource,"*.cs",SearchOption.AllDirectories)){
+                if(File.ReadAllText(path).Contains("\\n")){sourceHygiene=false;Console.WriteLine("INFO literal patch newline in "+path);}
+            }
+        }else sourceHygiene=false;
+        Check("Unity C# sources contain no literal patch-newline artifacts",sourceHygiene);
+
+        string buildSourcePath=Path.Combine(repoRoot,"Assets","Prism","Editor","BuildProject.cs");
+        string buildSource=File.Exists(buildSourcePath)?File.ReadAllText(buildSourcePath):"";
+        Check("Android release contract targets API 36",buildSource.Contains("AndroidApiLevel36"));
+        Check("Android release contract is ARM64",buildSource.Contains("AndroidArchitecture.ARM64"));
+        Check("Android release contract builds app bundle",buildSource.Contains("buildAppBundle=true"));
+        Check("Android release signing comes from environment",buildSource.Contains("PRISM_KEYSTORE_PATH")&&buildSource.Contains("PRISM_KEY_ALIAS_PASS"));
+
+        string ignorePath=Path.Combine(repoRoot,".gitignore");
+        string ignore=File.Exists(ignorePath)?File.ReadAllText(ignorePath):"";
+        Check("generated release assets stay out of source control",ignore.Contains("Builds/")&&ignore.Contains("Assets/Prism/Generated/"));
+
         var levels=Levels.Create();
         Check("one hundred levels", levels.Length==100);
         var ids=new HashSet<string>();

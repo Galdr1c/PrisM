@@ -16,6 +16,7 @@ class Program
         Check("sphere has its own display name", PieceInfo.Name(Kind.Sphere)=="Cam küre");
         Check("sphere rotation is disabled", !PieceInfo.CanRotate(Kind.Sphere));
         Check("mirror rotation stays enabled", PieceInfo.CanRotate(Kind.Mirror));
+        Check("spectral target labels are color-independent", PieceInfo.BandName(-1)=="Beyaz"&&PieceInfo.BandName(1)=="Mavi"&&PieceInfo.BandName(3)=="Yeşil"&&PieceInfo.BandName(6)=="Kırmızı");
         var sphereTest=Optics.Solve(new Level{Source=new V(-3,0),Direction=new V(1,0),Width=0.6,Goals=new[]{new Goal(new V(0.95,0),-1){Radius=0.3,Threshold=0.5}}}, new[]{new Piece(Kind.Sphere,new V(0,0),0)});
         Check("sphere focuses wide beam onto focal goal", sphereTest.Complete);
         var waterLevel=new Level{Source=new V(-3,1),Direction=new V(1,0),Goals=new[]{new Goal(new V(3,1),-1)},WaterZones=new[]{new WaterZone(new V(-1,-2),new V(1,2),1.333)}};

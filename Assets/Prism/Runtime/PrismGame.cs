@@ -25,7 +25,9 @@ public class PrismGame : MonoBehaviour {
  int levelIndex,selected=-1,mapChapter=-1;
  Kind? armed;
  bool dragging,rotating,showHint,showLevelMap,showSettings,won,showWinPanel,dirty=true,smoke,storeCapture,drawingOverlay;
- float settle,winShownAt=-10f;
+ float settle,winShownAt=-10f,toastUntil;
+ string toast="";
+ Color toastColor;
  Vector2 dragOffset;
  double startAngle;
  V startDirection;
@@ -159,10 +161,10 @@ public class PrismGame : MonoBehaviour {
 
  void Load(int index,bool force=false){
   index=Mathf.Clamp(index,0,levels.Length-1);
-  if(!force&&!IsUnlocked(index)){feedback?.Invalid();return;}
+  if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu deney henüz kilitli.",danger);return;}
   levelIndex=index;
   session=new Session(levels[levelIndex]);
-  selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;settle=0;winShownAt=-10f;dirty=false;
+  selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;settle=0;winShownAt=-10f;toast="";toastUntil=0;dirty=false;
   Solve();
   board?.SetCelebration(0f);
   VisualEnvironment.SetCelebration(0f);
@@ -252,8 +254,11 @@ public class PrismGame : MonoBehaviour {
 
   if(down&&onBoard&&!won){
    if(armed.HasValue){
-    if(session.Place(armed.Value,w)){selected=session.Pieces.Count-1;armed=null;dirty=true;}
-    else feedback?.Invalid();
+    if(session.Place(armed.Value,w)){
+     selected=session.Pieces.Count-1;armed=null;dirty=true;feedback?.Click();
+    }else{
+     feedback?.Invalid();Notify("Buraya yerleştirilemez · kaynak, hedef, duvar veya başka bir parçayla çakışıyor.",danger);
+    }
     return;
    }
 
@@ -267,6 +272,7 @@ public class PrismGame : MonoBehaviour {
      if(dist<closest){closest=dist;selected=i;}
     }
     if(selected>=0){
+     feedback?.Click();
      session.BeginEdit();dragging=true;
      V delta=session.Pieces[selected].Position-w;
      dragOffset=new Vector2((float)delta.X,(float)delta.Y);
@@ -289,7 +295,13 @@ public class PrismGame : MonoBehaviour {
    }
   }
 
-  if(up&&(dragging||rotating)){session.EndEdit();dragging=rotating=false;}
+  if(up&&(dragging||rotating)){session.EndEdit();feedback?.Click();dragging=rotating=false;}
+ }
+
+ void Notify(string message,Color color){
+  toast=message??"";
+  toastColor=color;
+  toastUntil=Time.unscaledTime+2.25f;
  }
 
  static double Normalize(double angle)=>(angle%360+360)%360;
@@ -410,6 +422,12 @@ public class PrismGame : MonoBehaviour {
     Box(tag,new Color(.02f,.04f,.05f,.82f));
     Text(tag,PieceInfo.BandName(g.Band).ToUpperInvariant()+" "+percent+"%",10,percent>=100?targetColor:muted,percent>=100?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
    }
+  }
+
+  if(!won&&Time.unscaledTime<toastUntil&&!string.IsNullOrEmpty(toast)){
+   float fade=Mathf.Clamp01((toastUntil-Time.unscaledTime)/.35f);
+   Card(new Rect(120,918,660,58),new Color(.045f,.065f,.07f,.94f*fade),new Color(toastColor.r,toastColor.g,toastColor.b,.72f*fade));
+   Text(new Rect(142,928,616,38),toast,13,new Color(toastColor.r,toastColor.g,toastColor.b,fade),FontStyle.Bold,TextAnchor.MiddleCenter);
   }
 
   if(won&&!showWinPanel){

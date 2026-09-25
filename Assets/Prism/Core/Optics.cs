@@ -11,6 +11,18 @@ public static class PieceInfo {
  public static string Name(Kind kind){switch(kind){case Kind.Mirror:return "Ayna";case Kind.Prism:return "Prizma";case Kind.Green:return "Yeşil seçici";case Kind.Red:return "Kırmızı seçici";case Kind.Lens:return "Lens";case Kind.Sphere:return "Cam küre";default:return kind.ToString();}}
  public static bool CanRotate(Kind kind)=>kind!=Kind.Sphere;
  public static double SelectionRadius(Kind kind)=>kind==Kind.Sphere?0.85:1.02;
+ public static string BandName(int band){
+  switch(band){
+   case 0:return "Mor";
+   case 1:return "Mavi";
+   case 2:return "Camgöbeği";
+   case 3:return "Yeşil";
+   case 4:return "Sarı";
+   case 5:return "Turuncu";
+   case 6:return "Kırmızı";
+   default:return "Beyaz";
+  }
+ }
 }
 public class Piece { public Kind Kind; public V Position; public double Angle; public Piece(Kind k,V p,double a=0){Kind=k;Position=p;Angle=a;} public Piece Copy()=>new Piece(Kind,Position,Angle); }
 public class Goal { public V Position; public int Band; public double Radius=0.42; public double Threshold=0.24; public Goal(V p,int b){Position=p;Band=b;} }

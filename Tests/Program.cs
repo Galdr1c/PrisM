@@ -86,6 +86,21 @@ class Program
         }
         Check("curriculum par metadata matches known solutions",curriculumMetadata);
         Check("final 20 levels enforce multi-piece geometry mastery",masteryStructure);
+        var masteryGeometry=new HashSet<string>();
+        for(int i=80;i<levels.Length;i++){
+            var points=new List<V>{levels[i].Source};
+            foreach(var piece in levels[i].Solution)points.Add(piece.Position);
+            points.Add(levels[i].Goals[0].Position);
+            var turns=new List<string>();
+            for(int j=1;j<points.Count-1;j++){
+                V incoming=(points[j]-points[j-1]).Unit;
+                V outgoing=(points[j+1]-points[j]).Unit;
+                double angle=Math.Atan2(V.Cross(incoming,outgoing),V.Dot(incoming,outgoing))*180/Math.PI;
+                turns.Add(Math.Round(Math.Abs(angle)/5).ToString());
+            }
+            masteryGeometry.Add(string.Join("-",turns));
+        }
+        Check("final 20 levels have distinct turn geometry",masteryGeometry.Count==20);
         Check("sources goals and known solutions stay inside playable bounds",boundsValid);
 
         bool solutionsRespectPlacement=true;

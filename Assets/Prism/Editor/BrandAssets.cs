@@ -11,12 +11,16 @@ namespace Prism.Editor {
 public static class BrandAssets {
  const string GeneratedDir="Assets/Prism/Generated";
  const string IconPath=GeneratedDir+"/AppIcon.png";
+ const string AdaptiveForegroundPath=GeneratedDir+"/AdaptiveForeground.png";
+ const string AdaptiveBackgroundPath=GeneratedDir+"/AdaptiveBackground.png";
  const string StoreDir="Builds/StoreAssets";
 
  [MenuItem("PrisM/Release/Generate Store Assets")]
  public static void GenerateStoreAssets(){
   Directory.CreateDirectory(StoreDir);
-  WritePng(Path.Combine(StoreDir,"play-icon-512.png"),CreateIcon(512));
+  string storeIcon=Path.Combine(StoreDir,"play-icon-512.png");
+  WritePng(storeIcon,CreateIcon(512));
+  if(new FileInfo(storeIcon).Length>1024*1024)throw new Exception("Play icon exceeds the 1024 KB upload limit: "+storeIcon);
   WritePng(Path.Combine(StoreDir,"feature-graphic-1024x500.png"),CreateFeatureGraphic());
   Debug.Log("PrisM store assets generated in "+Path.GetFullPath(StoreDir));
  }
@@ -25,7 +29,6 @@ public static class BrandAssets {
   Directory.CreateDirectory(GeneratedDir);
   var icon=CreateIcon(1024);
   WritePng(IconPath,icon);
-  UnityEngine.Object.DestroyImmediate(icon);
   AssetDatabase.ImportAsset(IconPath,ImportAssetOptions.ForceUpdate);
 
   var importer=AssetImporter.GetAtPath(IconPath) as TextureImporter;
@@ -49,7 +52,11 @@ public static class BrandAssets {
   PlayerSettings.SetIcons(target,icons,IconKind.Application);
 
 #if UNITY_ANDROID
-  ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,loaded);
+  WritePng(AdaptiveForegroundPath,CreateAdaptiveForeground(1024));
+  WritePng(AdaptiveBackgroundPath,CreateIconBackground(1024));
+  var foreground=ImportIcon(AdaptiveForegroundPath);
+  var background=ImportIcon(AdaptiveBackgroundPath);
+  ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,foreground,background);
 #endif
 
   GenerateStoreAssets();
@@ -57,12 +64,27 @@ public static class BrandAssets {
  }
 
 #if UNITY_ANDROID
- static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D texture){
+ static Texture2D ImportIcon(string path){
+  AssetDatabase.ImportAsset(path,ImportAssetOptions.ForceUpdate);
+  var importer=AssetImporter.GetAtPath(path) as TextureImporter;
+  if(importer==null)throw new Exception("Generated Android icon could not be imported: "+path);
+  importer.textureType=TextureImporterType.Default;
+  importer.textureCompression=TextureImporterCompression.Uncompressed;
+  importer.mipmapEnabled=false;
+  importer.alphaIsTransparency=true;
+  importer.maxTextureSize=1024;
+  importer.SaveAndReimport();
+  var texture=AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+  if(texture==null)throw new Exception("Generated Android icon could not be loaded: "+path);
+  return texture;
+ }
+
+ static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D foreground,Texture2D background){
   var slots=PlayerSettings.GetPlatformIcons(target,kind);
   for(int i=0;i<slots.Length;i++){
-   int layers=Mathf.Max(1,slots[i].minLayerCount);
-   var textures=new Texture2D[layers];
-   for(int layer=0;layer<layers;layer++)textures[layer]=texture;
+   var textures=new Texture2D[slots[i].maxLayerCount];
+   textures[0]=foreground;
+   if(textures.Length>1)textures[1]=background;
    slots[i].SetTextures(textures);
   }
   PlayerSettings.SetPlatformIcons(target,kind,slots);
@@ -70,6 +92,13 @@ public static class BrandAssets {
 #endif
 
  static Texture2D CreateIcon(int size){
+  var tex=CreateIconBackground(size);
+  DrawIconArt(tex,size,1f);
+  tex.Apply(false,false);
+  return tex;
+ }
+
+ static Texture2D CreateIconBackground(int size){
   var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,true);
   var pixels=new Color32[size*size];
   Color32 bg0=new Color32(4,11,18,255),bg1=new Color32(10,34,45,255);
@@ -80,29 +109,41 @@ public static class BrandAssets {
    pixels[y*size+x]=Lerp(bg1,bg0,Mathf.Clamp01(d));
   }
   tex.SetPixels32(pixels);
+  tex.Apply(false,false);
+  return tex;
+ }
 
+ static Texture2D CreateAdaptiveForeground(int size){
+  var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,true);
+  var pixels=new Color32[size*size];
+  tex.SetPixels32(pixels);
+  // Android's adaptive mask uses only the central portion of each layer.
+  DrawIconArt(tex,size,.64f);
+  tex.Apply(false,false);
+  return tex;
+ }
+
+ static void DrawIconArt(Texture2D tex,int size,float scale){
   float s=size;
-  Vector2 a=new Vector2(.31f*s,.70f*s);
-  Vector2 b=new Vector2(.50f*s,.28f*s);
-  Vector2 c=new Vector2(.69f*s,.70f*s);
+  Vector2 Center(Vector2 p)=>new Vector2(.5f*s,.5f*s)+(p-new Vector2(.5f*s,.5f*s))*scale;
+  Vector2 a=Center(new Vector2(.31f*s,.70f*s));
+  Vector2 b=Center(new Vector2(.50f*s,.28f*s));
+  Vector2 c=Center(new Vector2(.69f*s,.70f*s));
 
-  DrawGlowLine(tex,new Vector2(.08f*s,.52f*s),new Vector2(.39f*s,.52f*s),.028f*s,new Color(1f,.96f,.82f,1));
+  DrawGlowLine(tex,Center(new Vector2(.08f*s,.52f*s)),Center(new Vector2(.39f*s,.52f*s)),.028f*s*scale,new Color(1f,.96f,.82f,1));
   Color[] spectrum={
    new Color(.43f,.28f,1),new Color(.22f,.5f,1),new Color(.08f,.82f,1),
    new Color(.3f,1,.58f),new Color(.92f,1,.38f),new Color(1,.62f,.18f),new Color(1,.26f,.30f)
   };
   for(int i=0;i<spectrum.Length;i++){
    float oy=(i-3)*.032f*s;
-   DrawGlowLine(tex,new Vector2(.57f*s,.52f*s),new Vector2(.91f*s,.35f*s+oy),.012f*s,spectrum[i]);
+   DrawGlowLine(tex,Center(new Vector2(.57f*s,.52f*s)),Center(new Vector2(.91f*s,.35f*s+oy)),.012f*s*scale,spectrum[i]);
   }
 
   FillTriangle(tex,a,b,c,new Color(.16f,.48f,.62f,.34f));
-  DrawGlowLine(tex,a,b,.014f*s,new Color(.82f,.96f,1,1));
-  DrawGlowLine(tex,b,c,.014f*s,new Color(.82f,.96f,1,1));
-  DrawGlowLine(tex,c,a,.014f*s,new Color(.82f,.96f,1,1));
-
-  tex.Apply(false,false);
-  return tex;
+  DrawGlowLine(tex,a,b,.014f*s*scale,new Color(.82f,.96f,1,1));
+  DrawGlowLine(tex,b,c,.014f*s*scale,new Color(.82f,.96f,1,1));
+  DrawGlowLine(tex,c,a,.014f*s*scale,new Color(.82f,.96f,1,1));
  }
 
  static Texture2D CreateFeatureGraphic(){
@@ -201,11 +242,13 @@ public static class BrandAssets {
  static void Blend(Texture2D tex,int x,int y,Color src){
   Color dst=tex.GetPixel(x,y);
   float a=Mathf.Clamp01(src.a);
+  float outA=dst.a+(1-dst.a)*a;
+  if(outA<=0)return;
   tex.SetPixel(x,y,new Color(
-   Mathf.Clamp01(dst.r*(1-a)+src.r*a),
-   Mathf.Clamp01(dst.g*(1-a)+src.g*a),
-   Mathf.Clamp01(dst.b*(1-a)+src.b*a),
-   Mathf.Clamp01(dst.a+(1-dst.a)*a)));
+   Mathf.Clamp01((dst.r*dst.a*(1-a)+src.r*a)/outA),
+   Mathf.Clamp01((dst.g*dst.a*(1-a)+src.g*a)/outA),
+   Mathf.Clamp01((dst.b*dst.a*(1-a)+src.b*a)/outA),
+   outA));
  }
 
  static Color32 Lerp(Color32 a,Color32 b,float t){

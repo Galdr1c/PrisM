@@ -69,7 +69,62 @@ public static class Levels {
    level.Par=Math.Max(1,level.Solution?.Length??0);
    if(i>=80)level.RequireAllPiecesActive=true;
   }
+  DistinguishMasteryGeometry(levels);
   return levels.ToArray();
+ }
+
+ static void DistinguishMasteryGeometry(List<Level> levels){
+  var signatures=new HashSet<string>(StringComparer.Ordinal);
+  for(int index=80;index<levels.Count;index++){
+   var level=levels[index];
+   var original=new Piece[level.Solution.Length];
+   for(int j=0;j<original.Length;j++)original[j]=level.Solution[j].Copy();
+   V originalDirection=level.Direction;
+   bool accepted=false;
+   for(int attempt=1;attempt<=96;attempt++){
+    double amount=.12+((attempt-1)%6)*.055;
+    for(int j=0;j<original.Length;j++){
+     var origin=original[j];
+     double phase=(index-79)*1.83+j*2.71+attempt*1.37;
+     V displacement=new V(Math.Sin(phase)*amount,Math.Cos(phase*1.31)*amount);
+     level.Solution[j]=new Piece(Kind.Mirror,origin.Position+displacement);
+    }
+    var points=new V[level.Solution.Length+2];
+    points[0]=level.Source;
+    for(int j=0;j<level.Solution.Length;j++)points[j+1]=level.Solution[j].Position;
+    points[points.Length-1]=level.Goals[0].Position;
+    level.Direction=(points[1]-points[0]).Unit;
+    for(int j=0;j<level.Solution.Length;j++)
+     level.Solution[j].Angle=MirrorLineAngle(points[j+1]-points[j],points[j+2]-points[j+1]);
+    string signature=TurnSignature(points);
+    if(signatures.Contains(signature))continue;
+    var session=new Session(level);
+    bool valid=true;
+    for(int j=0;j<level.Solution.Length;j++)
+     if(!session.Place(Kind.Mirror,level.Solution[j].Position)){valid=false;break;}
+    if(!valid)continue;
+    for(int j=0;j<level.Solution.Length;j++)session.Pieces[j].Angle=level.Solution[j].Angle;
+    if(Optics.Solve(level,level.Initial).Complete)continue;
+    var solved=Optics.Solve(level,session.Pieces);
+    if(solved.Truncated||!session.IsComplete(solved))continue;
+    signatures.Add(signature);
+    accepted=true;
+    break;
+   }
+   if(!accepted)throw new InvalidOperationException("Could not author distinct playable mastery geometry: "+level.Id);
+   level.Hint="Geliş ve çıkış ışınlarını birer doğru olarak çiz. Her aynanın açısını bu iki yönün açıortayından türet; tüm aynalar ışık yolunda aktif olmalı.";
+  }
+ }
+
+ static string TurnSignature(V[] points){
+  var turns=new string[points.Length-2];
+  for(int j=1;j<points.Length-1;j++){
+   V incoming=(points[j]-points[j-1]).Unit;
+   V outgoing=(points[j+1]-points[j]).Unit;
+   double angle=Math.Atan2(V.Cross(incoming,outgoing),V.Dot(incoming,outgoing))*180/Math.PI;
+   turns[j-1]=Math.Round(Math.Abs(angle)/5).ToString();
+  }
+  return string.Join("-",turns);
  }
 
  static Level[] BaseSeeds()=>new[]{

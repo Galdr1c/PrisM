@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Prism {
 [CustomEditor(typeof(LevelCatalog))]
-public sealed class LevelCatalogEditor : Editor {
+public sealed class LevelCatalogEditor : UnityEditor.Editor {
  public override void OnInspectorGUI(){
   DrawDefaultInspector();
   EditorGUILayout.Space(10);

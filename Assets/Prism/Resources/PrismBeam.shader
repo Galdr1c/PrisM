@@ -16,9 +16,10 @@ Shader "Prism/BeamGlow" {
    float _Intensity;
    float _CoreWhite;
    struct A {float4 positionOS:POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float2 uv2:TEXCOORD1;};
-   struct B {float4 positionCS:SV_POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float kind:TEXCOORD1;};
-   B vert(A v){B o;o.positionCS=TransformObjectToHClip(v.positionOS.xyz);o.color=v.color;o.uv=v.uv;o.kind=v.uv2.x;return o;}
+   struct B {float4 positionCS:SV_POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float kind:TEXCOORD1;float2 world:TEXCOORD2;};
+   B vert(A v){B o;float3 w=TransformObjectToWorld(v.positionOS.xyz);o.positionCS=TransformWorldToHClip(w);o.color=v.color;o.uv=v.uv;o.kind=v.uv2.x;o.world=w.xy;return o;}
    half4 frag(B i):SV_Target {
+    clip(4.98-abs(i.world.x));clip(4.98-abs(i.world.y));
     float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):pow(saturate(1.0-abs(i.uv.y*2.0-1.0)),1.8);
     float core=pow(profile,5.0);
     float3 baseRgb=SRGBToLinear(i.color.rgb);

@@ -19,7 +19,7 @@ public class BoardRenderer : MonoBehaviour {
   public void Disc(V p,double radius,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++)Tri(p,p+V.Angle(i*360.0/segments)*radius,p+V.Angle((i+1)*360.0/segments)*radius,color);}
   public void RadialDisc(V p,double radius,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++){double a=i*360.0/segments,b=(i+1)*360.0/segments;Tri(p,p+V.Angle(a)*radius,p+V.Angle(b)*radius,color,Vector2.zero,new Vector2((float)System.Math.Cos(a*System.Math.PI/180),(float)System.Math.Sin(a*System.Math.PI/180)),new Vector2((float)System.Math.Cos(b*System.Math.PI/180),(float)System.Math.Sin(b*System.Math.PI/180)),1);}}
   public void Ring(V p,double radius,double width,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++)Line(p+V.Angle(i*360.0/segments)*radius,p+V.Angle((i+1)*360.0/segments)*radius,width,color);}
-  public void Apply(Mesh mesh){mesh.Clear();mesh.SetVertices(vertices);mesh.SetColors(colors);mesh.SetUVs(0,uv);mesh.SetUVs(1,uv2);mesh.SetTriangles(indices,0);mesh.RecalculateBounds();}
+  public void Apply(Mesh mesh){mesh.Clear();mesh.SetVertices(vertices);mesh.SetColors(colors);mesh.SetUVs(0,uv);mesh.SetUVs(1,uv2);mesh.SetTriangles(indices,0);mesh.bounds=new Bounds(Vector3.zero,new Vector3(70,70,4));}
  }
  readonly MeshBuffer boardBuffer=new MeshBuffer(),baseBuffer=new MeshBuffer(),beamBuffer=new MeshBuffer(),glassBuffer=new MeshBuffer(),waterBuffer=new MeshBuffer();
  Mesh boardMesh,baseMesh,beamMesh,glassMesh,waterMesh;Material boardMaterial,baseMaterial,beamMaterial,glassMaterial,waterMaterial;
@@ -31,7 +31,7 @@ public class BoardRenderer : MonoBehaviour {
   beamMesh=CreateLayer("Light field","PrismBeam",out beamMaterial,3);
   glassMesh=CreateLayer("Optical glass","PrismGlass",out glassMaterial,4);
  }
- Mesh CreateLayer(string name,string shaderResource,out Material material,int order){var go=new GameObject(name);go.transform.SetParent(transform,false);var mesh=new Mesh{name=name,indexFormat=IndexFormat.UInt32};go.AddComponent<MeshFilter>().sharedMesh=mesh;var renderer=go.AddComponent<MeshRenderer>();var shader=Resources.Load<Shader>(shaderResource);if(shader==null)shader=Resources.Load<Shader>("PrismUnlit");material=new Material(shader){name=name+" material"};renderer.sharedMaterial=material;renderer.sortingOrder=order;return mesh;}
+ Mesh CreateLayer(string name,string shaderResource,out Material material,int order){var go=new GameObject(name);go.transform.SetParent(transform,false);var mesh=new Mesh{name=name,indexFormat=IndexFormat.UInt32};mesh.MarkDynamic();go.AddComponent<MeshFilter>().sharedMesh=mesh;var renderer=go.AddComponent<MeshRenderer>();var shader=Resources.Load<Shader>(shaderResource);if(shader==null)shader=Resources.Load<Shader>("PrismUnlit");material=new Material(shader){name=name+" material"};renderer.sharedMaterial=material;renderer.sortingOrder=order;return mesh;}
  public void Draw(Level level,IList<Piece> pieces,Result result,int selected){
   boardBuffer.Clear();baseBuffer.Clear();beamBuffer.Clear();glassBuffer.Clear();waterBuffer.Clear();
   var tier=VisualEnvironment.Resolved;

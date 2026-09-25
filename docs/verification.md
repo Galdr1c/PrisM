@@ -1,6 +1,6 @@
 # PrisM doğrulama durumu
 
-24 Eylül 2026
+25 Eylül 2026
 
 ## Doğrulandı — GitHub Core CI
 - 100 bölüm üretiliyor.
@@ -24,7 +24,7 @@
 - HDR beam, Bloom/ACES, water/glass katmanları.
 - 100-level runtime smoke kodu: her bölüm için known solution + reset kontrolü; chapter örnek screenshot'ları.
 - ScriptableObject LevelCatalog; stale/invalid catalog güvenli fallback.
-- Signed Android AAB build otomasyonu ve Play store asset generatorü.
+- Signed Android AAB build otomasyonu, 16 KB page-size doğrulaması, Play store asset generatorü ve Play Console deklarasyon cevap sayfası.
 
 ## Önceden doğrulanmış baseline
 15 Eylül 2026 baseline kaynaklarında Unity 6000.6.0f1 StandaloneWindows64 development build ve o tarihteki 8-level smoke başarıyla çalıştırılmıştı. Shader/color/build baseline bu sonuçlara dayanır.

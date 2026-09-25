@@ -4,7 +4,7 @@ namespace Prism {
 public sealed class PrismFeedback : MonoBehaviour {
  const int SampleRate=22050;
  AudioSource source;
- AudioClip clickClip,invalidClip,completeClip;
+ AudioClip clickClip,invalidClip,completeClip,milestoneClip;
  float lastClickTime=-1f;
  float lastHapticTime=-10f;
  public bool AudioEnabled {get;private set;}
@@ -17,7 +17,8 @@ public sealed class PrismFeedback : MonoBehaviour {
   source.volume=.65f;
   clickClip=GestureTone("PrisM click",760f,520f,.045f,.28f);
   invalidClip=GestureTone("PrisM invalid",280f,180f,.12f,.24f);
-  completeClip=CompletionTone();
+  completeClip=CompletionTone(false);
+  milestoneClip=CompletionTone(true);
   AudioEnabled=PlayerPrefs.GetInt("prism.audio",1)!=0;
   HapticsEnabled=PlayerPrefs.GetInt("prism.haptics",1)!=0;
  }
@@ -26,6 +27,7 @@ public sealed class PrismFeedback : MonoBehaviour {
   if(clickClip!=null)Destroy(clickClip);
   if(invalidClip!=null)Destroy(invalidClip);
   if(completeClip!=null)Destroy(completeClip);
+  if(milestoneClip!=null)Destroy(milestoneClip);
  }
 
  public void SetAudio(bool enabled){
@@ -47,8 +49,8 @@ public sealed class PrismFeedback : MonoBehaviour {
   source.PlayOneShot(clickClip);
  }
  public void Invalid(){if(AudioEnabled&&source!=null)source.PlayOneShot(invalidClip);}
- public void Complete(){
-  if(AudioEnabled&&source!=null)source.PlayOneShot(completeClip);
+ public void Complete(bool milestone=false){
+  if(AudioEnabled&&source!=null)source.PlayOneShot(milestone?milestoneClip:completeClip);
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
   if(HapticsEnabled&&Time.unscaledTime-lastHapticTime>=1f){
    lastHapticTime=Time.unscaledTime;
@@ -72,26 +74,30 @@ public sealed class PrismFeedback : MonoBehaviour {
   return CreateClip(name,data);
  }
 
- static AudioClip CompletionTone(){
-  const float seconds=.52f;
-  const float noteSeconds=.32f;
-  float[] notes={523.25f,659.25f,783.99f};
+ static AudioClip CompletionTone(bool milestone){
+  float seconds=milestone?.96f:.68f;
+  float noteSeconds=milestone?.46f:.34f;
+  float[] notes=milestone
+   ?new[]{392.00f,523.25f,659.25f,783.99f,1046.50f}
+   :new[]{523.25f,659.25f,783.99f,1046.50f};
+  float step=milestone?.095f:.082f;
   int samples=Mathf.CeilToInt(seconds*SampleRate);
   var data=new float[samples];
   for(int i=0;i<samples;i++){
    float time=i/(float)SampleRate;
    float value=0f;
    for(int n=0;n<notes.Length;n++){
-    float local=time-n*.09f;
+    float local=time-n*step;
     if(local<0f||local>noteSeconds)continue;
-    float attack=Mathf.Min(1f,local/.008f);
+    float attack=Mathf.Min(1f,local/.007f);
     float release=1f-local/noteSeconds;
     float phase=2f*Mathf.PI*notes[n]*local;
-    value+=(Mathf.Sin(phase)+.18f*Mathf.Sin(phase*2f))*attack*release*release*.14f;
+    float shimmer=Mathf.Sin(phase*2.01f)*.16f+Mathf.Sin(phase*3.98f)*.055f;
+    value+=(Mathf.Sin(phase)+shimmer)*attack*release*release*(milestone?.115f:.13f);
    }
-   data[i]=value;
+   data[i]=Mathf.Clamp(value,-.92f,.92f);
   }
-  return CreateClip("PrisM complete",data);
+  return CreateClip(milestone?"PrisM milestone":"PrisM complete",data);
  }
 
  static AudioClip CreateClip(string name,float[] data){

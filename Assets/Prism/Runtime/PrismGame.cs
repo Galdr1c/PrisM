@@ -340,7 +340,8 @@ public class PrismGame : MonoBehaviour {
     var g=session.Level.Goals[i];
     float gx=450+(float)g.Position.X*80,gy=600-(float)g.Position.Y*80;
     int percent=Mathf.Min(100,Mathf.RoundToInt((float)(result.Energy[i]/g.Threshold)*100));
-    Text(new Rect(gx-45,gy+(float)g.Radius*80+10,90,22),percent+"%",12,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
+    string goalLabel=PieceInfo.BandName(g.Band).ToUpperInvariant()+" · "+percent+"%";
+    Text(new Rect(gx-70,gy+(float)g.Radius*80+10,140,22),goalLabel,11,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
    }
   }
 

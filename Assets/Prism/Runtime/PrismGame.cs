@@ -45,7 +45,9 @@ public class PrismGame : MonoBehaviour {
   Application.targetFrameRate=60;
   Screen.sleepTimeout=SleepTimeout.NeverSleep;
   font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
-  var commandLine=Environment.GetCommandLineArgs();\n  smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;\n  storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
+  var commandLine=Environment.GetCommandLineArgs();
+  smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;
+  storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
 
   levels=LevelCatalogLoader.Load();
   if(levels==null||levels.Length==0)throw new Exception("PrisM has no playable levels.");
@@ -64,7 +66,8 @@ public class PrismGame : MonoBehaviour {
 
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();
   Load(FindLevel(progress.lastLevelId),true);
-  if(smoke)StartCoroutine(Smoke());\n  else if(storeCapture)StartCoroutine(StoreCapture());
+  if(smoke)StartCoroutine(Smoke());
+  else if(storeCapture)StartCoroutine(StoreCapture());
  }
 
  int FindLevel(string id){
@@ -311,7 +314,8 @@ public class PrismGame : MonoBehaviour {
   string chapter="ÜNİTE "+(levelIndex/10+1).ToString("00")+" · "+session.Level.Chapter.ToUpperInvariant();
   Text(new Rect(50,88,430,25),chapter,13,gold);
   Text(new Rect(490,88,360,25),"DENEY "+(levelIndex+1).ToString("000")+" / "+levels.Length.ToString("000")+"   ·   ZORLUK "+session.Level.Difficulty+"/10",13,muted,FontStyle.Normal,TextAnchor.MiddleRight);
-  int titleSize=session.Level.Name.Length>46?18:session.Level.Name.Length>32?22:32;\n  Text(new Rect(50,118,670,40),session.Level.Name,titleSize,ink,FontStyle.Bold);
+  int titleSize=session.Level.Name.Length>46?18:session.Level.Name.Length>32?22:32;
+  Text(new Rect(50,118,670,40),session.Level.Name,titleSize,ink,FontStyle.Bold);
   Text(new Rect(50,160,690,30),session.Level.Lesson,16,muted);
 
   int lit=0;

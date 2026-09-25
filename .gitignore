@@ -1,5 +1,7 @@
 Library/
 Temp/
+.tmp/
+.utmp/
 Obj/
 Logs/
 UserSettings/

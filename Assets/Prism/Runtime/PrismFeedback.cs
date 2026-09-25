@@ -75,12 +75,12 @@ public sealed class PrismFeedback : MonoBehaviour {
  }
 
  static AudioClip CompletionTone(bool milestone){
-  float seconds=milestone?.96f:.68f;
-  float noteSeconds=milestone?.46f:.34f;
+  float seconds=milestone ? .96f : .68f;
+  float noteSeconds=milestone ? .46f : .34f;
   float[] notes=milestone
    ?new[]{392.00f,523.25f,659.25f,783.99f,1046.50f}
    :new[]{523.25f,659.25f,783.99f,1046.50f};
-  float step=milestone?.095f:.082f;
+  float step=milestone ? .095f : .082f;
   int samples=Mathf.CeilToInt(seconds*SampleRate);
   var data=new float[samples];
   for(int i=0;i<samples;i++){
@@ -93,7 +93,7 @@ public sealed class PrismFeedback : MonoBehaviour {
     float release=1f-local/noteSeconds;
     float phase=2f*Mathf.PI*notes[n]*local;
     float shimmer=Mathf.Sin(phase*2.01f)*.16f+Mathf.Sin(phase*3.98f)*.055f;
-    value+=(Mathf.Sin(phase)+shimmer)*attack*release*release*(milestone?.115f:.13f);
+    value+=(Mathf.Sin(phase)+shimmer)*attack*release*release*(milestone ? .115f : .13f);
    }
    data[i]=Mathf.Clamp(value,-.92f,.92f);
   }

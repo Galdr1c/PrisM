@@ -7,8 +7,8 @@ public sealed class BuiltInLevelProvider : ILevelProvider { public Level[] Load(
 
 public static class Levels {
  static readonly string[] Chapters={
-  "Yansıma","Spektrum","Seçici renk","Odak","Bileşim",
-  "Kırılma","Su ve cam","Optik senfoni","Geometri","Ustalık"
+  "Yansıma","Spektrum","Seçici renk","Odak","Renk zinciri",
+  "Kırılma","Bileşim","Optik senfoni","Geometri","Ustalık"
  };
 
  static readonly string[] VariantLabels={
@@ -25,9 +25,9 @@ public static class Levels {
   AddVariants(levels,seeds[1],10);
   AddVariants(levels,seeds[2],10);
   AddVariants(levels,seeds[3],10);
-  AddVariants(levels,seeds[4],10);
   AddVariants(levels,seeds[5],10);
   AddVariants(levels,seeds[6],10);
+  AddVariants(levels,seeds[4],10);
   AddVariants(levels,seeds[7],10);
 
   AddVariants(levels,MirrorChain(

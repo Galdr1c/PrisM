@@ -14,14 +14,20 @@ Status target: **0.9.0 (versionCode 90)** — internal/closed testing candidate.
 - Gameplay: offline; no account required
 - Current codebase: no ads, analytics, IAP or network SDK
 
-Google Play requires new apps and updates submitted after 31 August 2026 to target API 36 or newer:
+Starting 31 August 2026, Google Play requires new mobile apps and app updates to target Android 16 / API 36 or newer:
 https://support.google.com/googleplay/android-developer/answer/11926878
 
 New Google Play apps publish with Android App Bundles:
 https://developer.android.com/guide/app-bundle
 
+The upload AAB must be signed with the developer upload key; Play App Signing handles distribution signing for a new Play app:
+https://developer.android.com/studio/publish/app-signing
+
 Google Play apps must support 64-bit architectures:
-https://developer.android.com/games/optimize/64-bit
+https://developer.android.com/google/play/requirements/64-bit
+
+Because this build targets API 36 and uses native IL2CPP libraries, the release pipeline also checks 16 KB memory-page compatibility. Android documents 16 KB support as a Google Play compatibility requirement for API 35+ apps on 64-bit devices:
+https://developer.android.com/guide/practices/page-sizes
 
 ## Signed AAB
 Never commit a keystore or passwords. Set these environment variables:
@@ -46,12 +52,15 @@ The build fails before packaging if the 100-level known-solution release validat
 2. Generate and securely back up the upload keystore.
 3. Run `dotnet run --project Tests/CoreTests.csproj`.
 4. Run Windows development build and `Tools/Smoke-Windows.ps1`.
-5. Run the signed AAB build.
-6. Install a Play-generated test APK from an internal testing release on at least one low/mid and one modern Android device.
-7. Verify notch/punch-hole safe area, touch dragging/rotation, audio/haptic toggles, suspend/resume save, all quality tiers and final mastery levels.
-8. Upload the AAB to Internal testing first, then Closed testing before Production.
+5. Run `Tools/PreRelease-Check.ps1 -RequireAndroid`; this includes signed AAB generation and 16 KB ELF/alignment validation.
+6. Configure Play App Signing for the new app and upload the AAB to Internal testing.
+7. Install a Play-generated test APK from Internal testing on at least one low/mid and one modern Android device.
+8. Verify notch/punch-hole safe area, touch dragging/rotation, Android back, audio/haptic toggles, suspend/resume save, all quality tiers and final mastery levels.
+9. Resolve Play pre-launch report findings, then move to Closed testing before Production.
 
 ## Play Console declarations for the current build
+Detailed answer sheet: `docs/play-console-declarations.md`
+
 - Ads: **No**
 - App access / login: **No restricted access; no login**
 - Data collection: **No personal data collected by the app code**

@@ -12,9 +12,9 @@ public static class Levels {
  };
 
  static readonly string[] VariantLabels={
-  "Orijinal","Çeyrek dönüş","Yarım dönüş","Üç çeyrek dönüş",
-  "Yatay simetri","Dikey simetri","Köşegen simetri","Ters köşegen",
-  "Kaydırılmış düzen","İkinci kaydırma"
+  "Başlangıç","Kuzey rotası","Karşı kıyı","Güney rotası",
+  "Sessiz yüzey","Ters ufuk","Çapraz yol","Kırık köşe",
+  "İnce ayar","Son prova"
  };
 
  public static Level[] Create(){

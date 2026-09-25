@@ -132,6 +132,16 @@ class Program
         Check("broad-spectrum energy is normalized",Math.Abs(directResult.Energy[0]-1)<1e-6);
         Check("green receiver rejects red-only route",Optics.Solve(new Level{Source=new V(-4,0),Direction=new V(1,0),Goals=new[]{new Goal(new V(0,3),3)}},new[]{new Piece(Kind.Red,new V(0,0),45)}).Energy[0]==0);
 
+        var reuseLevel=new Level{Source=new V(-3,0),Direction=new V(1,0),Goals=new[]{new Goal(new V(3,0),-1)}};
+        var reuseResult=Optics.Solve(reuseLevel,new Piece[0]);
+        int firstBeamCount=reuseResult.Beams.Count;
+        reuseResult.Energy[0]=999;
+        var reused=Optics.Solve(reuseLevel,new Piece[0],reuseResult);
+        Check("solver reuses result object",object.ReferenceEquals(reuseResult,reused));
+        Check("solver clears reusable energy buffers",Math.Abs(reused.Energy[0]-1)<1e-6);
+        Check("solver clears and rebuilds reusable beam buffers",reused.Beams.Count==firstBeamCount);
+        Check("solver reusable active-piece state resets",reused.ActivePieceCount==0);
+
         var timer=System.Diagnostics.Stopwatch.StartNew();for(int i=0;i<100;i++)Optics.Solve(levels[79],levels[79].Solution);timer.Stop();Console.WriteLine("INFO Desktop core mean solve (chapter 8): "+(timer.Elapsed.TotalMilliseconds/100).ToString("F3")+" ms (not a mobile benchmark)");
         Environment.ExitCode=failures==0?0:1;
     }

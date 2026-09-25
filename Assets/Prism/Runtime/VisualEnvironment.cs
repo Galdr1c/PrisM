@@ -81,9 +81,9 @@ public static class VisualEnvironment {
   QualitySettings.antiAliasing=resolved==VisualQualityTier.High?4:resolved==VisualQualityTier.Medium?2:0;
 
   if(bloom!=null){
-   bloom.threshold.Override(resolved==VisualQualityTier.Low?1.0f:.82f);
+   bloom.threshold.Override(resolved==VisualQualityTier.Low?1.0f: .82f);
    bloom.intensity.Override(resolved==VisualQualityTier.Low ? .48f : resolved==VisualQualityTier.High ? .9f : .7f);
-   bloom.scatter.Override(resolved==VisualQualityTier.Low?.52f:resolved==VisualQualityTier.High?.72f:.64f);
+   bloom.scatter.Override(resolved==VisualQualityTier.Low? .52f:resolved==VisualQualityTier.High? .72f: .64f);
    bloom.clamp.Override(resolved==VisualQualityTier.Low?5f:8f);
    bloom.highQualityFiltering.Override(resolved==VisualQualityTier.High);
   }

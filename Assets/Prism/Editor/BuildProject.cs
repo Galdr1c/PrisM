@@ -59,7 +59,6 @@ public static class BuildProject {
   PlayerSettings.Android.predictiveBackSupport=true;
   PlayerSettings.Android.appCategory="game";
   PlayerSettings.Android.androidTVCompatibility=false;
-  PlayerSettings.Android.gamepadSupportLevel=AndroidGamepadSupportLevel.None;
   PlayerSettings.Android.resizeableActivity=true;
   PlayerSettings.use32BitDisplayBuffer=true;
   PlayerSettings.stripEngineCode=true;

@@ -10,3 +10,4 @@ TestResults/
 .vs/
 *.csproj.user
 *.log
+Assets/Prism/Generated/\n

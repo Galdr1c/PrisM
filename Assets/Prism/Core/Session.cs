@@ -44,5 +44,12 @@ public class Session {
  public void Reset(){BeginEdit();Pieces=Copy(Level.Initial);EndEdit();}
  public void Remove(int index){if(index<0||index>=Pieces.Count)return;BeginEdit();Pieces.RemoveAt(index);EndEdit();}
  public void Reveal(){BeginEdit();Pieces=Copy(Level.Solution);EndEdit();}
+ public bool IsComplete(Result result){
+  if(result==null||!result.Complete)return false;
+  if(!Level.RequireAllPiecesActive)return true;
+  var checkedKinds=new HashSet<Kind>();
+  foreach(var kind in Level.Stock)if(checkedKinds.Add(kind)&&Remaining(kind)>0)return false;
+  return result.ActivePieceCount>=Pieces.Count;
+ }
 }
 }

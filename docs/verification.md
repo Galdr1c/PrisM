@@ -1,31 +1,45 @@
-# Doğrulama durumu
+# PrisM doğrulama durumu
 
-24 Eylül 2026\n\nWindows build/smoke bulguları 15 Eylül 2026 doğrulamasından; aşağıdaki çekirdek yerleştirme kontrolleri bu değişiklik paketinde eklenmiştir.
+25 Eylül 2026
 
-## Otomatik çekirdek doğrulaması
-- `Tests/CoreTests.csproj` artık 51 sözleşme/regresyon kontrolü içerir.
-- Yansıma, normal girişte kırılma, tam iç yansıma, spektral indis sıralaması, cam küre odaklaması ve su kırılması kontrol edilir.
-- Sekiz built-in level'in başlangıçta çözülmemiş olduğu, bilinen çözümlerinin bütün hedefleri etkinleştirdiği ve solver bounce bütçesini aşmadığı kontrol edilir.
-- Level ID'lerinin boş olmadığı ve benzersiz olduğu doğrulanır.
-- Parça capability metadata'sında cam kürenin ayrı adı ve döndürülemez davranışı, aynanın ise döndürülebilir davranışı kontrol edilir.
-- Duvar engellemesi, stok, yerleştirme, geri alma, enerji normalizasyonu, renk seçimi ve sonsuz yansıma döngüsü bütçesi kontrol edilir. Yerleştirme kuralları ayrıca kaynak/hedef/duvar/parça çakışmalarını reddeder ve sekiz bilinen çözümün bu kurallarla hâlâ yerleştirilebilir olduğunu doğrular.
-- `.github/workflows/core-tests.yml` pull request ve `main` push'larında aynı test projesini .NET 10 ile çalıştırır.
+## Doğrulandı — GitHub Core CI
+- 100 bölüm üretiliyor.
+- Level ID'leri benzersiz ve eski sekiz temel ID korunuyor.
+- 10 chapter × 10 level yapısı ve chapter bazlı 1–10 difficulty progression doğrulanıyor.
+- Her bölümün başlangıç konfigürasyonu çözülmemiş.
+- Her bölümün kayıtlı çözümü hedefleri tamamlıyor.
+- Kayıtlı çözümler solver bounce/interaction bütçesini aşmıyor.
+- 100 çözüm placement kurallarından geçiyor.
+- Mastery bölümleri gameplay completion sırasında bütün stok parçalarını yerleştirmeyi ve ışık yolunda aktif kullanmayı gerektiriyor.
+- Yansıma, kırılma, TIR, dispersion index sıralaması, sphere focus, water, wall blocking, inventory, undo, renk seçimi ve loop budget regresyonları korunuyor.
+- Son güncel PR koşusu: Core Tests başarılı.
 
-## Runtime doğrulaması
-- Smoke otomasyonu sabit 5 yerine `levels.Length` üzerinden bütün built-in level'leri yükler, bilinen çözümleri yerleştirir ve reset davranışını kontrol eder.
-- Normal oyuncu akışı da bölüm sayısını `levels.Length` üzerinden kullanır; 7. ve 8. bölümler sayfalı selector ve completion akışından erişilebilir.
-- Cam küre UI'da `Cam küre` olarak görünür ve gereksiz açı kontrolleri gösterilmez.
-- İlerleme kaydı stabil level ID'leriyle versioned JSON'a taşınmıştır; eski `PlayerPrefs` completion mask'i destekleniyorsa ilk normal açılışta migrate edilir. Smoke modu kullanıcı ilerlemesini değiştirmez.
+## Kodda uygulanmış — Unity/runtime
+- 100-level campaign ve 10×10 level map.
+- Sıralı unlock ve eski progress ID uyumluluğu.
+- Screen.safeArea tabanlı dikey layout.
+- Android back overlay/navigation davranışı.
+- Procedural audio + optional haptics.
+- Auto/Low/Medium/High visual quality.
+- HDR beam, Bloom/ACES, water/glass katmanları.
+- 100-level runtime smoke kodu: her bölüm için known solution + reset kontrolü; chapter örnek screenshot'ları.
+- ScriptableObject LevelCatalog; stale/invalid catalog güvenli fallback.
+- Signed Android AAB build otomasyonu, 16 KB page-size doğrulaması, Play store asset generatorü ve Play Console deklarasyon cevap sayfası.
 
-## Unity ve Windows doğrulaması
-- Unity 6000.6.0f1 StandaloneWindows64 geliştirme derlemesi güncel kaynaklarla `Tools/Build-Windows.ps1` üzerinden başarıyla tamamlandı.
-- Güncel 8-level runtime smoke bütün built-in çözümleri ve her bölümde reset davranışını doğruladı.
-- Başlangıç, her çözülmüş bölüm ve tamamlanma paneli için ekran görüntüsü üretildi ve görsel olarak incelendi.
-- Linear color space içinde doğrudan kullanılan vertex renklerinin tahtayı gereğinden açık göstermesi düzeltildi; shader sRGB değerlerini lineara çeviriyor.
-- Spektral bantlar additive birleşerek beyaz ışığı oluşturuyor. Her çizimin parlaklığı solver enerji değerine bağlandı; prizma sonrası renk ayrışması korunuyor.
-- Smoke oyuncu günlüğünde hata, exception veya warning bulunmadı.
-- Build otomasyonu artık mevcut oyun sahnesini açıyor; her build sırasında sahneyi yeniden üretip dosya kimliklerini değiştirmiyor.
+## Önceden doğrulanmış baseline
+15 Eylül 2026 baseline kaynaklarında Unity 6000.6.0f1 StandaloneWindows64 development build ve o tarihteki 8-level smoke başarıyla çalıştırılmıştı. Shader/color/build baseline bu sonuçlara dayanır.
 
-## Hâlâ gerekli doğrulamalar
-- Android/iOS modülleri ve gerçek telefon cihazlarıyla build, safe-area, touch, thermal ve GPU/CPU profiling henüz yapılmadı.
-- Phase 2 HDR beam/Bloom/ACES ve hafif cam/su shader katmanı eklendi; gerçek cihazda performans/termal profil, sahne tabanlı refraction/caustics ve kalite ölçekleme hâlâ doğrulanmalıdır.
+## Bu 100-level pre-release branch'inde henüz gerçek ortamda tekrar çalıştırılması gerekenler
+Aşağıdaki maddeler bu GitHub Core CI tarafından doğrulanamaz ve çalıştırılmadan “PASS” olarak kabul edilmemelidir:
+- Unity Editor compile/import (runtime + editor scripts).
+- Güncel 100-level Windows build/smoke.
+- Android Build Support ile signed API 36 AAB üretimi.
+- Google Play Internal testing upload/install.
+- Gerçek telefon safe-area, touch, Android back, haptic, audio, suspend/resume.
+- GPU/CPU/frame-time/thermal profiling.
+- Play Console pre-launch report.
+
+Tek komut release makinesi doğrulaması:
+`Tools/PreRelease-Check.ps1 -RequireAndroid`
+
+Sonuçlar başarılı olduktan sonra bu belgeye gerçek cihaz/build artefact bilgisi eklenmelidir.

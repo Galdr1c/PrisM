@@ -2,6 +2,9 @@ using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build;
+#if UNITY_ANDROID
+using UnityEditor.Android;
+#endif
 using UnityEngine;
 
 namespace Prism.Editor {

@@ -334,8 +334,8 @@ public class PrismGame : MonoBehaviour {
   if(!enabled)fill=new Color(panel.r,panel.g,panel.b,.72f);
   Box(new Rect(r.x+2,r.y+4,r.width,r.height),new Color(0,0,0,.22f));
   Box(r,fill);
-  Box(new Rect(r.x,r.y,r.width,1),new Color(accent.r,accent.g,accent.b,enabled?.72f:.24f));
-  Box(new Rect(r.x,r.yMax-2,r.width,2),new Color(accent.r,accent.g,accent.b,active||primary?.82f:.22f));
+  Box(new Rect(r.x,r.y,r.width,1),new Color(accent.r,accent.g,accent.b,enabled ? .72f : .24f));
+  Box(new Rect(r.x,r.yMax-2,r.width,2),new Color(accent.r,accent.g,accent.b,active||primary ? .82f : .22f));
   Text(r,label,fontSize,enabled?(primary?new Color(1,.92f,.69f):(active?cyan:ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
   bool old=GUI.enabled;
   GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);

@@ -165,6 +165,7 @@ public class PrismGame : MonoBehaviour {
   selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;settle=0;winShownAt=-10f;dirty=false;
   Solve();
   board?.SetCelebration(0f);
+  VisualEnvironment.SetCelebration(0f);
   if(!smoke&&!storeCapture){progress.lastLevelId=session.Level.Id;SaveProgress();}
  }
 
@@ -205,6 +206,7 @@ public class PrismGame : MonoBehaviour {
    celebration=Mathf.Clamp01(1f-Mathf.Max(0f,age-1.2f)/2.4f);
   }
   board?.SetCelebration(celebration);
+  VisualEnvironment.SetCelebration(celebration);
  }
 
  Vector2 Design(Vector2 screen)=>new Vector2((screen.x-offsetX)/scale,(Screen.height-screen.y-offsetY)/scale);
@@ -618,8 +620,8 @@ public class PrismGame : MonoBehaviour {
  void DrawWin(){
   float t=Mathf.Clamp01((Time.unscaledTime-winShownAt)/.58f);
   float ease=1f-Mathf.Pow(1f-t,3f);
-  float width=Mathf.Lerp(560f,690f,ease);
-  float height=Mathf.Lerp(610f,760f,ease);
+  float width=Mathf.Lerp(630f,690f,ease);
+  float height=760f;
   Rect r=new Rect(450-width*.5f,770-height*.5f,width,height);
   Card(r,new Color(.027f,.061f,.075f,.997f),new Color(gold.r,gold.g,gold.b,.68f));
 

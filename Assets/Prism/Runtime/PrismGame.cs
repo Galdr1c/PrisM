@@ -24,8 +24,10 @@ public class PrismGame : MonoBehaviour {
 
  int levelIndex,selected=-1,mapChapter=-1,previousLit;
  Kind? armed;
- bool dragging,rotating,showHint,showLevelMap,showSettings,won,showWinPanel,dirty=true,smoke,storeCapture,drawingOverlay;
- float settle,winShownAt=-10f,toastUntil;
+ bool dragging,rotating,angleTween,showHint,showLevelMap,showSettings,won,showWinPanel,dirty=true,smoke,storeCapture,drawingOverlay;
+ int angleTweenIndex=-1;
+ double angleTweenFrom,angleTweenTo;
+ float angleTweenStart,settle,winShownAt=-10f,toastUntil;
  string toast="";
  Color toastColor;
  Vector2 dragOffset;
@@ -168,7 +170,7 @@ public class PrismGame : MonoBehaviour {
   levelIndex=index;
   session=new Session(levels[levelIndex]);
   previousLit=0;
-  selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;settle=0;winShownAt=-10f;toast="";toastUntil=0;dirty=false;
+  selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;angleTween=false;angleTweenIndex=-1;settle=0;winShownAt=-10f;toast="";toastUntil=0;dirty=false;
   Solve();
   board?.SetCelebration(0f);
   VisualEnvironment.SetCelebration(0f);
@@ -189,6 +191,7 @@ public class PrismGame : MonoBehaviour {
   Layout();
   if(!smoke&&!storeCapture){
    HandleBack();
+   AnimateRotation();
    Pointer();
   }
   if(dirty)Solve();
@@ -238,7 +241,7 @@ public class PrismGame : MonoBehaviour {
  }
 
  void Pointer(){
-  if(showHint||showLevelMap||showSettings||won)return;
+  if(showHint||showLevelMap||showSettings||won||angleTween)return;
   Vector2 raw;
   bool down,held,up;
 
@@ -599,8 +602,29 @@ public class PrismGame : MonoBehaviour {
  }
 
  void Rotate(double degrees){
-  if(selected<0||!PieceInfo.CanRotate(session.Pieces[selected].Kind))return;
-  session.BeginEdit();session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+degrees);session.EndEdit();dirty=true;feedback?.Rotate();
+  if(selected<0||selected>=session.Pieces.Count||!PieceInfo.CanRotate(session.Pieces[selected].Kind))return;
+  if(angleTween)FinishRotationTween();
+  angleTween=true;angleTweenIndex=selected;angleTweenFrom=session.Pieces[selected].Angle;
+  double raw=Normalize(angleTweenFrom+degrees),delta=raw-angleTweenFrom;
+  if(delta>180)delta-=360;else if(delta<-180)delta+=360;
+  angleTweenTo=angleTweenFrom+delta;angleTweenStart=Time.unscaledTime;
+  session.BeginEdit();feedback?.Rotate();
+ }
+
+ void AnimateRotation(){
+  if(!angleTween)return;
+  if(angleTweenIndex<0||angleTweenIndex>=session.Pieces.Count){angleTween=false;angleTweenIndex=-1;return;}
+  float t=Mathf.Clamp01((Time.unscaledTime-angleTweenStart)/.14f);
+  float eased=1f-Mathf.Pow(1f-t,3f);
+  session.Pieces[angleTweenIndex].Angle=Normalize(angleTweenFrom+(angleTweenTo-angleTweenFrom)*eased);
+  dirty=true;
+  if(t>=1f)FinishRotationTween();
+ }
+
+ void FinishRotationTween(){
+  if(!angleTween)return;
+  if(angleTweenIndex>=0&&angleTweenIndex<session.Pieces.Count)session.Pieces[angleTweenIndex].Angle=Normalize(angleTweenTo);
+  session.EndEdit();angleTween=false;angleTweenIndex=-1;dirty=true;
  }
 
  void OnGUI(){

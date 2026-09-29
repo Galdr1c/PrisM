@@ -43,6 +43,7 @@ public class PrismGame : MonoBehaviour {
  readonly Color cyan=new Color(.34f,.82f,.96f);
  readonly Color success=new Color(.34f,.92f,.68f);
  readonly Color danger=new Color(.96f,.40f,.42f);
+ readonly Color violet=new Color(.68f,.55f,.96f);
  readonly Color surface=new Color(.028f,.052f,.068f);
  readonly Color panel=new Color(.052f,.086f,.108f);
  readonly Color raised=new Color(.072f,.116f,.142f);
@@ -437,6 +438,23 @@ public class PrismGame : MonoBehaviour {
   return hit;
  }
 
+ Color PieceAccent(Kind kind){
+  switch(kind){
+   case Kind.Prism:return violet;
+   case Kind.Green:return new Color(.42f,.92f,.66f);
+   case Kind.Red:return new Color(1f,.48f,.45f);
+   case Kind.Lens:return cyan;
+   case Kind.Sphere:return new Color(.52f,.78f,1f);
+   default:return gold;
+  }
+ }
+
+ bool NavButton(Rect r,string label,Color accent,bool enabled=true){
+  bool hit=Button(r,label,false,enabled,15);
+  RoundBox(new Rect(r.x+14,r.y+8,r.width-28,4),new Color(accent.r,accent.g,accent.b,enabled? .78f: .22f),2);
+  return hit;
+ }
+
  int GoalsLit(){
   if(result==null||result.Energy==null)return 0;
   int lit=0,count=Mathf.Min(result.Energy.Length,session.Level.Goals.Length);
@@ -487,7 +505,7 @@ public class PrismGame : MonoBehaviour {
 
   if(session.Level.RequireAllPiecesActive){
    int active=result!=null?result.ActivePieceCount:0;
-   Pill(new Rect(690,258,140,32),"AKTİF "+active+" / "+session.Pieces.Count,active>=session.Pieces.Count&&session.Pieces.Count>0?success:gold,11);
+   Pill(new Rect(690,258,140,32),"IŞIKTA "+active+" / "+session.Pieces.Count,active>=session.Pieces.Count&&session.Pieces.Count>0?success:gold,11);
   }
 
   if(result!=null&&result.Energy!=null){
@@ -498,7 +516,7 @@ public class PrismGame : MonoBehaviour {
     int percent=Mathf.Min(100,Mathf.RoundToInt((float)(result.Energy[i]/g.Threshold)*100));
     Color targetColor=g.Band<0?ink:BoardRenderer.Spectrum[g.Band];
     Rect tag=new Rect(gx-58,gy+(float)g.Radius*80+9,116,24);
-    Box(tag,new Color(.02f,.04f,.05f,.82f));
+    RoundBox(tag,new Color(.02f,.04f,.05f,.86f),10);
     Text(tag,PieceInfo.BandName(g.Band).ToUpperInvariant()+" "+percent+"%",10,percent>=100?targetColor:muted,percent>=100?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
    }
   }
@@ -552,10 +570,10 @@ public class PrismGame : MonoBehaviour {
  }
 
  void MiniMetric(Rect r,string title,string value,Color accent){
-  Box(r,new Color(surface.r,surface.g,surface.b,.92f));
-  Box(new Rect(r.x,r.y,3,r.height),new Color(accent.r,accent.g,accent.b,.8f));
-  Text(new Rect(r.x+14,r.y+6,r.width-22,18),title,10,muted,FontStyle.Bold);
-  Text(new Rect(r.x+14,r.y+23,r.width-22,29),value,18,accent,FontStyle.Bold);
+  RoundBox(r,new Color(surface.r,surface.g,surface.b,.94f),14);
+  RoundBox(new Rect(r.x+4,r.y+8,4,r.height-16),new Color(accent.r,accent.g,accent.b,.84f),2);
+  Text(new Rect(r.x+16,r.y+6,r.width-24,18),title,10,muted,FontStyle.Bold);
+  Text(new Rect(r.x+16,r.y+23,r.width-24,29),value,18,accent,FontStyle.Bold);
  }
 
  void DrawPalette(){
@@ -573,7 +591,9 @@ public class PrismGame : MonoBehaviour {
     armed=armed==k?(Kind?)null:k;
     selected=-1;dirty=true;
    }
-   PieceIcon(new Rect(r.center.x-29,r.y+4,58,50),k,n>0?ink:muted);
+   Color pieceAccent=PieceAccent(k);
+   RoundBox(new Rect(r.center.x-31,r.y+8,62,46),new Color(pieceAccent.r*.12f,pieceAccent.g*.12f,pieceAccent.b*.12f,n>0? .95f: .35f),18);
+   PieceIcon(new Rect(r.center.x-27,r.y+8,54,44),k,n>0?pieceAccent:muted);
    Text(new Rect(r.x+9,r.y+55,r.width-18,43),PieceName(k),23,n>0?ink:muted,FontStyle.Normal,TextAnchor.MiddleCenter);
    Text(new Rect(r.xMax-40,r.y+9,30,32),n.ToString(),22,n>0?gold:muted,FontStyle.Bold,TextAnchor.MiddleCenter);
   }
@@ -593,11 +613,11 @@ public class PrismGame : MonoBehaviour {
   }
 
   float gap=10f,width=152f;
-  if(Button(new Rect(50,NavigationY,width,92),"GERİ AL",false,!won,15)){session.Undo();selected=-1;armed=null;dirty=true;}
-  if(Button(new Rect(50+(width+gap),NavigationY,width,92),"SIFIRLA",false,!won,15)){session.Reset();selected=-1;armed=null;settle=0;dirty=true;}
-  if(Button(new Rect(50+2*(width+gap),NavigationY,width,92),"İPUCU",showHint,!won,15)){showHint=true;showLevelMap=false;showSettings=false;}
-  if(Button(new Rect(50+3*(width+gap),NavigationY,width,92),"BÖLÜMLER",showLevelMap,!won,15)){showLevelMap=true;mapChapter=-1;showHint=false;showSettings=false;}
-  if(Button(new Rect(50+4*(width+gap),NavigationY,width,92),"AYARLAR",showSettings,!won,15)){showSettings=true;showHint=false;showLevelMap=false;}
+  if(NavButton(new Rect(50,NavigationY,width,92),"GERİ AL",cyan,!won)){session.Undo();selected=-1;armed=null;dirty=true;}
+  if(NavButton(new Rect(50+(width+gap),NavigationY,width,92),"BAŞTAN",danger,!won)){session.Reset();selected=-1;armed=null;settle=0;dirty=true;}
+  if(NavButton(new Rect(50+2*(width+gap),NavigationY,width,92),"İPUCU",gold,!won)){showHint=true;showLevelMap=false;showSettings=false;}
+  if(NavButton(new Rect(50+3*(width+gap),NavigationY,width,92),"BÖLÜMLER",violet,!won)){showLevelMap=true;mapChapter=-1;showHint=false;showSettings=false;}
+  if(NavButton(new Rect(50+4*(width+gap),NavigationY,width,92),"AYARLAR",success,!won)){showSettings=true;showHint=false;showLevelMap=false;}
   Text(new Rect(50,NavigationY+116,800,24),"ACELE YOK  ·  IŞIĞI OKU  ·  GEOMETRİYİ KUR",11,muted,FontStyle.Bold,TextAnchor.MiddleCenter);
  }
 
@@ -613,7 +633,7 @@ public class PrismGame : MonoBehaviour {
 
  void AnimateRotation(){
   if(!angleTween)return;
-  if(angleTweenIndex<0||angleTweenIndex>=session.Pieces.Count){angleTween=false;angleTweenIndex=-1;return;}
+  if(angleTweenIndex<0||angleTweenIndex>=session.Pieces.Count){session.EndEdit();angleTween=false;angleTweenIndex=-1;return;}
   float t=Mathf.Clamp01((Time.unscaledTime-angleTweenStart)/.14f);
   float eased=1f-Mathf.Pow(1f-t,3f);
   session.Pieces[angleTweenIndex].Angle=Normalize(angleTweenFrom+(angleTweenTo-angleTweenFrom)*eased);

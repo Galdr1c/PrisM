@@ -380,8 +380,8 @@ public class PrismGame : MonoBehaviour {
   }else if(kind==Kind.Lens||kind==Kind.Sphere){
    Vector2 previous=c+new Vector2(s,0);
    for(int i=1;i<=24;i++){
-    float angle=i*Mathf.PI/12;Vector2 next=c+new Vector2(Mathf.Cos(angle)*s*(kind==Kind.Lens?.45f:1),Mathf.Sin(angle)*s);
-    if(i==1)previous=c+new Vector2(s*(kind==Kind.Lens?.45f:1),0);
+    float angle=i*Mathf.PI/12;Vector2 next=c+new Vector2(Mathf.Cos(angle)*s*(kind==Kind.Lens? .45f:1),Mathf.Sin(angle)*s);
+    if(i==1)previous=c+new Vector2(s*(kind==Kind.Lens? .45f:1),0);
     Line(previous,next,color,2);previous=next;
    }
    Line(c+new Vector2(-s*1.35f,0),c+new Vector2(s*1.35f,0),gold,2);
@@ -423,8 +423,8 @@ public class PrismGame : MonoBehaviour {
   float radius=Mathf.Clamp(r.height*.20f,12f,22f);
   RoundBox(new Rect(r.x+3,r.y+6,r.width,r.height),new Color(0,0,0,.25f),radius);
   RoundBox(r,fill,radius);
-  RoundBox(new Rect(r.x+10,r.y+5,r.width-20,3),new Color(accent.r,accent.g,accent.b,enabled?.56f:.16f),2);
-  RoundBox(new Rect(r.x+14,r.y+r.height*.20f,r.width-28,2),new Color(1,1,1,enabled?.035f:.012f),1);
+  RoundBox(new Rect(r.x+10,r.y+5,r.width-20,3),new Color(accent.r,accent.g,accent.b,enabled? .56f: .16f),2);
+  RoundBox(new Rect(r.x+14,r.y+r.height*.20f,r.width-28,2),new Color(1,1,1,enabled? .035f: .012f),1);
   Text(r,label,fontSize,enabled?(primary?new Color(1,.94f,.75f):(active?cyan:ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
   bool old=GUI.enabled;
   GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);

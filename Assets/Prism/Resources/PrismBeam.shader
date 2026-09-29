@@ -1,7 +1,7 @@
 Shader "Prism/BeamGlow" {
  Properties {
   _Intensity("HDR Intensity", Range(0.5,8)) = 2.4
-  _CoreWhite("Core White", Range(0,1)) = 0.16
+  _CoreWhite("Core White", Range(0,1)) = 0.10
   _Celebration("Completion Celebration", Range(0,1)) = 0
  }
  SubShader {
@@ -22,11 +22,13 @@ Shader "Prism/BeamGlow" {
    B vert(A v){B o;float3 w=TransformObjectToWorld(v.positionOS.xyz);o.positionCS=TransformWorldToHClip(w);o.color=v.color;o.uv=v.uv;o.kind=v.uv2.x;o.world=w.xy;return o;}
    half4 frag(B i):SV_Target {
     clip(4.98-abs(i.world.x));clip(4.98-abs(i.world.y));
-    float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):pow(saturate(1.0-abs(i.uv.y*2.0-1.0)),1.8);
-    float core=pow(profile,5.0);
+    float lateral=saturate(1.0-abs(i.uv.y*2.0-1.0));
+    float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),1.8):pow(lateral,1.18);
+    float core=pow(lateral,7.0);
     float3 baseRgb=SRGBToLinear(i.color.rgb);
-    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(i.kind>0.5?0.35:1.0));
-    float pulse=0.975+0.025*sin(_Time.y*2.1+i.uv.x*9.0);
+    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(i.kind>0.5?0.25:1.0));
+    float drift=0.965+0.022*sin(_Time.y*1.7+i.uv.x*6.2)+0.013*sin(_Time.y*.73+i.uv.x*17.0);
+    float pulse=saturate(drift);
     float victoryWave=0.5+0.5*sin(_Time.y*9.5+i.world.x*3.4-i.world.y*2.7);
     float victoryGain=1.0+_Celebration*(0.35+0.45*victoryWave);
     float sparkle=pow(victoryWave,14.0)*_Celebration*profile;

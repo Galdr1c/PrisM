@@ -120,9 +120,9 @@ public class BoardRenderer : MonoBehaviour {
   for(int row=-1;row<=1;row+=2){
    double phase=row>0?brick*.5:0;
    for(double s=-phase;s<length;s+=brick){
-    double a=Math.Max(0,s+gap),b=Math.Min(length,s+brick-gap);
+    double a=System.Math.Max(0,s+gap),b=System.Math.Min(length,s+brick-gap);
     if(b<=a)continue;
-    float mix=(float)((Math.Floor((s+phase)/brick)+(row>0?1:0))%2);
+    float mix=(float)((System.Math.Floor((s+phase)/brick)+(row>0?1:0))%2);
     Color color=mix<.5f?brickA:brickB;
     V from=wall.A+d*a+n*(row*rowOffset),to=wall.A+d*b+n*(row*rowOffset);
     baseBuffer.Line(from,to,.12,color);

@@ -57,10 +57,10 @@ public class BoardRenderer : MonoBehaviour {
   var surface=level.WaterZones.Length>0?waterSurface:level.Difficulty>=9?masterySurface:labSurface;
   if(surface==null)surface=labSurface;
   if(currentSurface!=surface){currentSurface=surface;boardMaterial.SetTexture("_SurfaceTex",surface);}
-  boardMaterial.SetFloat("_SurfaceAmount",surface!=null?.24f:0f);
+  boardMaterial.SetFloat("_SurfaceAmount",surface!=null? .24f:0f);
   if(beamMaterial!=null){beamMaterial.SetFloat("_Intensity",tier==VisualQualityTier.Low?2.15f:tier==VisualQualityTier.High?2.8f:2.5f);beamMaterial.SetFloat("_Celebration",celebration);}
-  if(glassMaterial!=null)glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low?.75f:tier==VisualQualityTier.High?1.1f:.95f);
-  if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low?.72f:tier==VisualQualityTier.High?1.2f:.96f);
+  if(glassMaterial!=null)glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low? .75f:tier==VisualQualityTier.High?1.1f: .95f);
+  if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low? .72f:tier==VisualQualityTier.High?1.2f: .96f);
   boardBuffer.Quad(new V(-5,-5),new V(5,-5),new V(5,5),new V(-5,5),Color.white);
   DrawBoardFrame();
   foreach(var wz in level.WaterZones){

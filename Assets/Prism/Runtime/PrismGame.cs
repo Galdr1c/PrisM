@@ -33,6 +33,7 @@ public class PrismGame : MonoBehaviour {
  V startDirection;
  float scale=1,offsetX,offsetY;
  Font font;
+ Texture2D circleTex;
 
  readonly Color ink=new Color(.92f,.965f,.975f);
  readonly Color muted=new Color(.66f,.75f,.80f);
@@ -52,6 +53,7 @@ public class PrismGame : MonoBehaviour {
   Application.targetFrameRate=60;
   Screen.sleepTimeout=SleepTimeout.NeverSleep;
   font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+  circleTex=CreateCircleTexture(64);
   var commandLine=Environment.GetCommandLineArgs();
   smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;
   storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
@@ -135,6 +137,7 @@ public class PrismGame : MonoBehaviour {
 
  void OnApplicationPause(bool paused){if(paused)SaveProgress();}
  void OnApplicationQuit(){SaveProgress();}
+ void OnDestroy(){if(circleTex!=null)Destroy(circleTex);}
 
  void Layout(){
   Rect safe=Screen.safeArea;
@@ -161,7 +164,7 @@ public class PrismGame : MonoBehaviour {
 
  void Load(int index,bool force=false){
   index=Mathf.Clamp(index,0,levels.Length-1);
-  if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu deney henüz kilitli.",danger);return;}
+  if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu bölüm henüz kilitli.",danger);return;}
   levelIndex=index;
   session=new Session(levels[levelIndex]);
   previousLit=0;
@@ -266,7 +269,7 @@ public class PrismGame : MonoBehaviour {
     return;
    }
 
-   if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&(w-session.Pieces[selected].Position).Length>.8&&(w-session.Pieces[selected].Position).Length<1.25){
+   if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&(w-session.Pieces[selected].Position).Length>.8&&(w-session.Pieces[selected].Position).Length<1.42){
     rotating=true;dragging=false;startAngle=session.Pieces[selected].Angle;startDirection=w-session.Pieces[selected].Position;session.BeginEdit();
    }else{
     selected=-1;
@@ -294,8 +297,8 @@ public class PrismGame : MonoBehaviour {
    }
    if(rotating&&PieceInfo.CanRotate(piece.Kind)){
     V dir=w-piece.Position;
-    piece.Angle=Normalize(startAngle+(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI);
-    dirty=true;
+    double target=Normalize(startAngle+(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI);
+    if(Math.Abs(target-piece.Angle)>.08){piece.Angle=target;dirty=true;feedback?.Rotate();}
    }
   }
 
@@ -334,6 +337,33 @@ public class PrismGame : MonoBehaviour {
   Color old=GUI.color;GUI.color=c;GUI.DrawTexture(r,Texture2D.whiteTexture);GUI.color=old;
  }
 
+ Texture2D CreateCircleTexture(int size){
+  var texture=new Texture2D(size,size,TextureFormat.RGBA32,false){name="PrisM UI circle",filterMode=FilterMode.Bilinear,wrapMode=TextureWrapMode.Clamp};
+  var pixels=new Color32[size*size];float center=(size-1)*.5f,radius=center-.5f;
+  for(int y=0;y<size;y++)for(int x=0;x<size;x++){
+   float dx=x-center,dy=y-center,d=Mathf.Sqrt(dx*dx+dy*dy);
+   byte a=(byte)Mathf.RoundToInt(Mathf.Clamp01(radius-d+1f)*255f);
+   pixels[y*size+x]=new Color32(255,255,255,a);
+  }
+  texture.SetPixels32(pixels);texture.Apply(false,true);return texture;
+ }
+
+ void Tint(Rect r,Texture texture,Color color){
+  Color old=GUI.color;GUI.color=color;GUI.DrawTexture(r,texture,ScaleMode.StretchToFill,true);GUI.color=old;
+ }
+
+ void RoundBox(Rect r,Color color,float radius=18f){
+  radius=Mathf.Min(radius,Mathf.Min(r.width,r.height)*.5f);
+  if(radius<2f||circleTex==null){Box(r,color);return;}
+  Box(new Rect(r.x+radius,r.y,r.width-radius*2,r.height),color);
+  Box(new Rect(r.x,r.y+radius,r.width,r.height-radius*2),color);
+  float d=radius*2;
+  Tint(new Rect(r.x,r.y,d,d),circleTex,color);
+  Tint(new Rect(r.xMax-d,r.y,d,d),circleTex,color);
+  Tint(new Rect(r.x,r.yMax-d,d,d),circleTex,color);
+  Tint(new Rect(r.xMax-d,r.yMax-d,d,d),circleTex,color);
+ }
+
  void Line(Vector2 a,Vector2 b,Color color,float width=3){
   Matrix4x4 old=GUI.matrix;
   GUIUtility.RotateAroundPivot(Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg,a);
@@ -364,35 +394,38 @@ public class PrismGame : MonoBehaviour {
  }
 
  void Card(Rect r,Color fill,Color edge){
-  Box(new Rect(r.x+4,r.y+6,r.width,r.height),new Color(0,0,0,.22f));
-  Box(r,fill);
-  Box(new Rect(r.x,r.y,r.width,1),edge);
-  Box(new Rect(r.x,r.yMax-1,r.width,1),edge);
-  Box(new Rect(r.x,r.y,1,r.height),edge);
-  Box(new Rect(r.xMax-1,r.y,1,r.height),edge);
+  RoundBox(new Rect(r.x+4,r.y+7,r.width,r.height),new Color(0,0,0,.24f),22);
+  RoundBox(r,fill,22);
+  RoundBox(new Rect(r.x+1,r.y+1,r.width-2,3),new Color(edge.r,edge.g,edge.b,.62f),2);
+  RoundBox(new Rect(r.x+14,r.y+9,r.width-28,2),new Color(1,1,1,.035f),1);
  }
 
  void ProgressBar(Rect r,float value,Color fill){
   value=Mathf.Clamp01(value);
-  Box(r,new Color(.11f,.17f,.19f,.9f));
-  if(value>0f)Box(new Rect(r.x,r.y,r.width*value,r.height),fill);
+  RoundBox(r,new Color(.075f,.12f,.14f,.92f),r.height*.5f);
+  if(value>0f){
+   float width=Mathf.Max(r.height,r.width*value);
+   RoundBox(new Rect(r.x,r.y,Mathf.Min(width,r.width),r.height),fill,r.height*.5f);
+  }
  }
 
  void Pill(Rect r,string label,Color accent,int fontSize=13){
-  Box(r,new Color(accent.r*.12f,accent.g*.12f,accent.b*.12f,.94f));
-  Box(new Rect(r.x,r.y,r.width,1),new Color(accent.r,accent.g,accent.b,.45f));
+  RoundBox(new Rect(r.x+1,r.y+2,r.width,r.height),new Color(0,0,0,.18f),r.height*.5f);
+  RoundBox(r,new Color(accent.r*.14f,accent.g*.14f,accent.b*.14f,.96f),r.height*.5f);
+  RoundBox(new Rect(r.x+8,r.y+2,r.width-16,2),new Color(accent.r,accent.g,accent.b,.52f),1);
   Text(r,label,fontSize,accent,FontStyle.Bold,TextAnchor.MiddleCenter);
  }
 
  bool Button(Rect r,string label,bool active=false,bool enabled=true,int fontSize=24,bool primary=false,bool destructive=false){
-  Color accent=destructive?danger:(primary?gold:(active?cyan:border));
-  Color fill=destructive?new Color(.16f,.07f,.08f):primary?new Color(.16f,.135f,.075f):(active?new Color(.075f,.15f,.17f):raised);
-  if(!enabled)fill=new Color(panel.r,panel.g,panel.b,.72f);
-  Box(new Rect(r.x+2,r.y+4,r.width,r.height),new Color(0,0,0,.22f));
-  Box(r,fill);
-  Box(new Rect(r.x,r.y,r.width,1),new Color(accent.r,accent.g,accent.b,enabled ? .72f : .24f));
-  Box(new Rect(r.x,r.yMax-2,r.width,2),new Color(accent.r,accent.g,accent.b,active||primary ? .82f : .22f));
-  Text(r,label,fontSize,enabled?(primary?new Color(1,.92f,.69f):(active?cyan:ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
+  Color accent=destructive?danger:(primary?gold:(active?cyan:new Color(.34f,.48f,.55f)));
+  Color fill=destructive?new Color(.19f,.075f,.085f):primary?new Color(.22f,.165f,.075f):(active?new Color(.07f,.18f,.21f):raised);
+  if(!enabled)fill=new Color(panel.r,panel.g,panel.b,.68f);
+  float radius=Mathf.Clamp(r.height*.20f,12f,22f);
+  RoundBox(new Rect(r.x+3,r.y+6,r.width,r.height),new Color(0,0,0,.25f),radius);
+  RoundBox(r,fill,radius);
+  RoundBox(new Rect(r.x+10,r.y+5,r.width-20,3),new Color(accent.r,accent.g,accent.b,enabled?.56f:.16f),2);
+  RoundBox(new Rect(r.x+14,r.y+r.height*.20f,r.width-28,2),new Color(1,1,1,enabled?.035f:.012f),1);
+  Text(r,label,fontSize,enabled?(primary?new Color(1,.94f,.75f):(active?cyan:ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
   bool old=GUI.enabled;
   GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);
   bool hit=GUI.Button(r,GUIContent.none,GUIStyle.none);
@@ -417,13 +450,13 @@ public class PrismGame : MonoBehaviour {
 
  void DrawHeader(){
   Text(new Rect(50,18,250,48),"P R I S M",35,ink,FontStyle.Bold);
-  Text(new Rect(300,25,550,30),"IŞIK  ·  GEOMETRİ  ·  DENEY",18,muted,FontStyle.Normal,TextAnchor.MiddleRight);
+  Text(new Rect(300,25,550,30),"IŞIĞI BÜK  ·  RENKLERİ AYIR  ·  YOLU BUL",18,muted,FontStyle.Normal,TextAnchor.MiddleRight);
   Box(new Rect(50,72,800,1),border);
 
   int chapterIndex=levelIndex/10;
-  string chapter="ÜNİTE "+(chapterIndex+1).ToString("00")+"  ·  "+session.Level.Chapter.ToUpperInvariant();
+  string chapter="DÜNYA "+(chapterIndex+1).ToString("00")+"  ·  "+session.Level.Chapter.ToUpperInvariant();
   Text(new Rect(50,86,500,28),chapter,19,gold,FontStyle.Bold);
-  Text(new Rect(560,86,290,28),"DENEY "+(levelIndex+1).ToString("000")+" / "+levels.Length.ToString("000"),19,muted,FontStyle.Bold,TextAnchor.MiddleRight);
+  Text(new Rect(560,86,290,28),"BÖLÜM "+(levelIndex+1).ToString("000")+" / "+levels.Length.ToString("000"),19,muted,FontStyle.Bold,TextAnchor.MiddleRight);
 
   int titleSize=session.Level.Name.Length>46?25:session.Level.Name.Length>32?28:34;
   Text(new Rect(50,114,620,42),session.Level.Name,titleSize,ink,FontStyle.Bold);
@@ -475,7 +508,7 @@ public class PrismGame : MonoBehaviour {
 
   if(won&&!showWinPanel){
    Card(new Rect(175,914,550,64),new Color(.04f,.11f,.095f,.96f),new Color(success.r,success.g,success.b,.7f));
-   Text(new Rect(195,924,510,24),"✓  DENEY TAMAMLANDI",15,success,FontStyle.Bold,TextAnchor.MiddleCenter);
+   Text(new Rect(195,924,510,24),"✓  BÖLÜM TAMAMLANDI",15,success,FontStyle.Bold,TextAnchor.MiddleCenter);
    Text(new Rect(195,948,510,20),"Çözüm görünümü · ışık yolunu inceleyebilirsin",12,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
   }
  }
@@ -507,12 +540,12 @@ public class PrismGame : MonoBehaviour {
 
   int lit=GoalsLit();
   int active=result!=null?result.ActivePieceCount:0;
-  Text(new Rect(72,1038,280,26),won?"DENEY ÇÖZÜLDÜ":"DENEY DURUMU",11,won?success:muted,FontStyle.Bold);
+  Text(new Rect(72,1038,280,26),won?"IŞIK YOLU TAMAM":"IŞIK YOLU",11,won?success:muted,FontStyle.Bold);
   Text(new Rect(72,1067,610,34),won?"Işık yolu kararlı ve bütün hedef koşulları sağlandı.":session.Level.RequireAllPiecesActive?"Tüm parçaları ışık zincirinde aktif kullan.":"Işığı hedef eşiklerine ulaştır; doğru düzenek anında tepki verir.",18,won?ink:muted,FontStyle.Normal);
 
   MiniMetric(new Rect(72,1120,210,58),"HEDEFLER",lit+" / "+session.Level.Goals.Length,lit==session.Level.Goals.Length?success:cyan);
-  MiniMetric(new Rect(294,1120,210,58),"AKTİF PARÇA",active+" / "+session.Pieces.Count,session.Level.RequireAllPiecesActive&&active>=session.Pieces.Count&&session.Pieces.Count>0?success:gold);
-  MiniMetric(new Rect(516,1120,310,58),"REFERANS DÜZENEK",session.Level.Par+" parça",muted);
+  MiniMetric(new Rect(294,1120,210,58),"IŞIKTA",active+" / "+session.Pieces.Count,session.Level.RequireAllPiecesActive&&active>=session.Pieces.Count&&session.Pieces.Count>0?success:gold);
+  MiniMetric(new Rect(516,1120,310,58),"PARÇA SAYISI",session.Level.Par+" parça",muted);
  }
 
  void MiniMetric(Rect r,string title,string value,Color accent){
@@ -523,8 +556,8 @@ public class PrismGame : MonoBehaviour {
  }
 
  void DrawPalette(){
-  Text(new Rect(50,PaletteY-30,360,26),"OPTİK PARÇALAR",18,gold,FontStyle.Bold);
-  Text(new Rect(500,PaletteY-30,350,26),"Seç · yerleştir · ışığı izle",17,muted,FontStyle.Normal,TextAnchor.MiddleRight);
+  Text(new Rect(50,PaletteY-30,360,26),"IŞIK OYUNCAKLARI",18,gold,FontStyle.Bold);
+  Text(new Rect(500,PaletteY-30,350,26),"Seç · bırak · parlamasını izle",17,muted,FontStyle.Normal,TextAnchor.MiddleRight);
   var kinds=new List<Kind>();
   foreach(var k in session.Level.Stock)if(!kinds.Contains(k))kinds.Add(k);
   int count=Mathf.Max(1,kinds.Count);
@@ -547,7 +580,7 @@ public class PrismGame : MonoBehaviour {
   if(won&&!showWinPanel){
    if(Button(new Rect(50,NavigationY,190,92),"SONUÇ KARTI",false,true,15)){showWinPanel=true;winShownAt=Time.unscaledTime-.55f;}
    if(Button(new Rect(252,NavigationY,190,92),"BÖLÜMLER",false,true,15)){showLevelMap=true;mapChapter=-1;}
-   string next=levelIndex<levels.Length-1?"SONRAKİ DENEY  →":"BÖLÜM HARİTASI";
+   string next=levelIndex<levels.Length-1?"SONRAKİ BÖLÜM  →":"BÖLÜM HARİTASI";
    if(Button(new Rect(454,NavigationY,396,92),next,false,true,17,true)){
     if(levelIndex<levels.Length-1)Load(levelIndex+1,true);
     else{showLevelMap=true;mapChapter=-1;}
@@ -605,7 +638,7 @@ public class PrismGame : MonoBehaviour {
   Rect modal=new Rect(48,112,804,1195);
   Card(modal,new Color(.025f,.052f,.068f,.995f),border);
   Text(new Rect(82,142,590,42),mapChapter<0?"BÖLÜM HARİTASI":(mapChapter+1).ToString("00")+"  ·  "+levels[mapChapter*10].Chapter.ToUpperInvariant(),27,ink,FontStyle.Bold);
-  Text(new Rect(82,184,590,28),mapChapter<0?"10 ünite · 100 deney · ilerleme cihazında saklanır":"Bir deney tamamlandığında sıradaki otomatik açılır.",14,muted);
+  Text(new Rect(82,184,590,28),mapChapter<0?"10 dünya · 100 bölüm · ilerleme cihazında saklanır":"Bir bölüm tamamlandığında sıradaki otomatik açılır.",14,muted);
   if(Button(new Rect(704,140,112,100),"KAPAT",false,true,22))showLevelMap=false;
 
   int chapterCount=(levels.Length+9)/10;
@@ -621,7 +654,7 @@ public class PrismGame : MonoBehaviour {
     Text(new Rect(r.x+20,r.y+18,r.width-40,32),(i+1).ToString("00")+"   "+levels[i*10].Chapter.ToUpperInvariant(),21,current?gold:ink,FontStyle.Bold);
     Text(new Rect(r.x+20,r.y+60,r.width-40,26),completed+" / 10 tamamlandı",17,completed==10?success:muted,completed==10?FontStyle.Bold:FontStyle.Normal);
     ProgressBar(new Rect(r.x+20,r.y+100,r.width-40,6),completed/10f,completed==10?success:(current?gold:cyan));
-    string state=completed==10?"ÜNİTE TAMAM":current?"DEVAM EDİYOR":IsUnlocked(i*10)?"AÇIK":"KİLİTLİ";
+    string state=completed==10?"DÜNYA TAMAM":current?"DEVAM EDİYOR":IsUnlocked(i*10)?"AÇIK":"KİLİTLİ";
     Text(new Rect(r.x+20,r.y+115,r.width-40,24),state,14,completed==10?success:(current?gold:muted),FontStyle.Bold,TextAnchor.MiddleRight);
    }
    return;
@@ -636,12 +669,12 @@ public class PrismGame : MonoBehaviour {
    Rect r=new Rect(82+col*365,240+row*154,350,130);
    string status=complete?"✓  TAMAM":unlocked?(index==levelIndex?"ŞİMDİ":"AÇIK"):"KİLİTLİ";
    Color state=complete?success:(index==levelIndex?gold:muted);
-   if(Button(r,"DENEY "+(index+1).ToString("000")+"   "+status+Environment.NewLine+levels[index].Name,index==levelIndex,unlocked,16,index==levelIndex)){
+   if(Button(r,"BÖLÜM "+(index+1).ToString("000")+"   "+status+Environment.NewLine+levels[index].Name,index==levelIndex,unlocked,16,index==levelIndex)){
     Load(index);return;
    }
    Text(new Rect(r.x+18,r.y+98,r.width-36,20),"Zorluk "+levels[index].Difficulty+"/10",10,state,FontStyle.Bold,TextAnchor.MiddleRight);
   }
-  if(Button(new Rect(82,1128,250,100),"←  ÜNİTELER",false,true,22)){mapChapter=-1;return;}
+  if(Button(new Rect(82,1128,250,100),"←  DÜNYALAR",false,true,22)){mapChapter=-1;return;}
   int chapterDone=ChapterCompleted(mapChapter);
   Text(new Rect(355,1143,270,30),chapterDone+" / 10 tamamlandı",14,chapterDone==10?success:muted,FontStyle.Bold,TextAnchor.MiddleCenter);
   ProgressBar(new Rect(372,1184,236,5),chapterDone/10f,chapterDone==10?success:gold);
@@ -661,7 +694,7 @@ public class PrismGame : MonoBehaviour {
   SettingRow(new Rect(130,642,640,128),"TİTREŞİM","Bölüm tamamlandığında cihaz geri bildirimi.",feedback!=null&&feedback.HapticsEnabled?"AÇIK":"KAPALI",feedback!=null&&feedback.HapticsEnabled,
    ()=>{if(feedback!=null)feedback.SetHaptics(!feedback.HapticsEnabled);});
 
-  Text(new Rect(130,800,640,24),"GÖRSEL KALİTE",18,muted,FontStyle.Bold);
+  Text(new Rect(130,800,640,24),"GÖRÜNÜM",18,muted,FontStyle.Bold);
   Text(new Rect(130,832,640,28),"Optik çözüm değişmez; yalnız render maliyeti ölçeklenir.",18,muted);
   VisualQualityTier[] tiers={VisualQualityTier.Auto,VisualQualityTier.Low,VisualQualityTier.Medium,VisualQualityTier.High};
   string[] labels={"OTOMATİK","DÜŞÜK","ORTA","YÜKSEK"};
@@ -700,10 +733,10 @@ public class PrismGame : MonoBehaviour {
 
   bool final=levelIndex==levels.Length-1;
   bool chapterEnd=(levelIndex+1)%10==0;
-  string kicker=final?"KAMPANYA TAMAMLANDI":chapterEnd?"ÜNİTE TAMAMLANDI":"DENEY TAMAMLANDI";
+  string kicker=final?"KAMPANYA TAMAMLANDI":chapterEnd?"DÜNYA TAMAMLANDI":"BÖLÜM TAMAMLANDI";
   Color kickerColor=final?success:gold;
   Text(new Rect(r.x+40,r.y+62,r.width-80,34),kicker,14,kickerColor,FontStyle.Bold,TextAnchor.MiddleCenter);
-  Text(new Rect(r.x+42,r.y+106,r.width-84,58),final?"100 ışık problemi çözüldü.":"Işık yolu kilitlendi.",31,ink,FontStyle.Bold,TextAnchor.MiddleCenter);
+  Text(new Rect(r.x+42,r.y+106,r.width-84,58),final?"100 ışık problemi çözüldü.":"Harika! Işık yolu parladı.",31,ink,FontStyle.Bold,TextAnchor.MiddleCenter);
   Text(new Rect(r.x+55,r.y+166,r.width-110,54),session.Level.Name,17,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
 
   int lit=GoalsLit();
@@ -717,15 +750,15 @@ public class PrismGame : MonoBehaviour {
   string message=final
    ?"Bütün deneyler tamamlandı. Artık bölüm haritasından istediğin düzeneğe geri dönebilirsin."
    :chapterEnd
-    ?"Bu ünitenin bütün deneyleri açıldı ve tamamlandı. Sıradaki ünite daha yoğun bir optik dil kuruyor."
-    :"Düzenek kararlı. Bütün hedef eşikleri sağlandı ve ilerlemen kaydedildi.";
+    ?"Bu dünyanın bütün bölümleri tamamlandı. Sıradaki dünya daha kıvrımlı ve daha kurnaz."
+    :"Işık hedefini buldu. Çözümün kaydedildi; istersen parlayan yolu biraz daha izle.";
   Text(new Rect(r.x+55,r.y+372,r.width-110,76),message,15,new Color(.76f,.84f,.86f),FontStyle.Normal,TextAnchor.MiddleCenter);
 
   float campaign=(levelIndex+1)/(float)levels.Length;
   Text(new Rect(r.x+55,r.y+466,r.width-110,22),"KAMPANYA  "+(levelIndex+1)+" / "+levels.Length,11,muted,FontStyle.Bold);
   ProgressBar(new Rect(r.x+55,r.y+496,r.width-110,7),campaign,final?success:gold);
 
-  string primary=final?"BÖLÜM HARİTASI":chapterEnd?"SONRAKİ ÜNİTE  →":"SONRAKİ DENEY  →";
+  string primary=final?"BÖLÜM HARİTASI":chapterEnd?"SONRAKİ DÜNYA  →":"SONRAKİ BÖLÜM  →";
   if(Button(new Rect(r.x+55,r.yMax-220,r.width-110,105),primary,false,true,25,true)){
    if(levelIndex<levels.Length-1)Load(levelIndex+1,true);
    else{showWinPanel=false;showLevelMap=true;mapChapter=-1;}

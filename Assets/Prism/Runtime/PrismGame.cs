@@ -431,7 +431,7 @@ public class PrismGame : MonoBehaviour {
   RoundBox(new Rect(r.x+14,r.y+r.height*.20f,r.width-28,2),new Color(1,1,1,enabled? .035f: .012f),1);
   Text(r,label,fontSize,enabled?(primary?new Color(1,.94f,.75f):(active?cyan:ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
   bool old=GUI.enabled;
-  GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);
+  GUI.enabled=enabled&&!angleTween&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);
   bool hit=GUI.Button(r,GUIContent.none,GUIStyle.none);
   GUI.enabled=old;
   if(hit)feedback?.Click();

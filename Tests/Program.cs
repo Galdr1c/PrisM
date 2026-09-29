@@ -91,11 +91,12 @@ class Program
             foreach(var goal in level.Goals)if(Math.Abs(goal.Position.X)>4.5||Math.Abs(goal.Position.Y)>4.5)boundsValid=false;
             foreach(var piece in level.Solution)if(Math.Abs(piece.Position.X)>4.25||Math.Abs(piece.Position.Y)>4.25)boundsValid=false;
             if(i>=80&&!level.RequireAllPiecesActive)masteryStructure=false;
-            if(i>=80&&i<90&&level.Solution.Length<3)masteryStructure=false;
-            if(i>=90&&level.Solution.Length<5)masteryStructure=false;
+            if(i>=80&&i<90&&(level.Solution.Length<5||level.Walls.Length<3))masteryStructure=false;
+            if(i>=90&&(level.Solution.Length<7||level.Walls.Length<5))masteryStructure=false;
+            if(i>=80&&(level.Goals.Length!=1||level.Goals[0].Radius>.26||level.Goals[0].Threshold<.75))masteryStructure=false;
         }
         Check("curriculum par metadata matches known solutions",curriculumMetadata);
-        Check("final 20 levels enforce multi-piece geometry mastery",masteryStructure);
+        Check("final 20 levels enforce gated precision geometry mastery",masteryStructure);
         var masteryGeometry=new HashSet<string>();
         for(int i=80;i<levels.Length;i++){
             var points=new List<V>{levels[i].Source};

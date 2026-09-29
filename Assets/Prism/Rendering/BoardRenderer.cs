@@ -15,7 +15,13 @@ public class BoardRenderer : MonoBehaviour {
   public void Tri(V a,V b,V c,Color color,Vector2 ua,Vector2 ub,Vector2 uc,float kind){int n=vertices.Count;Vertex(a,color,ua,kind);Vertex(b,color,ub,kind);Vertex(c,color,uc,kind);indices.Add(n);indices.Add(n+1);indices.Add(n+2);}
   public void Quad(V a,V b,V c,V d,Color color){Tri(a,b,c,color,new Vector2(0,0),new Vector2(1,0),new Vector2(1,1),0);Tri(a,c,d,color,new Vector2(0,0),new Vector2(1,1),new Vector2(0,1),0);}
   public void Line(V a,V b,double width,Color color){V n=(b-a).Unit.Perp*width*.5;Tri(a+n,a-n,b+n,color);Tri(a-n,b-n,b+n,color);}
-  public void BeamLine(V a,V b,double width,Color color){V n=(b-a).Unit.Perp*width*.5;int start=vertices.Count;Vertex(a+n,color,new Vector2(0,1),0);Vertex(a-n,color,new Vector2(0,0),0);Vertex(b+n,color,new Vector2(1,1),0);Vertex(b-n,color,new Vector2(1,0),0);indices.Add(start);indices.Add(start+1);indices.Add(start+2);indices.Add(start+1);indices.Add(start+3);indices.Add(start+2);}
+  public void BeamLine(V a,V b,double width,Color color){BeamRibbon(a,b,width,width,color);}
+  public void BeamRibbon(V a,V b,double startWidth,double endWidth,Color color){
+   V n=(b-a).Unit.Perp;V an=n*startWidth*.5,bn=n*endWidth*.5;int start=vertices.Count;
+   Vertex(a+an,color,new Vector2(0,1),0);Vertex(a-an,color,new Vector2(0,0),0);
+   Vertex(b+bn,color,new Vector2(1,1),0);Vertex(b-bn,color,new Vector2(1,0),0);
+   indices.Add(start);indices.Add(start+1);indices.Add(start+2);indices.Add(start+1);indices.Add(start+3);indices.Add(start+2);
+  }
   public void Disc(V p,double radius,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++)Tri(p,p+V.Angle(i*360.0/segments)*radius,p+V.Angle((i+1)*360.0/segments)*radius,color);}
   public void RadialDisc(V p,double radius,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++){double a=i*360.0/segments,b=(i+1)*360.0/segments;Tri(p,p+V.Angle(a)*radius,p+V.Angle(b)*radius,color,Vector2.zero,new Vector2((float)System.Math.Cos(a*System.Math.PI/180),(float)System.Math.Sin(a*System.Math.PI/180)),new Vector2((float)System.Math.Cos(b*System.Math.PI/180),(float)System.Math.Sin(b*System.Math.PI/180)),1);}}
   public void Ring(V p,double radius,double width,Color color,int segments=0){if(segments<=0)segments=VisualEnvironment.CircleSegments;for(int i=0;i<segments;i++)Line(p+V.Angle(i*360.0/segments)*radius,p+V.Angle((i+1)*360.0/segments)*radius,width,color);}
@@ -30,10 +36,10 @@ public class BoardRenderer : MonoBehaviour {
  public static readonly Color[] Spectrum={new Color(.55f,.36f,1),new Color(.28f,.48f,1),new Color(.1f,.75f,1),new Color(.35f,1,.65f),new Color(.92f,1,.45f),new Color(1,.66f,.25f),new Color(1,.32f,.33f)};
  void Awake(){
   boardMesh=CreateLayer("Board surface","PrismBoard",out boardMaterial,0);
-  baseMesh=CreateLayer("Optical geometry","PrismGeometry",out baseMaterial,1);
-  waterMesh=CreateLayer("Water volume","PrismWater",out waterMaterial,2);
-  beamMesh=CreateLayer("Light field","PrismBeam",out beamMaterial,3);
-  glassMesh=CreateLayer("Optical glass","PrismGlass",out glassMaterial,4);
+  waterMesh=CreateLayer("Water volume","PrismWater",out waterMaterial,1);
+  beamMesh=CreateLayer("Light field","PrismBeam",out beamMaterial,2);
+  baseMesh=CreateLayer("Fixtures and walls","PrismGeometry",out baseMaterial,5);
+  glassMesh=CreateLayer("Optical glass","PrismGlass",out glassMaterial,6);
   labSurface=Resources.Load<Texture2D>("Art/LabSurface");
   waterSurface=Resources.Load<Texture2D>("Art/WaterSurface");
   masterySurface=Resources.Load<Texture2D>("Art/MasterySurface");
@@ -51,28 +57,27 @@ public class BoardRenderer : MonoBehaviour {
   var surface=level.WaterZones.Length>0?waterSurface:level.Difficulty>=9?masterySurface:labSurface;
   if(surface==null)surface=labSurface;
   if(currentSurface!=surface){currentSurface=surface;boardMaterial.SetTexture("_SurfaceTex",surface);}
-  boardMaterial.SetFloat("_SurfaceAmount",surface!=null?.18f:0f);
-  if(beamMaterial!=null){beamMaterial.SetFloat("_Intensity",tier==VisualQualityTier.Low?2.1f:tier==VisualQualityTier.High?2.65f:2.4f);beamMaterial.SetFloat("_Celebration",celebration);}
+  boardMaterial.SetFloat("_SurfaceAmount",surface!=null?.24f:0f);
+  if(beamMaterial!=null){beamMaterial.SetFloat("_Intensity",tier==VisualQualityTier.Low?2.15f:tier==VisualQualityTier.High?2.8f:2.5f);beamMaterial.SetFloat("_Celebration",celebration);}
   if(glassMaterial!=null)glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low?.75f:tier==VisualQualityTier.High?1.1f:.95f);
   if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low?.72f:tier==VisualQualityTier.High?1.2f:.96f);
   boardBuffer.Quad(new V(-5,-5),new V(5,-5),new V(5,5),new V(-5,5),Color.white);
-  Color frame=new Color(.18f,.34f,.38f,.34f);
-  double edge=4.72,mark=.34;
-  baseBuffer.Line(new V(-edge,-edge),new V(-edge+mark,-edge),.018,frame);baseBuffer.Line(new V(-edge,-edge),new V(-edge,-edge+mark),.018,frame);
-  baseBuffer.Line(new V(edge,-edge),new V(edge-mark,-edge),.018,frame);baseBuffer.Line(new V(edge,-edge),new V(edge,-edge+mark),.018,frame);
-  baseBuffer.Line(new V(-edge,edge),new V(-edge+mark,edge),.018,frame);baseBuffer.Line(new V(-edge,edge),new V(-edge,edge-mark),.018,frame);
-  baseBuffer.Line(new V(edge,edge),new V(edge-mark,edge),.018,frame);baseBuffer.Line(new V(edge,edge),new V(edge,edge-mark),.018,frame);
+  DrawBoardFrame();
   foreach(var wz in level.WaterZones){
    waterBuffer.Quad(new V(wz.Min.X,wz.Min.Y),new V(wz.Max.X,wz.Min.Y),new V(wz.Max.X,wz.Max.Y),new V(wz.Min.X,wz.Max.Y),new Color(.72f,.92f,1,1));
    Color border=new Color(.28f,.72f,.9f,.7f);baseBuffer.Line(new V(wz.Min.X,wz.Min.Y),new V(wz.Max.X,wz.Min.Y),.024,border);baseBuffer.Line(new V(wz.Max.X,wz.Min.Y),new V(wz.Max.X,wz.Max.Y),.024,border);baseBuffer.Line(new V(wz.Max.X,wz.Max.Y),new V(wz.Min.X,wz.Max.Y),.024,border);baseBuffer.Line(new V(wz.Min.X,wz.Max.Y),new V(wz.Min.X,wz.Min.Y),.024,border);
   }
   foreach(var beam in result.Beams){
    Color c=Spectrum[beam.Band];float strength=Mathf.Clamp01((float)beam.Power*13f);
-   Color halo=c;halo.a=.038f*strength;beamBuffer.BeamLine(beam.A,beam.B,.24,halo);
-   Color core=c;core.a=.34f*strength;beamBuffer.BeamLine(beam.A,beam.B,.075,core);
-   Color cap=c;cap.a=.10f*strength;beamBuffer.RadialDisc(beam.A,.045,cap,12);beamBuffer.RadialDisc(beam.B,.045,cap,12);
+   double length=(beam.B-beam.A).Length;
+   double spread=Mathf.Clamp((float)(.30+length*.018),.30f,.46f);
+   Color haze=c;haze.a=.018f*strength;beamBuffer.BeamRibbon(beam.A,beam.B,spread*.72,spread,haze);
+   Color halo=c;halo.a=.052f*strength;beamBuffer.BeamRibbon(beam.A,beam.B,.20,Mathf.Min(.30f,(float)(.20+length*.008)),halo);
+   Color body=c;body.a=.22f*strength;beamBuffer.BeamRibbon(beam.A,beam.B,.095,.12,body);
+   Color core=c;core.a=.26f*strength;beamBuffer.BeamRibbon(beam.A,beam.B,.028,.038,core);
+   Color cap=c;cap.a=.075f*strength;beamBuffer.RadialDisc(beam.A,.055,cap,12);beamBuffer.RadialDisc(beam.B,.065,cap,12);
   }
-  foreach(var wall in level.Walls){baseBuffer.Line(wall.A,wall.B,.2,new Color(.12f,.18f,.22f));baseBuffer.Line(wall.A,wall.B,.026,new Color(.34f,.45f,.49f));}
+  foreach(var wall in level.Walls)DrawBrickWall(wall);
   Color white=new Color(.91f,.98f,1);V dir=level.Direction.Unit;
   Color sourceGlow=white;sourceGlow.a=.09f;beamBuffer.RadialDisc(level.Source,.50,sourceGlow);
   Mount(level.Source,.36);baseBuffer.Ring(level.Source,.29,.055,new Color(.42f,.59f,.65f));baseBuffer.Disc(level.Source,.21,new Color(.055f,.095f,.13f));baseBuffer.Disc(level.Source,.125,new Color(.64f,.83f,.91f));baseBuffer.Disc(level.Source+new V(-.035,.04),.04,white);
@@ -88,10 +93,65 @@ public class BoardRenderer : MonoBehaviour {
    else if(p.Kind==Kind.Sphere){Mount(p.Position,.62);glassBuffer.GlassDisc(p.Position,.55,new Color(.74f,.91f,1,.9f));baseBuffer.Ring(p.Position,.55,.026,white);baseBuffer.Arc(p.Position,.43,.026,70,90,new Color(.65f,.86f,1,.6f));baseBuffer.Disc(p.Position+new V(-.17,.19),.06,new Color(1,1,1,.65f));}
    else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);V a=p.Position+axis*(t*.9)+side*w,b=p.Position+axis*(t*.9)-side*w,c1=p.Position+axis*(t2*.9)-side*w2,d=p.Position+axis*(t2*.9)+side*w2;Color lens=new Color(.8f,.94f,1,.75f);Vector2 ua=new Vector2((float)(t+1)*.5f,.5f+(float)w/.36f),ub=new Vector2(ua.x,.5f-(float)w/.36f),uc=new Vector2((float)(t2+1)*.5f,.5f-(float)w2/.36f),ud=new Vector2(uc.x,.5f+(float)w2/.36f);glassBuffer.Tri(a,b,c1,lens,ua,ub,uc,0);glassBuffer.Tri(a,c1,d,lens,ua,uc,ud,0);baseBuffer.Line(a,d,.022,white);baseBuffer.Line(b,c1,.022,white);}for(int end=-1;end<=1;end+=2){V socket=p.Position+axis*(end*.9);baseBuffer.Disc(socket,.095,new Color(.17f,.27f,.34f));baseBuffer.Ring(socket,.09,.014,new Color(.46f,.59f,.63f));baseBuffer.Disc(socket,.025,new Color(.77f,.65f,.43f));}}
    else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;baseBuffer.Line(a+side*.025,b+side*.025,.20,new Color(.08f,.14f,.19f));baseBuffer.Disc(a,.10,new Color(.18f,.27f,.33f));baseBuffer.Disc(b,.10,new Color(.18f,.27f,.33f));baseBuffer.Line(a,b,.095,new Color(.29f,.43f,.51f));baseBuffer.Line(a+side*.035,b+side*.035,.036,c);baseBuffer.Disc(a,.032,new Color(.76f,.65f,.43f));baseBuffer.Disc(b,.032,new Color(.76f,.65f,.43f));}
-   if(i==selected){double radius=PieceInfo.SelectionRadius(p.Kind);baseBuffer.Ring(p.Position,radius+.08,.012,new Color(.35f,.82f,.96f,.32f));baseBuffer.Ring(p.Position,radius,.022,new Color(.96f,.78f,.40f,.92f));if(PieceInfo.CanRotate(p.Kind)){baseBuffer.Disc(p.Position+axis*radius,.082,new Color(.08f,.14f,.16f),Mathf.Max(14,VisualEnvironment.CircleSegments/2));baseBuffer.Ring(p.Position+axis*radius,.082,.018,new Color(1,.83f,.5f),Mathf.Max(14,VisualEnvironment.CircleSegments/2));}}
+   if(i==selected)DrawSelection(p);
   }
   boardBuffer.Apply(boardMesh);baseBuffer.Apply(baseMesh);waterBuffer.Apply(waterMesh);beamBuffer.Apply(beamMesh);glassBuffer.Apply(glassMesh);
  }
+ void DrawBoardFrame(){
+  Color rail=new Color(.13f,.23f,.27f,.82f),highlight=new Color(.33f,.47f,.49f,.40f),screw=new Color(.48f,.57f,.56f,.75f);
+  const double edge=4.73;
+  baseBuffer.Line(new V(-edge,-edge),new V(edge,-edge),.075,rail);baseBuffer.Line(new V(-edge,edge),new V(edge,edge),.075,rail);
+  baseBuffer.Line(new V(-edge,-edge),new V(-edge,edge),.075,rail);baseBuffer.Line(new V(edge,-edge),new V(edge,edge),.075,rail);
+  baseBuffer.Line(new V(-edge,-edge+.04),new V(edge,-edge+.04),.012,highlight);baseBuffer.Line(new V(-edge,edge-.04),new V(edge,edge-.04),.012,highlight);
+  for(int k=-3;k<=3;k++){
+   double p=k*1.25;
+   baseBuffer.Disc(new V(p,-edge),.035,screw,12);baseBuffer.Disc(new V(p,edge),.035,screw,12);
+   baseBuffer.Disc(new V(-edge,p),.035,screw,12);baseBuffer.Disc(new V(edge,p),.035,screw,12);
+  }
+ }
+
+ void DrawBrickWall(Wall wall){
+  V d=(wall.B-wall.A).Unit,n=d.Perp;double length=(wall.B-wall.A).Length;
+  Color shadow=new Color(.025f,.035f,.04f,.92f),mortar=new Color(.11f,.085f,.075f,.98f);
+  Color brickA=new Color(.34f,.19f,.145f,.98f),brickB=new Color(.28f,.15f,.12f,.98f),edge=new Color(.48f,.28f,.20f,.55f);
+  baseBuffer.Line(wall.A+n*.035,wall.B+n*.035,.42,shadow);
+  baseBuffer.Line(wall.A,wall.B,.34,mortar);
+  const double brick=.58,gap=.055,rowOffset=.085;
+  for(int row=-1;row<=1;row+=2){
+   double phase=row>0?brick*.5:0;
+   for(double s=-phase;s<length;s+=brick){
+    double a=Math.Max(0,s+gap),b=Math.Min(length,s+brick-gap);
+    if(b<=a)continue;
+    float mix=(float)((Math.Floor((s+phase)/brick)+(row>0?1:0))%2);
+    Color color=mix<.5f?brickA:brickB;
+    V from=wall.A+d*a+n*(row*rowOffset),to=wall.A+d*b+n*(row*rowOffset);
+    baseBuffer.Line(from,to,.12,color);
+    baseBuffer.Line(from+n*.035,to+n*.035,.018,edge);
+   }
+  }
+  baseBuffer.Line(wall.A+n*.18,wall.B+n*.18,.018,new Color(.52f,.31f,.23f,.36f));
+  baseBuffer.Line(wall.A-n*.18,wall.B-n*.18,.018,new Color(.03f,.04f,.045f,.72f));
+ }
+
+ void DrawSelection(Piece p){
+  double radius=PieceInfo.SelectionRadius(p.Kind)+.08;V axis=V.Angle(p.Angle);
+  Color orbit=new Color(.36f,.86f,1f,.62f),goldLine=new Color(1f,.80f,.40f,.95f);
+  for(int k=0;k<12;k++)baseBuffer.Arc(p.Position,radius,.018,k*30+4,18,orbit);
+  for(int k=0;k<4;k++){
+   V a=p.Position+V.Angle(k*90)*radius,b=p.Position+V.Angle(k*90)*(radius+.12);
+   baseBuffer.Line(a,b,.025,new Color(.5f,.9f,1f,.72f));
+  }
+  baseBuffer.Ring(p.Position,radius-.10,.014,new Color(.96f,.78f,.40f,.34f));
+  if(!PieceInfo.CanRotate(p.Kind))return;
+  V handle=p.Position+axis*radius;
+  baseBuffer.Line(p.Position+axis*(radius-.18),handle,.026,new Color(1,.79f,.38f,.68f));
+  baseBuffer.Disc(handle,.13,new Color(.025f,.055f,.07f,.98f),Mathf.Max(18,VisualEnvironment.CircleSegments/2));
+  baseBuffer.Ring(handle,.13,.028,goldLine,Mathf.Max(18,VisualEnvironment.CircleSegments/2));
+  V tangent=axis.Perp;
+  baseBuffer.Line(handle-tangent*.05,handle+axis*.06,.025,goldLine);
+  baseBuffer.Line(handle+axis*.06,handle+tangent*.05,.025,goldLine);
+ }
+
  void Mount(V p,double radius){baseBuffer.Disc(p+new V(.035,-.055),radius+.03,new Color(.012f,.028f,.043f,.85f));baseBuffer.Disc(p,radius,new Color(.11f,.18f,.24f));baseBuffer.Ring(p,radius,.018,new Color(.28f,.39f,.46f));for(int k=0;k<3;k++)baseBuffer.Disc(p+V.Angle(90+k*120)*(radius*.84),.022,new Color(.57f,.65f,.66f));}
  void OnDestroy(){DestroyMaterial(boardMaterial);DestroyMaterial(baseMaterial);DestroyMaterial(beamMaterial);DestroyMaterial(glassMaterial);DestroyMaterial(waterMaterial);}
  void DestroyMaterial(Material material){if(material==null)return;if(Application.isPlaying)Destroy(material);else DestroyImmediate(material);}

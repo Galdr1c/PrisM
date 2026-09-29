@@ -30,35 +30,57 @@ public static class Levels {
   AddVariants(levels,seeds[4],10);
   AddVariants(levels,seeds[7],10);
 
-  AddVariants(levels,MirrorChain(
-   "geometry-3","Üç açı",
-   new V(-4,-3.15),
-   new[]{new V(-2.75,-2.55),new V(-1.05,-0.25),new V(1.25,-1.25)},
-   new V(3.65,2.55),3),5);
+  // Final twenty levels are deliberate corridor puzzles rather than short free-form mirror chains.
+  // Brick walls create alternating gates, so the player must solve the route and the reflection angles.
+  AddVariants(levels,MirrorMaze(
+   "geometry-maze-5","Kırık koridor",
+   new V(-4,-3.4),
+   new[]{new V(-3,-2.6),new V(-2.2,-0.6),new V(-0.7,1.4),new V(1.1,0.2),new V(2.4,1.8)},
+   new V(3.8,3.2),
+   new[]{
+    new Wall(new V(-1.45,-4),new V(-1.45,-1.7)),
+    new Wall(new V(0.2,1.8),new V(0.2,4)),
+    new Wall(new V(0.4,-1.6),new V(3.4,-1.6))
+   }),5);
 
-  AddVariants(levels,MirrorChain(
-   "geometry-4","Dört kırılma değil, dört yansıma",
-   new V(-4,2.95),
-   new[]{new V(-2.75,2.15),new V(-1.1,0.0),new V(0.9,1.1),new V(2.15,-1.35)},
-   new V(3.8,-3.0),4),5);
+  AddVariants(levels,MirrorMaze(
+   "geometry-maze-6","Geçit hesabı",
+   new V(-4,3.4),
+   new[]{new V(-3.1,2.5),new V(-2,0.4),new V(-0.4,-1.5),new V(0.9,0.4),new V(2,-1.2),new V(3,0.7)},
+   new V(4,-3.2),
+   new[]{
+    new Wall(new V(-1.2,1.5),new V(-1.2,4)),
+    new Wall(new V(0.2,-4),new V(0.2,-2.3)),
+    new Wall(new V(0.2,1.6),new V(3.4,1.6)),
+    new Wall(new V(1.4,-4),new V(1.4,-2.2))
+   }),5);
 
-  AddVariants(levels,MirrorChain(
-   "mastery-5a","Açıortay laboratuvarı",
-   new V(-4,-3.05),
-   new[]{new V(-2.85,-2.2),new V(-1.45,0.25),new V(0.0,-1.15),new V(1.25,1.45),new V(2.55,-0.15)},
-   new V(3.85,3.55),5),4);
+  AddVariants(levels,MirrorMaze(
+   "mastery-maze-7","Yedi kapı",
+   new V(-4,-3.5),
+   new[]{new V(-3.2,-2.4),new V(-2.5,0.2),new V(-1.3,2.5),new V(0.2,1.0),new V(1,-1.7),new V(2.2,0.2),new V(3.1,2.3)},
+   new V(4,-3.3),
+   new[]{
+    new Wall(new V(-1.9,-4),new V(-1.9,-1.0)),
+    new Wall(new V(-0.3,2.2),new V(-0.3,4)),
+    new Wall(new V(0.5,-4),new V(0.5,-2.5)),
+    new Wall(new V(1.6,1.1),new V(1.6,4)),
+    new Wall(new V(2.7,-4),new V(2.7,-0.7))
+   }),5);
 
-  AddVariants(levels,MirrorChain(
-   "mastery-5b","Ters geometri",
-   new V(-3.9,3.15),
-   new[]{new V(-2.55,2.15),new V(-1.05,-0.55),new V(0.45,1.15),new V(1.65,-1.55),new V(2.85,0.25)},
-   new V(3.9,-3.75),5),2);
-
-  AddVariants(levels,MirrorChain(
-   "mastery-6","Son teorem",
-   new V(-4,-3.3),
-   new[]{new V(-3.0,-2.05),new V(-1.9,0.45),new V(-0.35,-1.2),new V(0.9,1.6),new V(2.05,-0.45),new V(3.05,1.55)},
-   new V(4.05,3.2),6),4);
+  AddVariants(levels,MirrorMaze(
+   "mastery-maze-8","Son labirent",
+   new V(-4,3.55),
+   new[]{new V(-3.3,2.55),new V(-2.6,0.1),new V(-1.55,-2.35),new V(-0.35,-0.7),new V(0.55,2.1),new V(1.55,0.35),new V(2.35,-2.15),new V(3.15,-0.25)},
+   new V(4,3.35),
+   new[]{
+    new Wall(new V(-2.05,1.15),new V(-2.05,4)),
+    new Wall(new V(-1.0,-4),new V(-1.0,-2.7)),
+    new Wall(new V(0.05,2.75),new V(0.05,4)),
+    new Wall(new V(0.95,-4),new V(0.95,-2.7)),
+    new Wall(new V(1.95,1.1),new V(1.95,4)),
+    new Wall(new V(2.95,-4),new V(2.95,-1.55))
+   }),5);
 
   if(levels.Count!=100)throw new InvalidOperationException("PrisM curriculum must contain exactly 100 levels.");
 
@@ -79,10 +101,9 @@ public static class Levels {
    var level=levels[index];
    var original=new Piece[level.Solution.Length];
    for(int j=0;j<original.Length;j++)original[j]=level.Solution[j].Copy();
-   V originalDirection=level.Direction;
    bool accepted=false;
-   for(int attempt=1;attempt<=96;attempt++){
-    double amount=.12+((attempt-1)%6)*.055;
+   for(int attempt=0;attempt<=160;attempt++){
+    double amount=attempt==0?0:.07+((attempt-1)%7)*.03;
     for(int j=0;j<original.Length;j++){
      var origin=original[j];
      double phase=(index-79)*1.83+j*2.71+attempt*1.37;
@@ -112,7 +133,7 @@ public static class Levels {
     break;
    }
    if(!accepted)throw new InvalidOperationException("Could not author distinct playable mastery geometry: "+level.Id);
-   level.Hint="Geliş ve çıkış ışınlarını birer doğru olarak çiz. Her aynanın açısını bu iki yönün açıortayından türet; tüm aynalar ışık yolunda aktif olmalı.";
+   level.Hint="Önce tuğla duvarların bıraktığı geçitleri bul. Sonra her aynada geliş ve çıkış doğrularının açıortayını düşün; bütün aynalar ışık yolunda aktif olmalı.";
   }
  }
 
@@ -201,6 +222,16 @@ public static class Levels {
     new Piece(Kind.Prism,new V(-2,1.2),90)}
   }
  };
+
+ static Level MirrorMaze(string id,string name,V source,V[] points,V goal,Wall[] walls){
+  var level=MirrorChain(id,name,source,points,goal,points.Length);
+  level.Walls=walls??Array.Empty<Wall>();
+  level.Width=.11;
+  if(level.Goals.Length>0){level.Goals[0].Radius=.24;level.Goals[0].Threshold=.78;}
+  level.Lesson="Tuğla geçitlerinden kaçmadan ışık rotasını ve yansıma açılarını birlikte çöz.";
+  level.Hint="Duvarların açık bıraktığı koridoru önce kâğıt üzerinde bir kırık çizgi gibi düşün. Aynaları koridor dönüşlerine koy ve açıortayı kullan.";
+  return level;
+ }
 
  static Level MirrorChain(string id,string name,V source,V[] points,V goal,int mirrorCount){
   if(points==null||points.Length!=mirrorCount)throw new ArgumentException("Mirror chain point count mismatch.");

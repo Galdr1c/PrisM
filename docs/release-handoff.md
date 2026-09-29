@@ -1,5 +1,7 @@
 # PrisM pre-release teslimi
 
+> **Yeni gameplay/görsel revizyon notu:** Bu dosyada aşağıda kayıtlı AAB hash'i ve cihaz dışı doğrulamalar `ac29d22` baseline'ına aittir. Tuğla duvar, volumetrik ışık, yuvarlatılmış oyun UI'sı ve son 20 bölüm labirent revizyonu merge edildikten sonra `Tools/PreRelease-Check.ps1 -RequireAndroid` tekrar çalıştırılmalı; yeni AAB hash'i ve ekran görüntüleri bu belgeye yazılmalıdır.
+
 Bu teslim Google Play Internal testing için hazırlanmış sürüm adayıdır. Üretim yayını öncesinde gerçek Android cihaz ve Play pre-launch testi gerekir.
 
 ## Çıktılar

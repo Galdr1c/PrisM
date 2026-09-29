@@ -2,6 +2,16 @@
 
 29 Eylül 2026
 
+## 29 Eylül akşam görsel/oynanış revizyonu
+- Duvarlar tuğla örgü görseline geçirildi; board çerçevesi ve yüzey yoğunluğu artırıldı.
+- Işık çizgileri geniş, katmanlı ve hafif açılan hüzmelere dönüştürüldü. Optik parçalar ışık katmanının üstünde çizilerek parlak ışık altında kaybolmaları engellendi.
+- Seçili parçanın döndürme yörüngesi, açı işaretleri ve tutamacı belirginleştirildi; ±1°/±15° buton dönüşlerine kısa ease-out animasyonu eklendi.
+- UI kartları/butonları yuvarlatıldı, renk vurguları ve oyun dili güçlendirildi; “deney/ünite” ağırlıklı masaüstü-program dili oyuncu odaklı “bölüm/dünya” diline çekildi.
+- Son 20 bölüm kısa serbest ayna zincirlerinden çıkarılıp tuğla geçitli hassas labirentlere dönüştürüldü: 81–90 en az 5 ayna ve 3 duvar, 91–100 en az 7 ayna ve 5 duvar; hedef yarıçapı ve enerji eşiği sıkılaştırıldı.
+- Core curriculum/test kapısı yeni bölüm yapısıyla tekrar çalıştırılmaktadır.
+
+**Önemli:** Aşağıdaki imzalı AAB/Windows smoke sonuçları `ac29d22` baseline sürümüne aittir. Bu görsel/oynanış revizyonu main'e girdikten sonra Unity Windows smoke, store screenshot ve signed Android AAB/16 KB doğrulaması yeniden çalıştırılmadan yeni commit üretim adayı sayılmamalıdır.
+
 ## Son yerel doğrulama
 - Birleştirilmiş Windows sürümü Unity 6000.6.0f1 ile başarıyla derlendi.
 - `TestResults/smoke-20260929-131704` çalışması 100 çözüm ve 100 reset kontrolünü geçti.

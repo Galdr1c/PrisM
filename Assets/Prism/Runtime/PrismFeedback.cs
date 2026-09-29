@@ -2,12 +2,15 @@ using UnityEngine;
 
 namespace Prism {
 public sealed class PrismFeedback : MonoBehaviour {
- const int SampleRate=22050;
- AudioSource source;
- AudioClip clickClip,invalidClip,completeClip,milestoneClip;
+ AudioSource source,music;
+ AudioClip clickClip,placeClip,rotateClip,invalidClip,goalClip,completeClip,milestoneClip;
  float lastClickTime=-1f;
+ float lastRotateTime=-1f;
+ float lastGoalTime=-1f;
  float lastHapticTime=-10f;
+ bool appPaused,appFocused=true,musicStarted;
  public bool AudioEnabled {get;private set;}
+ public bool MusicEnabled {get;private set;}
  public bool HapticsEnabled {get;private set;}
 
  void Awake(){
@@ -15,19 +18,49 @@ public sealed class PrismFeedback : MonoBehaviour {
   source.playOnAwake=false;
   source.spatialBlend=0f;
   source.volume=.65f;
-  clickClip=GestureTone("PrisM click",760f,520f,.045f,.28f);
-  invalidClip=GestureTone("PrisM invalid",280f,180f,.12f,.24f);
-  completeClip=CompletionTone(false);
-  milestoneClip=CompletionTone(true);
+  source.priority=64;
+  clickClip=LoadClip("UI");
+  placeClip=LoadClip("Place");
+  rotateClip=LoadClip("Rotate");
+  invalidClip=LoadClip("Invalid");
+  goalClip=LoadClip("Goal");
+  completeClip=LoadClip("Complete");
+  milestoneClip=MilestoneTone();
+  music=gameObject.AddComponent<AudioSource>();
+  music.playOnAwake=false;
+  music.spatialBlend=0f;
+  music.loop=true;
+  music.priority=192;
+  music.volume=0f;
+  music.clip=LoadClip("OpticalLaboratory");
   AudioEnabled=PlayerPrefs.GetInt("prism.audio",1)!=0;
+  // Preserve the prior mute preference when introducing an independent music control.
+  MusicEnabled=PlayerPrefs.GetInt("prism.music",AudioEnabled?1:0)!=0;
   HapticsEnabled=PlayerPrefs.GetInt("prism.haptics",1)!=0;
+  RefreshMusic();
  }
 
- void OnDestroy(){
-  if(clickClip!=null)Destroy(clickClip);
-  if(invalidClip!=null)Destroy(invalidClip);
-  if(completeClip!=null)Destroy(completeClip);
-  if(milestoneClip!=null)Destroy(milestoneClip);
+ void Update(){
+  if(music!=null&&MusicEnabled&&!appPaused&&appFocused)
+   music.volume=Mathf.MoveTowards(music.volume,.7f,Time.unscaledDeltaTime*.7f);
+ }
+
+ void OnDestroy(){if(milestoneClip!=null)Destroy(milestoneClip);}
+
+ void OnApplicationPause(bool paused){appPaused=paused;RefreshMusic();if(paused&&source!=null)source.Stop();}
+ void OnApplicationFocus(bool focused){appFocused=focused;RefreshMusic();if(!focused&&source!=null)source.Stop();}
+
+ void RefreshMusic(){
+  if(music==null||music.clip==null)return;
+  if(!MusicEnabled||appPaused||!appFocused){music.Pause();music.volume=0f;return;}
+  if(musicStarted)music.UnPause();
+  else {music.Play();musicStarted=true;}
+ }
+ public void SetMusic(bool enabled){
+  MusicEnabled=enabled;
+  RefreshMusic();
+  PlayerPrefs.SetInt("prism.music",enabled?1:0);
+  PlayerPrefs.Save();
  }
 
  public void SetAudio(bool enabled){
@@ -43,65 +76,61 @@ public sealed class PrismFeedback : MonoBehaviour {
  }
 
  public void Click(){
-  if(!AudioEnabled||source==null)return;
+  if(!CanPlay())return;
   if(Time.unscaledTime-lastClickTime<.035f)return;
   lastClickTime=Time.unscaledTime;
-  source.PlayOneShot(clickClip);
+  Play(clickClip);
  }
- public void Invalid(){if(AudioEnabled&&source!=null)source.PlayOneShot(invalidClip);}
+ public void Place(){Play(placeClip);}
+ public void Rotate(){
+  if(!CanPlay()||Time.unscaledTime-lastRotateTime<.09f)return;
+  lastRotateTime=Time.unscaledTime;
+  Play(rotateClip);
+ }
+ public void Goal(){
+  if(!CanPlay()||Time.unscaledTime-lastGoalTime<.12f)return;
+  lastGoalTime=Time.unscaledTime;
+  Play(goalClip);
+ }
+ public void Invalid(){Play(invalidClip);}
  public void Complete(bool milestone=false){
-  if(AudioEnabled&&source!=null)source.PlayOneShot(milestone?milestoneClip:completeClip);
+  Play(milestone?milestoneClip:completeClip);
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
-  if(HapticsEnabled&&Time.unscaledTime-lastHapticTime>=1f){
+  if(HapticsEnabled&&!appPaused&&appFocused&&Time.unscaledTime-lastHapticTime>=1f){
    lastHapticTime=Time.unscaledTime;
    Handheld.Vibrate();
   }
 #endif
  }
 
- static AudioClip GestureTone(string name,float startHz,float endHz,float seconds,float amplitude){
-  int samples=Mathf.CeilToInt(seconds*SampleRate);
-  var data=new float[samples];
-  double phase=0;
-  for(int i=0;i<samples;i++){
-   float t=i/(float)(samples-1);
-   float hz=Mathf.Lerp(startHz,endHz,t);
-   phase+=2.0*Mathf.PI*hz/SampleRate;
-   float attack=Mathf.Min(1f,t*seconds/.003f);
-   float envelope=attack*(1f-t)*(1f-t);
-   data[i]=(float)(Mathf.Sin((float)phase)+.22f*Mathf.Sin((float)(phase*2.01)))*envelope*amplitude;
-  }
-  return CreateClip(name,data);
+ bool CanPlay()=>AudioEnabled&&source!=null&&!appPaused&&appFocused;
+ void Play(AudioClip clip){if(CanPlay()&&clip!=null)source.PlayOneShot(clip);}
+ static AudioClip LoadClip(string name){
+  var clip=Resources.Load<AudioClip>("Audio/"+name);
+  if(clip==null)Debug.LogWarning("PrisM audio asset missing: "+name);
+  return clip;
  }
 
- static AudioClip CompletionTone(bool milestone){
-  float seconds=milestone ? .96f : .68f;
-  float noteSeconds=milestone ? .46f : .34f;
-  float[] notes=milestone
-   ?new[]{392.00f,523.25f,659.25f,783.99f,1046.50f}
-   :new[]{523.25f,659.25f,783.99f,1046.50f};
-  float step=milestone ? .095f : .082f;
-  int samples=Mathf.CeilToInt(seconds*SampleRate);
-  var data=new float[samples];
-  for(int i=0;i<samples;i++){
-   float time=i/(float)SampleRate;
-   float value=0f;
+ // Keep the incoming milestone's richer five-note resolve distinct from normal wins.
+ // This is the only generated clip; the loaded WAV assets remain Resources-owned.
+ static AudioClip MilestoneTone(){
+  const int sampleRate=22050;
+  const float seconds=.96f,noteSeconds=.46f,step=.095f;
+  float[] notes={392f,523.25f,659.25f,783.99f,1046.5f};
+  var data=new float[Mathf.CeilToInt(seconds*sampleRate)];
+  for(int i=0;i<data.Length;i++){
+   float time=i/(float)sampleRate,value=0f;
    for(int n=0;n<notes.Length;n++){
     float local=time-n*step;
     if(local<0f||local>noteSeconds)continue;
-    float attack=Mathf.Min(1f,local/.007f);
-    float release=1f-local/noteSeconds;
+    float attack=Mathf.Min(1f,local/.007f),release=1f-local/noteSeconds;
     float phase=2f*Mathf.PI*notes[n]*local;
     float shimmer=Mathf.Sin(phase*2.01f)*.16f+Mathf.Sin(phase*3.98f)*.055f;
-    value+=(Mathf.Sin(phase)+shimmer)*attack*release*release*(milestone ? .115f : .13f);
+    value+=(Mathf.Sin(phase)+shimmer)*attack*release*release*.115f;
    }
    data[i]=Mathf.Clamp(value,-.92f,.92f);
   }
-  return CreateClip(milestone?"PrisM milestone":"PrisM complete",data);
- }
-
- static AudioClip CreateClip(string name,float[] data){
-  var clip=AudioClip.Create(name,data.Length,1,SampleRate,false);
+  var clip=AudioClip.Create("PrisM milestone",data.Length,1,sampleRate,false);
   clip.SetData(data,0);
   return clip;
  }

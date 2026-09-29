@@ -10,8 +10,8 @@ function Get-PngInfo([string]$Path) {
     if ($bytes.Length -lt 26 -or $bytes[0] -ne 137 -or $bytes[1] -ne 80 -or $bytes[2] -ne 78 -or $bytes[3] -ne 71) {
         throw "Invalid PNG: $Path"
     }
-    $width = ($bytes[16] -shl 24) -bor ($bytes[17] -shl 16) -bor ($bytes[18] -shl 8) -bor $bytes[19]
-    $height = ($bytes[20] -shl 24) -bor ($bytes[21] -shl 16) -bor ($bytes[22] -shl 8) -bor $bytes[23]
+    $width = ([int]$bytes[16] -shl 24) -bor ([int]$bytes[17] -shl 16) -bor ([int]$bytes[18] -shl 8) -bor [int]$bytes[19]
+    $height = ([int]$bytes[20] -shl 24) -bor ([int]$bytes[21] -shl 16) -bor ([int]$bytes[22] -shl 8) -bor [int]$bytes[23]
     [PSCustomObject]@{ Width = $width; Height = $height; ColorType = $bytes[25] }
 }
 
@@ -21,8 +21,8 @@ $log = Join-Path $output 'player.log'
 $args = @(
     '-prismStoreCapture',
     '-captureDir', ('"' + $output + '"'),
-    '-screen-width', '1080',
-    '-screen-height', '1920',
+    '-screen-width', '540',
+    '-screen-height', '960',
     '-screen-fullscreen', '0',
     '-logFile', ('"' + $log + '"')
 )

@@ -31,6 +31,16 @@ class Program
             }
         }else sourceHygiene=false;
         Check("Unity C# sources contain no literal patch-newline artifacts",sourceHygiene);
+        bool conflictFree=true,validUnityMeta=true;
+        foreach(var path in Directory.GetFiles(prismSource,"*",SearchOption.AllDirectories)){
+            string extension=Path.GetExtension(path);
+            if(extension!=".cs"&&extension!=".shader"&&extension!=".meta")continue;
+            string content=File.ReadAllText(path);
+            if(System.Text.RegularExpressions.Regex.IsMatch(content,@"(?m)^(<<<<<<< |=======|>>>>>>> )"))conflictFree=false;
+            if(extension==".meta"&&!System.Text.RegularExpressions.Regex.IsMatch(content,@"(?m)^guid: [0-9a-f]{32}\r?$"))validUnityMeta=false;
+        }
+        Check("Unity source and shaders contain no merge markers",conflictFree);
+        Check("Unity metadata has valid standalone GUID lines",validUnityMeta);
 
         string buildSourcePath=Path.Combine(repoRoot,"Assets","Prism","Editor","BuildProject.cs");
         string buildSource=File.Exists(buildSourcePath)?File.ReadAllText(buildSourcePath):"";

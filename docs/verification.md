@@ -1,6 +1,16 @@
 # PrisM doğrulama durumu
 
-25 Eylül 2026
+29 Eylül 2026
+
+## Son yerel doğrulama
+- Birleştirilmiş Windows sürümü Unity 6000.6.0f1 ile başarıyla derlendi.
+- `TestResults/smoke-20260929-131704` çalışması 100 çözüm ve 100 reset kontrolünü geçti.
+- Altı gerçek oyun görüntüsü `Builds/StoreAssets/screens-20260929-131720` altında 1080 × 1920 RGB PNG olarak üretildi; bölüm haritasındaki metin çakışması düzeltilip tekrar yakalandı.
+- Ünite haritasından geri dönüşte negatif indeks hatası giderildi. Bölüm sayacı geçersiz indekslere karşı korunuyor.
+- Üç özgün laboratuvar dokusu, fiziksel optik obje detayları, 48 saniyelik özgün ambient BGM ve altı WAV SFX oyuna entegre edildi.
+- Merge-marker ve Unity metadata GUID kontrolleri çekirdek testlerine eklendi; çekirdek testleri geçti.
+- Yeni görsel/ses sürümünün imzalı ARM64 AAB'si üretildi. Bundletool validation ve 16 KB bundle/altı ELF kütüphane kontrolü geçti. Final manifest API 36/min API 26 ile yalnız VIBRATE izni içerir; gereksiz INTERNET izni release manifest birleştirmesinden çıkarıldı.
+- Müzik/SFX birbirinden bağımsız; ses kesilmesi ve devam etmesi uygulama focus/pause akışında uygulanmış. Kaynak WAV clipping/loop kontrolleri geçti; telefon hoparlöründe işitsel değerlendirme henüz yapılmadı.
 
 ## Doğrulandı — GitHub Core CI
 - 100 bölüm üretiliyor.
@@ -29,11 +39,8 @@
 ## Önceden doğrulanmış baseline
 15 Eylül 2026 baseline kaynaklarında Unity 6000.6.0f1 StandaloneWindows64 development build ve o tarihteki 8-level smoke başarıyla çalıştırılmıştı. Shader/color/build baseline bu sonuçlara dayanır.
 
-## Bu 100-level pre-release branch'inde henüz gerçek ortamda tekrar çalıştırılması gerekenler
-Aşağıdaki maddeler bu GitHub Core CI tarafından doğrulanamaz ve çalıştırılmadan “PASS” olarak kabul edilmemelidir:
-- Unity Editor compile/import (runtime + editor scripts).
-- Güncel 100-level Windows build/smoke.
-- Android Build Support ile signed API 36 AAB üretimi.
+## Cihaz ve Play Console üzerinde kalan doğrulamalar
+Aşağıdaki maddeler masaüstü smoke tarafından doğrulanmaz:
 - Google Play Internal testing upload/install.
 - Gerçek telefon safe-area, touch, Android back, haptic, audio, suspend/resume.
 - GPU/CPU/frame-time/thermal profiling.
@@ -42,4 +49,4 @@ Aşağıdaki maddeler bu GitHub Core CI tarafından doğrulanamaz ve çalıştı
 Tek komut release makinesi doğrulaması:
 `Tools/PreRelease-Check.ps1 -RequireAndroid`
 
-Sonuçlar başarılı olduktan sonra bu belgeye gerçek cihaz/build artefact bilgisi eklenmelidir.
+Gerçek cihaz ve Play pre-launch sonuçları çalıştırıldıktan sonra eklenmelidir. Otomatik çözüm kontrolü, oyuncularla zorluk/çeşitlilik değerlendirmesinin yerine geçmez.

@@ -1,0 +1,65 @@
+[
+  {
+    "name": "OpticalLaboratory",
+    "seconds": 48.0,
+    "channels": 2,
+    "peak": 0.119428,
+    "rms": 0.026837,
+    "bytes": 6144044,
+    "loop_boundary_delta": 0.00075438
+  },
+  {
+    "name": "UI",
+    "seconds": 0.12,
+    "channels": 1,
+    "peak": 0.253309,
+    "rms": 0.055986,
+    "bytes": 10628,
+    "loop_boundary_delta": 0.0
+  },
+  {
+    "name": "Place",
+    "seconds": 0.32,
+    "channels": 1,
+    "peak": 0.318141,
+    "rms": 0.067,
+    "bytes": 28268,
+    "loop_boundary_delta": 0.0
+  },
+  {
+    "name": "Rotate",
+    "seconds": 0.1,
+    "channels": 1,
+    "peak": 0.189237,
+    "rms": 0.039614,
+    "bytes": 8864,
+    "loop_boundary_delta": 0.0
+  },
+  {
+    "name": "Invalid",
+    "seconds": 0.28,
+    "channels": 1,
+    "peak": 0.244354,
+    "rms": 0.068093,
+    "bytes": 24740,
+    "loop_boundary_delta": 0.0
+  },
+  {
+    "name": "Goal",
+    "seconds": 0.6,
+    "channels": 1,
+    "peak": 0.286352,
+    "rms": 0.063291,
+    "bytes": 52964,
+    "loop_boundary_delta": 0.0
+  },
+  {
+    "name": "Complete",
+    "seconds": 1.2,
+    "channels": 1,
+    "peak": 0.374719,
+    "rms": 0.086651,
+    "bytes": 105884,
+    "loop_boundary_delta": 0.0
+  }
+]

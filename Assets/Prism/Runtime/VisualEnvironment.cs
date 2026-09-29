@@ -69,8 +69,8 @@ public static class VisualEnvironment {
  public static void SetCelebration(float amount){
   if(bloom==null)return;
   amount=Mathf.Clamp01(amount);
-  float baseIntensity=resolved==VisualQualityTier.Low ? .48f : resolved==VisualQualityTier.High ? .9f : .7f;
-  float lift=resolved==VisualQualityTier.Low ? .18f : resolved==VisualQualityTier.High ? .48f : .34f;
+  float baseIntensity=resolved==VisualQualityTier.Low ? .30f : resolved==VisualQualityTier.High ? .52f : .42f;
+  float lift=resolved==VisualQualityTier.Low ? .12f : resolved==VisualQualityTier.High ? .22f : .18f;
   bloom.intensity.Override(baseIntensity+amount*lift);
  }
 
@@ -81,10 +81,10 @@ public static class VisualEnvironment {
   QualitySettings.antiAliasing=resolved==VisualQualityTier.High?4:resolved==VisualQualityTier.Medium?2:0;
 
   if(bloom!=null){
-   bloom.threshold.Override(resolved==VisualQualityTier.Low?1.0f: .82f);
-   bloom.intensity.Override(resolved==VisualQualityTier.Low ? .48f : resolved==VisualQualityTier.High ? .9f : .7f);
-   bloom.scatter.Override(resolved==VisualQualityTier.Low? .52f:resolved==VisualQualityTier.High? .72f: .64f);
-   bloom.clamp.Override(resolved==VisualQualityTier.Low?5f:8f);
+   bloom.threshold.Override(resolved==VisualQualityTier.Low?1.05f:.95f);
+   bloom.intensity.Override(resolved==VisualQualityTier.Low?.30f:resolved==VisualQualityTier.High?.52f:.42f);
+   bloom.scatter.Override(resolved==VisualQualityTier.Low?.44f:resolved==VisualQualityTier.High?.58f:.52f);
+   bloom.clamp.Override(resolved==VisualQualityTier.Low?3.5f:5f);
    bloom.highQualityFiltering.Override(resolved==VisualQualityTier.High);
   }
   if(color!=null){

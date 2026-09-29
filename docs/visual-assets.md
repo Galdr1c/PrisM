@@ -1,0 +1,9 @@
+# Laboratory visual assets
+
+The board caches three textures from `Resources/Art`, then blends the chosen surface at 18% behind a restrained, antialiased alignment grid. Levels with water zones use `WaterSurface`; other levels with difficulty 9 or 10 use `MasterySurface`; remaining levels use `LabSurface`. A missing variant falls back to the laboratory surface, and a missing laboratory surface leaves the procedural background intact. The importer caps each texture at 1024 pixels, disables read/write copies and mipmaps, and uses ASTC 6×6 for Android. Background selection changes no scene or optical geometry.
+
+Optical parts use procedural geometry so the visible prism, mirror and lens stay aligned with their physical optical shapes. Mounting plates, screw heads, silver mirror faces, prism facets and glass highlights add depth without changing collision or ray calculations. Sources use a circular emitter housing; receivers use eight outer segments and an inner energy arc. Gold remains reserved for selection and fixture details.
+
+Light beams retain spectral color and additive HDR rendering. A broad faint halo surrounds a narrower core, with small soft endpoint caps joining segments. The white core and Bloom intensity are reduced to preserve color at intersections. Beam and glass fragments stop at the board boundary; Bloom can produce a soft fringe beyond it.
+
+Verification after Unity import: inspect first prism level, water/glass levels and a dense mastery level at Low, Medium and High quality. Check seven-band separation, beam joins, readable goals with zero/full energy, lens highlights without repeated seams, and selection visibility. Compare a portrait phone capture at store-thumbnail scale. Shader compilation and on-device frame time need Unity/device validation; static checks do not establish those results.

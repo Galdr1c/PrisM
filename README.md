@@ -3,6 +3,8 @@
 Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 
 ## Pre-release kapsamı
+- Son yerel teslim ve gerçek doğrulama sınırları: `docs/release-handoff.md` ve `docs/verification.md`.
+- Üç özgün laboratuvar/caustic/ustalık arka planı, fiziksel optik obje detayları, 48 saniyelik ambient BGM ve altı olay SFX'i. Müzik ve efektler bağımsız açılıp kapatılır.
 - **100 bölüm / 10 ünite**: yansıma, spektrum, seçici renk, odak, birleşik optik, kırılma, su/cam, senfoni, geometri ve ustalık.
 - İlk sekiz özgün mekanik seed'in stabil ID'leri korunur; mevcut ilerleme kayıtları bozulmadan 100 bölümlük kampanyaya geçebilir.
 - Son 20 bölümde 3–6 aynalı geometri zincirleri vardır. Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.

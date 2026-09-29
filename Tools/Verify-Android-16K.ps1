@@ -24,7 +24,12 @@ if (-not (Test-Path -LiteralPath $AabPath)) { throw "AAB not found: $AabPath" }
 $editorDir = Split-Path -Parent $unityEditor
 $androidRoot = Join-Path $editorDir 'Data\PlaybackEngines\AndroidPlayer'
 $java = Join-Path $androidRoot 'OpenJDK\bin\java.exe'
-if (-not (Test-Path -LiteralPath $java)) { throw "Unity OpenJDK not found: $java" }
+if ($env:PRISM_JAVA_PATH) { $java = $env:PRISM_JAVA_PATH }
+if (-not (Test-Path -LiteralPath $java)) {
+    $externalJava = Get-Command java.exe -ErrorAction SilentlyContinue
+    if ($externalJava) { $java = $externalJava.Source }
+}
+if (-not (Test-Path -LiteralPath $java)) { throw 'Java was not found. Set PRISM_JAVA_PATH.' }
 
 $bundletool = $env:PRISM_BUNDLETOOL_JAR
 if ([string]::IsNullOrWhiteSpace($bundletool)) {
@@ -37,7 +42,8 @@ if ([string]::IsNullOrWhiteSpace($bundletool) -or -not (Test-Path -LiteralPath $
     throw 'bundletool JAR is required for 16 KB AAB validation. Set PRISM_BUNDLETOOL_JAR to an official bundletool .jar.'
 }
 
-$readelf = Get-ChildItem -LiteralPath (Join-Path $androidRoot 'NDK') -Recurse -Filter 'llvm-readelf.exe' -ErrorAction SilentlyContinue |
+$ndkRoot = if ($env:PRISM_NDK_PATH) { $env:PRISM_NDK_PATH } else { Join-Path $androidRoot 'NDK' }
+$readelf = Get-ChildItem -LiteralPath $ndkRoot -Recurse -Filter 'llvm-readelf.exe' -ErrorAction SilentlyContinue |
     Select-Object -First 1
 if (-not $readelf) { throw 'llvm-readelf.exe was not found in the Unity Android NDK.' }
 
@@ -90,7 +96,12 @@ try {
         $zip.Dispose()
     }
 } finally {
-    Remove-Item -LiteralPath $temp -Recurse -Force -ErrorAction SilentlyContinue
+    $resolvedTemp = [IO.Path]::GetFullPath($temp)
+    $expectedParent = [IO.Path]::GetFullPath([IO.Path]::GetTempPath())
+    if ($resolvedTemp.StartsWith($expectedParent,[StringComparison]::OrdinalIgnoreCase) -and
+        (Split-Path -Leaf $resolvedTemp) -like 'prism-16k-*') {
+        Remove-Item -LiteralPath $resolvedTemp -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 
 Write-Host ''

@@ -1,7 +1,7 @@
 Shader "Prism/BeamGlow" {
  Properties {
-  _Intensity("HDR Intensity", Range(0.5,8)) = 3.4
-  _CoreWhite("Core White", Range(0,1)) = 0.55
+  _Intensity("HDR Intensity", Range(0.5,8)) = 2.4
+  _CoreWhite("Core White", Range(0,1)) = 0.16
   _Celebration("Completion Celebration", Range(0,1)) = 0
  }
  SubShader {
@@ -25,7 +25,7 @@ Shader "Prism/BeamGlow" {
     float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):pow(saturate(1.0-abs(i.uv.y*2.0-1.0)),1.8);
     float core=pow(profile,5.0);
     float3 baseRgb=SRGBToLinear(i.color.rgb);
-    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite);
+    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(i.kind>0.5?0.35:1.0));
     float pulse=0.975+0.025*sin(_Time.y*2.1+i.uv.x*9.0);
     float victoryWave=0.5+0.5*sin(_Time.y*9.5+i.world.x*3.4-i.world.y*2.7);
     float victoryGain=1.0+_Celebration*(0.35+0.45*victoryWave);

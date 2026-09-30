@@ -1,0 +1,3674 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb8b37f6dc64a348fb8921fe09be8ad, type: 3}
+  m_Name: LevelCatalog
+  m_EditorClassIdentifier: Assembly-CSharp::Prism.LevelCatalog
+  levels:
+  - id: reflection-01
+    displayName: "\u0130lk yans\u0131ma"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "Aynay\u0131 \u0131\u015F\u0131\u011F\u0131n \xFCzerine koy. 45\xB0 ile yukar\u0131 yans\u0131t."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: -2}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 0, y: -2}
+      angle: 45
+    goals:
+    - position: {x: 0, y: 3}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls: []
+    waterZones: []
+  - id: reflection-01-v02
+    displayName: "\u0130lk yans\u0131ma \xB7 Kuzey rotas\u0131"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 2, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 0}
+      angle: 135
+    goals:
+    - position: {x: -3, y: 0}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    waterZones: []
+  - id: reflection-01-v03
+    displayName: "\u0130lk yans\u0131ma \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 2}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 0, y: 2}
+      angle: 225
+    goals:
+    - position: {x: 0, y: -3}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0, y: 3.02}
+      b: {x: 0, y: 4.18}
+    waterZones: []
+  - id: reflection-01-v04
+    displayName: "\u0130lk yans\u0131ma \xB7 G\xFCney rotas\u0131"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -2, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 0}
+      angle: 315
+    goals:
+    - position: {x: 3, y: 0}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    waterZones: []
+  - id: reflection-01-v05
+    displayName: "\u0130lk yans\u0131ma \xB7 Sessiz y\xFCzey"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 2}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 0, y: 2}
+      angle: 315
+    goals:
+    - position: {x: 0, y: -3}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -2.38, y: 2.7}
+      b: {x: -1.22, y: 2.7}
+    waterZones: []
+  - id: reflection-01-v06
+    displayName: "\u0130lk yans\u0131ma \xB7 Ters ufuk"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: -2}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 0, y: -2}
+      angle: 135
+    goals:
+    - position: {x: 0, y: 3}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -0.9, y: 0.32}
+      b: {x: -0.9, y: 1.48}
+    waterZones: []
+  - id: reflection-01-v07
+    displayName: "\u0130lk yans\u0131ma \xB7 \xC7apraz yol"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -2, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 0}
+      angle: 45
+    goals:
+    - position: {x: 3, y: 0}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -4.18, y: -2.7}
+      b: {x: -3.02, y: -2.7}
+    waterZones: []
+  - id: reflection-01-v08
+    displayName: "\u0130lk yans\u0131ma \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 2, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 0}
+      angle: 225
+    goals:
+    - position: {x: -3, y: 0}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.9, y: 3.02}
+      b: {x: 0.9, y: 4.18}
+    waterZones: []
+  - id: reflection-01-v09
+    displayName: "\u0130lk yans\u0131ma \xB7 \u0130nce ayar"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: -1.82}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 0.14, y: -1.82}
+      angle: 45
+    goals:
+    - position: {x: 0.14, y: 3.18}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.9, y: 1.22}
+      b: {x: 0.9, y: 2.38}
+    waterZones: []
+  - id: reflection-01-v10
+    displayName: "\u0130lk yans\u0131ma \xB7 Son prova"
+    lesson: "I\u015F\u0131\u011Fa yeni bir y\xF6n ver."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Yans\u0131ma"
+    difficulty: 1
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -2.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 00000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -0.14, y: -2.18}
+      angle: 45
+    goals:
+    - position: {x: -0.14, y: 2.82}
+      band: -1
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -2.7, y: -4.18}
+      b: {x: -2.7, y: -3.02}
+    waterZones: []
+  - id: dispersion-01
+    displayName: "Beyaz\u0131n i\xE7indeki"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "Prizmay\u0131 \u0131\u015F\u0131\u011F\u0131n \xFCzerine ta\u015F\u0131 ve renk yelpazesini hedefe \xE7evir."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 90
+    goals:
+    - position: {x: 3, y: -2}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    waterZones: []
+  - id: dispersion-01-v02
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 Kuzey rotas\u0131"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 180
+    goals:
+    - position: {x: 2, y: 3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 2.12, y: 0.9}
+      b: {x: 3.28, y: 0.9}
+    waterZones: []
+  - id: dispersion-01-v03
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 270
+    goals:
+    - position: {x: -3, y: 2}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -0.9, y: -1.48}
+      b: {x: -0.9, y: -0.32}
+    waterZones: []
+  - id: dispersion-01-v04
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 G\xFCney rotas\u0131"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 0
+    goals:
+    - position: {x: -2, y: -3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -0.9, y: 2.12}
+      b: {x: -0.9, y: 3.28}
+    waterZones: []
+  - id: dispersion-01-v05
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 Sessiz y\xFCzey"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 270
+    goals:
+    - position: {x: 3, y: 2}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.32, y: -0.9}
+      b: {x: 1.48, y: -0.9}
+    waterZones: []
+  - id: dispersion-01-v06
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 Ters ufuk"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 90
+    goals:
+    - position: {x: -3, y: -2}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 3.6, y: -2.38}
+      b: {x: 3.6, y: -1.22}
+    waterZones: []
+  - id: dispersion-01-v07
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 \xC7apraz yol"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 0
+    goals:
+    - position: {x: -2, y: 3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.32, y: 3.6}
+      b: {x: 1.48, y: 3.6}
+    waterZones: []
+  - id: dispersion-01-v08
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0, y: 0}
+      angle: 180
+    goals:
+    - position: {x: 2, y: -3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -0.9, y: 2.12}
+      b: {x: -0.9, y: 3.28}
+    waterZones: []
+  - id: dispersion-01-v09
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 \u0130nce ayar"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: 0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: 0.14, y: 0.18}
+      angle: 90
+    goals:
+    - position: {x: 3.14, y: -1.82}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -3.6, y: 1.22}
+      b: {x: -3.6, y: 2.38}
+    waterZones: []
+  - id: dispersion-01-v10
+    displayName: "Beyaz\u0131n i\xE7indeki \xB7 Son prova"
+    lesson: "Prizma ile renkleri ortaya \xE7\u0131kar."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Spektrum
+    difficulty: 2
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 01000000i
+    initial: []
+    solution:
+    - kind: 1
+      position: {x: -0.14, y: -0.18}
+      angle: 90
+    goals:
+    - position: {x: 2.86, y: -2.18}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -3.28, y: 0.9}
+      b: {x: -2.12, y: 0.9}
+    waterZones: []
+  - id: selective-green-01
+    displayName: "Bir \u0131\u015F\u0131k, iki yol"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "Ye\u015Fil se\xE7ici ayna ye\u015Fili yans\u0131t\u0131r, di\u011Fer renkleri ge\xE7irir."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: -1, y: 0}
+      angle: 45
+    goals:
+    - position: {x: -1, y: 3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 3, y: 0}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -1.8, y: 1.22}
+      b: {x: -1.8, y: 2.38}
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    waterZones: []
+  - id: selective-green-01-v02
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Kuzey rotas\u0131"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 0, y: -1}
+      angle: 135
+    goals:
+    - position: {x: -3, y: -1}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 0, y: 3}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.9, y: 1.22}
+      b: {x: 0.9, y: 2.38}
+    - a: {x: -2.38, y: 0}
+      b: {x: -1.22, y: 0}
+    waterZones: []
+  - id: selective-green-01-v03
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 1, y: 0}
+      angle: 225
+    goals:
+    - position: {x: 1, y: -3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -3, y: 0}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0, y: -2.38}
+      b: {x: 0, y: -1.22}
+    - a: {x: 2.12, y: -2.7}
+      b: {x: 3.28, y: -2.7}
+    waterZones: []
+  - id: selective-green-01-v04
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 G\xFCney rotas\u0131"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 0, y: 1}
+      angle: 315
+    goals:
+    - position: {x: 3, y: 1}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 0, y: -3}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 1.22, y: -1.8}
+      b: {x: 2.38, y: -1.8}
+    - a: {x: 1.22, y: 1.8}
+      b: {x: 2.38, y: 1.8}
+    waterZones: []
+  - id: selective-green-01-v05
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Sessiz y\xFCzey"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: -1, y: 0}
+      angle: 315
+    goals:
+    - position: {x: -1, y: -3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 3, y: 0}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 0.32, y: -0.9}
+      b: {x: 1.48, y: -0.9}
+    - a: {x: -2.38, y: 0.9}
+      b: {x: -1.22, y: 0.9}
+    waterZones: []
+  - id: selective-green-01-v06
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Ters ufuk"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 1, y: 0}
+      angle: 135
+    goals:
+    - position: {x: 1, y: 3}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -3, y: 0}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -0.58, y: -0.9}
+      b: {x: 0.58, y: -0.9}
+    - a: {x: 0, y: 2.12}
+      b: {x: 0, y: 3.28}
+    waterZones: []
+  - id: selective-green-01-v07
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 \xC7apraz yol"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 0, y: -1}
+      angle: 45
+    goals:
+    - position: {x: 3, y: -1}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 0, y: 3}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 3.02, y: 0}
+      b: {x: 4.18, y: 0}
+    - a: {x: 2.7, y: -3.28}
+      b: {x: 2.7, y: -2.12}
+    waterZones: []
+  - id: selective-green-01-v08
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: 0, y: 1}
+      angle: 225
+    goals:
+    - position: {x: -3, y: 1}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 0, y: -3}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -4.18, y: 0}
+      b: {x: -3.02, y: 0}
+    - a: {x: -2.38, y: 1.8}
+      b: {x: -1.22, y: 1.8}
+    waterZones: []
+  - id: selective-green-01-v09
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 \u0130nce ayar"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: 0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: -0.86, y: 0.18}
+      angle: 45
+    goals:
+    - position: {x: -0.86, y: 3.18}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 3.14, y: 0.18}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: 1.22, y: 0.9}
+      b: {x: 2.38, y: 0.9}
+    - a: {x: -1.8, y: 1.22}
+      b: {x: -1.8, y: 2.38}
+    waterZones: []
+  - id: selective-green-01-v10
+    displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Son prova"
+    lesson: "Ye\u015Fili ay\u0131r, k\u0131rm\u0131z\u0131y\u0131 ge\xE7ir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Se\xE7ici renk"
+    difficulty: 3
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.32
+    stock: 02000000i
+    initial: []
+    solution:
+    - kind: 2
+      position: {x: -1.14, y: -0.18}
+      angle: 45
+    goals:
+    - position: {x: -1.14, y: 2.82}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 2.86, y: -0.18}
+      band: 6
+      radius: 0.42
+      threshold: 0.24
+    walls:
+    - a: {x: -3.6, y: -2.38}
+      b: {x: -3.6, y: -1.22}
+    - a: {x: -1.8, y: -2.38}
+      b: {x: -1.8, y: -1.22}
+    waterZones: []
+  - id: focus-01
+    displayName: "Odak noktas\u0131"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "Lensi dik tut. Odak noktas\u0131 lensten 2,4 birim uzakta."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: 0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 90
+    goals:
+    - position: {x: 2.4, y: 0}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 2.12, y: 0.9}
+      b: {x: 3.28, y: 0.9}
+    - a: {x: 1.8, y: -2.38}
+      b: {x: 1.8, y: -1.22}
+    waterZones: []
+  - id: focus-01-v02
+    displayName: "Odak noktas\u0131 \xB7 Kuzey rotas\u0131"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 180
+    goals:
+    - position: {x: 0, y: 2.4}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 1.22, y: 1.8}
+      b: {x: 2.38, y: 1.8}
+    - a: {x: -2.38, y: -0.9}
+      b: {x: -1.22, y: -0.9}
+    waterZones: []
+  - id: focus-01-v03
+    displayName: "Odak noktas\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: -0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 270
+    goals:
+    - position: {x: -2.4, y: 0}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 2.7, y: -2.38}
+      b: {x: 2.7, y: -1.22}
+    - a: {x: -3.28, y: -0.9}
+      b: {x: -2.12, y: -0.9}
+    waterZones: []
+  - id: focus-01-v04
+    displayName: "Odak noktas\u0131 \xB7 G\xFCney rotas\u0131"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 0
+    goals:
+    - position: {x: 0, y: -2.4}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: -2.38, y: 2.7}
+      b: {x: -1.22, y: 2.7}
+    - a: {x: -2.38, y: -0.9}
+      b: {x: -1.22, y: -0.9}
+    waterZones: []
+  - id: focus-01-v05
+    displayName: "Odak noktas\u0131 \xB7 Sessiz y\xFCzey"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: -0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 270
+    goals:
+    - position: {x: 2.4, y: 0}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 2.12, y: -0.9}
+      b: {x: 3.28, y: -0.9}
+    - a: {x: 1.8, y: 1.22}
+      b: {x: 1.8, y: 2.38}
+    waterZones: []
+  - id: focus-01-v06
+    displayName: "Odak noktas\u0131 \xB7 Ters ufuk"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: 0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 90
+    goals:
+    - position: {x: -2.4, y: 0}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: -1.8, y: -2.38}
+      b: {x: -1.8, y: -1.22}
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    waterZones: []
+  - id: focus-01-v07
+    displayName: "Odak noktas\u0131 \xB7 \xC7apraz yol"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 0
+    goals:
+    - position: {x: 0, y: 2.4}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 1.22, y: -2.7}
+      b: {x: 2.38, y: -2.7}
+    - a: {x: -0.9, y: 2.12}
+      b: {x: -0.9, y: 3.28}
+    waterZones: []
+  - id: focus-01-v08
+    displayName: "Odak noktas\u0131 \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0, y: 0}
+      angle: 180
+    goals:
+    - position: {x: 0, y: -2.4}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: -2.38, y: -0.9}
+      b: {x: -1.22, y: -0.9}
+    - a: {x: -0.9, y: -3.28}
+      b: {x: -0.9, y: -2.12}
+    waterZones: []
+  - id: focus-01-v09
+    displayName: "Odak noktas\u0131 \xB7 \u0130nce ayar"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: 0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: 0.14, y: 0.18}
+      angle: 90
+    goals:
+    - position: {x: 2.54, y: 0.18}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: 1.8, y: 1.22}
+      b: {x: 1.8, y: 2.38}
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    waterZones: []
+  - id: focus-01-v10
+    displayName: "Odak noktas\u0131 \xB7 Son prova"
+    lesson: "Geni\u015F \u0131\u015F\u0131\u011F\u0131 k\xFC\xE7\xFCk bir hedefte topla."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Odak
+    difficulty: 4
+    par: 1
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 1.2
+    stock: 04000000i
+    initial: []
+    solution:
+    - kind: 4
+      position: {x: -0.14, y: -0.18}
+      angle: 90
+    goals:
+    - position: {x: 2.26, y: -0.18}
+      band: -1
+      radius: 0.17
+      threshold: 0.8
+    walls:
+    - a: {x: -3.28, y: -1.8}
+      b: {x: -2.12, y: -1.8}
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    waterZones: []
+  - id: selective-red-01
+    displayName: "K\u0131z\u0131l yank\u0131"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "K\u0131rm\u0131z\u0131 se\xE7iciyle k\u0131rm\u0131z\u0131y\u0131 yukar\u0131 g\xF6nder. Prizmayla ye\u015Fili hedefe k\u0131r."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: -1, y: 0}
+      angle: 45
+    - kind: 1
+      position: {x: 1, y: 0}
+      angle: 90
+    goals:
+    - position: {x: -1, y: 3}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 4, y: -2}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -1.8, y: 1.22}
+      b: {x: -1.8, y: 2.38}
+    - a: {x: -2.38, y: -0.9}
+      b: {x: -1.22, y: -0.9}
+    waterZones: []
+  - id: selective-red-01-v02
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 Kuzey rotas\u0131"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 0, y: -1}
+      angle: 135
+    - kind: 1
+      position: {x: 0, y: 1}
+      angle: 180
+    goals:
+    - position: {x: -3, y: -1}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 2, y: 4}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 0.9, y: -1.48}
+      b: {x: 0.9, y: -0.32}
+    - a: {x: 3.6, y: 2.12}
+      b: {x: 3.6, y: 3.28}
+    waterZones: []
+  - id: selective-red-01-v03
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 1, y: 0}
+      angle: 225
+    - kind: 1
+      position: {x: -1, y: 0}
+      angle: 270
+    goals:
+    - position: {x: 1, y: -3}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: -4, y: 2}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 0, y: -2.38}
+      b: {x: 0, y: -1.22}
+    - a: {x: -2.38, y: 2.7}
+      b: {x: -1.22, y: 2.7}
+    waterZones: []
+  - id: selective-red-01-v04
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 G\xFCney rotas\u0131"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 0, y: 1}
+      angle: 315
+    - kind: 1
+      position: {x: 0, y: -1}
+      angle: 0
+    goals:
+    - position: {x: 3, y: 1}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: -2, y: -4}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 2.7, y: 2.12}
+      b: {x: 2.7, y: 3.28}
+    - a: {x: 0.32, y: -2.7}
+      b: {x: 1.48, y: -2.7}
+    waterZones: []
+  - id: selective-red-01-v05
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 Sessiz y\xFCzey"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 0}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: -1, y: 0}
+      angle: 315
+    - kind: 1
+      position: {x: 1, y: 0}
+      angle: 270
+    goals:
+    - position: {x: -1, y: -3}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 4, y: 2}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 2.7, y: -1.48}
+      b: {x: 2.7, y: -0.32}
+    - a: {x: -3.28, y: 0.9}
+      b: {x: -2.12, y: 0.9}
+    waterZones: []
+  - id: selective-red-01-v06
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 Ters ufuk"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 0}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 1, y: 0}
+      angle: 135
+    - kind: 1
+      position: {x: -1, y: 0}
+      angle: 90
+    goals:
+    - position: {x: 1, y: 3}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: -4, y: -2}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -1.48, y: 0.9}
+      b: {x: -0.32, y: 0.9}
+    - a: {x: -3.28, y: -3.6}
+      b: {x: -2.12, y: -3.6}
+    waterZones: []
+  - id: selective-red-01-v07
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 \xC7apraz yol"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 0, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 0, y: -1}
+      angle: 45
+    - kind: 1
+      position: {x: 0, y: 1}
+      angle: 0
+    goals:
+    - position: {x: 3, y: -1}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: -2, y: 4}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -3.6, y: 2.12}
+      b: {x: -3.6, y: 3.28}
+    - a: {x: -2.38, y: 0.9}
+      b: {x: -1.22, y: 0.9}
+    waterZones: []
+  - id: selective-red-01-v08
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 0, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: 0, y: 1}
+      angle: 225
+    - kind: 1
+      position: {x: 0, y: -1}
+      angle: 180
+    goals:
+    - position: {x: -3, y: 1}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 2, y: -4}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 2.12, y: -1.8}
+      b: {x: 3.28, y: -1.8}
+    - a: {x: 0.9, y: -0.58}
+      b: {x: 0.9, y: 0.58}
+    waterZones: []
+  - id: selective-red-01-v09
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 \u0130nce ayar"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: 0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: -0.86, y: 0.18}
+      angle: 45
+    - kind: 1
+      position: {x: 1.14, y: 0.18}
+      angle: 90
+    goals:
+    - position: {x: -0.86, y: 3.18}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 4.14, y: -1.82}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 1.22, y: -1.8}
+      b: {x: 2.38, y: -1.8}
+    - a: {x: 0.32, y: -0.9}
+      b: {x: 1.48, y: -0.9}
+    waterZones: []
+  - id: selective-red-01-v10
+    displayName: "K\u0131z\u0131l yank\u0131 \xB7 Son prova"
+    lesson: "K\u0131rm\u0131z\u0131 \u0131\u015F\u0131\u011F\u0131 ay\u0131r, kalan\u0131 tayfa b\xF6l."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Renk zinciri
+    difficulty: 5
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -0.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.35
+    stock: 0300000001000000i
+    initial: []
+    solution:
+    - kind: 3
+      position: {x: -1.14, y: -0.18}
+      angle: 45
+    - kind: 1
+      position: {x: 0.86, y: -0.18}
+      angle: 90
+    goals:
+    - position: {x: -1.14, y: 2.82}
+      band: 6
+      radius: 0.45
+      threshold: 0.4
+    - position: {x: 3.86, y: -2.18}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 3.6, y: 0.32}
+      b: {x: 3.6, y: 1.48}
+    - a: {x: 0, y: -2.38}
+      b: {x: 0, y: -1.22}
+    waterZones: []
+  - id: water-01
+    displayName: "Suyun haf\u0131zas\u0131"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "Aynayla \u0131\u015F\u0131\u011F\u0131 suya y\xF6nlendir. K\xFCre ile hedefe odakla."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 2}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 2}
+      angle: 337.5
+    - kind: 5
+      position: {x: 1, y: -1.5}
+      angle: 0
+    goals:
+    - position: {x: 1.5, y: -2.3}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0, y: 0.5}
+      b: {x: 0, y: 3.5}
+    - a: {x: -0.9, y: -2.38}
+      b: {x: -0.9, y: -1.22}
+    - a: {x: -3.28, y: 0.9}
+      b: {x: -2.12, y: 0.9}
+    waterZones:
+    - min: {x: -1.5, y: -3}
+      max: {x: 3, y: 0.5}
+      refractiveIndex: 1.333
+  - id: water-01-v02
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 Kuzey rotas\u0131"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -2, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: -2}
+      angle: 67.5
+    - kind: 5
+      position: {x: 1.5, y: 1}
+      angle: 90
+    goals:
+    - position: {x: 2.3, y: 1.5}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: -0.5, y: 0}
+      b: {x: -3.5, y: 0}
+    - a: {x: -0.58, y: -1.8}
+      b: {x: 0.58, y: -1.8}
+    - a: {x: -3.28, y: -0.9}
+      b: {x: -2.12, y: -0.9}
+    waterZones:
+    - min: {x: -0.5, y: -1.5}
+      max: {x: 3, y: 3}
+      refractiveIndex: 1.333
+  - id: water-01-v03
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 4, y: -2}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: -2}
+      angle: 157.5
+    - kind: 5
+      position: {x: -1, y: 1.5}
+      angle: 180
+    goals:
+    - position: {x: -1.5, y: 2.3}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0, y: -0.5}
+      b: {x: 0, y: -3.5}
+    - a: {x: 1.8, y: -0.58}
+      b: {x: 1.8, y: 0.58}
+    - a: {x: 2.7, y: -4.18}
+      b: {x: 2.7, y: -3.02}
+    waterZones:
+    - min: {x: -3, y: -0.5}
+      max: {x: 1.5, y: 3}
+      refractiveIndex: 1.333
+  - id: water-01-v04
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 G\xFCney rotas\u0131"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 2, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 2}
+      angle: 247.5
+    - kind: 5
+      position: {x: -1.5, y: -1}
+      angle: 270
+    goals:
+    - position: {x: -2.3, y: -1.5}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0.5, y: 0}
+      b: {x: 3.5, y: 0}
+    - a: {x: 3.02, y: 3.6}
+      b: {x: 4.18, y: 3.6}
+    - a: {x: 3.02, y: 1.8}
+      b: {x: 4.18, y: 1.8}
+    waterZones:
+    - min: {x: -3, y: -3}
+      max: {x: 0.5, y: 1.5}
+      refractiveIndex: 1.333
+  - id: water-01-v05
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 Sessiz y\xFCzey"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4, y: -2}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: -2}
+      angle: 22.5
+    - kind: 5
+      position: {x: 1, y: 1.5}
+      angle: 0
+    goals:
+    - position: {x: 1.5, y: 2.3}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0, y: -0.5}
+      b: {x: 0, y: -3.5}
+    - a: {x: 1.22, y: 0}
+      b: {x: 2.38, y: 0}
+    - a: {x: -1.8, y: -0.58}
+      b: {x: -1.8, y: 0.58}
+    waterZones:
+    - min: {x: -1.5, y: -0.5}
+      max: {x: 3, y: 3}
+      refractiveIndex: 1.333
+  - id: water-01-v06
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 Ters ufuk"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 2}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 2}
+      angle: 202.5
+    - kind: 5
+      position: {x: -1, y: -1.5}
+      angle: 180
+    goals:
+    - position: {x: -1.5, y: -2.3}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0, y: 0.5}
+      b: {x: 0, y: 3.5}
+    - a: {x: 1.8, y: -0.58}
+      b: {x: 1.8, y: 0.58}
+    - a: {x: 0.9, y: 2.12}
+      b: {x: 0.9, y: 3.28}
+    waterZones:
+    - min: {x: -3, y: -3}
+      max: {x: 1.5, y: 0.5}
+      refractiveIndex: 1.333
+  - id: water-01-v07
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 \xC7apraz yol"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: 2, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: -2}
+      angle: 112.5
+    - kind: 5
+      position: {x: -1.5, y: 1}
+      angle: 90
+    goals:
+    - position: {x: -2.3, y: 1.5}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0.5, y: 0}
+      b: {x: 3.5, y: 0}
+    - a: {x: 2.12, y: -0.9}
+      b: {x: 3.28, y: -0.9}
+    - a: {x: -1.8, y: -1.48}
+      b: {x: -1.8, y: -0.32}
+    waterZones:
+    - min: {x: -3, y: -1.5}
+      max: {x: 0.5, y: 3}
+      refractiveIndex: 1.333
+  - id: water-01-v08
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -2, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 2}
+      angle: 292.5
+    - kind: 5
+      position: {x: 1.5, y: -1}
+      angle: 270
+    goals:
+    - position: {x: 2.3, y: -1.5}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: -0.5, y: 0}
+      b: {x: -3.5, y: 0}
+    - a: {x: -4.18, y: 3.6}
+      b: {x: -3.02, y: 3.6}
+    - a: {x: 2.7, y: -0.58}
+      b: {x: 2.7, y: 0.58}
+    waterZones:
+    - min: {x: -0.5, y: -3}
+      max: {x: 3, y: 1.5}
+      refractiveIndex: 1.333
+  - id: water-01-v09
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 \u0130nce ayar"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: 2.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -1.86, y: 2.18}
+      angle: 337.5
+    - kind: 5
+      position: {x: 1.14, y: -1.32}
+      angle: 0
+    goals:
+    - position: {x: 1.64, y: -2.12}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: 0.14, y: 0.68}
+      b: {x: 0.14, y: 3.68}
+    - a: {x: 0, y: -3.28}
+      b: {x: 0, y: -2.12}
+    - a: {x: -1.48, y: -0.9}
+      b: {x: -0.32, y: -0.9}
+    waterZones:
+    - min: {x: -1.36, y: -2.82}
+      max: {x: 3.14, y: 0.68}
+      refractiveIndex: 1.333
+  - id: water-01-v10
+    displayName: "Suyun haf\u0131zas\u0131 \xB7 Son prova"
+    lesson: "I\u015F\u0131k suya girdi\u011Finde y\xF6n de\u011Fi\u015Ftirir."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "K\u0131r\u0131lma"
+    difficulty: 6
+    par: 2
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: 1.82}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.14, y: 1.82}
+      angle: 337.5
+    - kind: 5
+      position: {x: 0.86, y: -1.68}
+      angle: 0
+    goals:
+    - position: {x: 1.36, y: -2.48}
+      band: -1
+      radius: 0.35
+      threshold: 0.4
+    walls:
+    - a: {x: -0.14, y: 0.32}
+      b: {x: -0.14, y: 3.32}
+    - a: {x: 0.9, y: -0.58}
+      b: {x: 0.9, y: 0.58}
+    - a: {x: -3.28, y: 2.7}
+      b: {x: -2.12, y: 2.7}
+    waterZones:
+    - min: {x: -1.64, y: -3.18}
+      max: {x: 2.86, y: 0.32}
+      refractiveIndex: 1.333
+  - id: garden-01
+    displayName: "I\u015F\u0131k bah\xE7esi"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "\xD6nce aynayla yukar\u0131 d\xF6n. Ye\u015Fili sa\u011Fa ay\u0131r, kalan \u0131\u015F\u0131\u011F\u0131 lensle topla."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -4, y: -3}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: -3}
+      angle: 45
+    - kind: 2
+      position: {x: -2, y: 0}
+      angle: 45
+    - kind: 4
+      position: {x: -2, y: 1}
+      angle: 0
+    goals:
+    - position: {x: 2.5, y: 0}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -2, y: 3.4}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -0.5, y: -4}
+      b: {x: -0.5, y: -1}
+    - a: {x: -4.18, y: 1.8}
+      b: {x: -3.02, y: 1.8}
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    waterZones: []
+  - id: garden-01-v02
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kuzey rotas\u0131"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: 3, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3, y: -2}
+      angle: 135
+    - kind: 2
+      position: {x: 0, y: -2}
+      angle: 135
+    - kind: 4
+      position: {x: -1, y: -2}
+      angle: 90
+    goals:
+    - position: {x: 0, y: 2.5}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -3.4, y: -2}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: 4, y: -0.5}
+      b: {x: 1, y: -0.5}
+    - a: {x: -0.9, y: 3.02}
+      b: {x: -0.9, y: 4.18}
+    - a: {x: -3.6, y: -4.18}
+      b: {x: -3.6, y: -3.02}
+    waterZones: []
+  - id: garden-01-v03
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 3}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 3}
+      angle: 225
+    - kind: 2
+      position: {x: 2, y: 0}
+      angle: 225
+    - kind: 4
+      position: {x: 2, y: -1}
+      angle: 180
+    goals:
+    - position: {x: -2.5, y: 0}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 2, y: -3.4}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: 0.5, y: 4}
+      b: {x: 0.5, y: 1}
+    - a: {x: 3.02, y: -3.6}
+      b: {x: 4.18, y: -3.6}
+    - a: {x: 3.02, y: 1.8}
+      b: {x: 4.18, y: 1.8}
+    waterZones: []
+  - id: garden-01-v04
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 G\xFCney rotas\u0131"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -3, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3, y: 2}
+      angle: 315
+    - kind: 2
+      position: {x: 0, y: 2}
+      angle: 315
+    - kind: 4
+      position: {x: 1, y: 2}
+      angle: 270
+    goals:
+    - position: {x: 0, y: -2.5}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 3.4, y: 2}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -4, y: 0.5}
+      b: {x: -1, y: 0.5}
+    - a: {x: 0.9, y: -1.48}
+      b: {x: 0.9, y: -0.32}
+    - a: {x: 1.22, y: 0.9}
+      b: {x: 2.38, y: 0.9}
+    waterZones: []
+  - id: garden-01-v05
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 Sessiz y\xFCzey"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 3}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 3}
+      angle: 315
+    - kind: 2
+      position: {x: -2, y: 0}
+      angle: 315
+    - kind: 4
+      position: {x: -2, y: -1}
+      angle: 0
+    goals:
+    - position: {x: 2.5, y: 0}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -2, y: -3.4}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -0.5, y: 4}
+      b: {x: -0.5, y: 1}
+    - a: {x: -4.18, y: 1.8}
+      b: {x: -3.02, y: 1.8}
+    - a: {x: 1.8, y: 1.22}
+      b: {x: 1.8, y: 2.38}
+    waterZones: []
+  - id: garden-01-v06
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 Ters ufuk"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: 4, y: -3}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: -3}
+      angle: 135
+    - kind: 2
+      position: {x: 2, y: 0}
+      angle: 135
+    - kind: 4
+      position: {x: 2, y: 1}
+      angle: 180
+    goals:
+    - position: {x: -2.5, y: 0}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 2, y: 3.4}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: 0.5, y: -4}
+      b: {x: 0.5, y: -1}
+    - a: {x: 0.9, y: 2.12}
+      b: {x: 0.9, y: 3.28}
+    - a: {x: -2.7, y: -2.38}
+      b: {x: -2.7, y: -1.22}
+    waterZones: []
+  - id: garden-01-v07
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 \xC7apraz yol"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -3, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3, y: -2}
+      angle: 45
+    - kind: 2
+      position: {x: 0, y: -2}
+      angle: 45
+    - kind: 4
+      position: {x: 1, y: -2}
+      angle: 90
+    goals:
+    - position: {x: 0, y: 2.5}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: 3.4, y: -2}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -4, y: -0.5}
+      b: {x: -1, y: -0.5}
+    - a: {x: 3.6, y: -4.18}
+      b: {x: 3.6, y: -3.02}
+    - a: {x: 0.9, y: -0.58}
+      b: {x: 0.9, y: 0.58}
+    waterZones: []
+  - id: garden-01-v08
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: 3, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3, y: 2}
+      angle: 225
+    - kind: 2
+      position: {x: 0, y: 2}
+      angle: 225
+    - kind: 4
+      position: {x: -1, y: 2}
+      angle: 270
+    goals:
+    - position: {x: 0, y: -2.5}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -3.4, y: 2}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: 4, y: 0.5}
+      b: {x: 1, y: 0.5}
+    - a: {x: -0.9, y: 3.02}
+      b: {x: -0.9, y: 4.18}
+    - a: {x: -2.38, y: 0.9}
+      b: {x: -1.22, y: 0.9}
+    waterZones: []
+  - id: garden-01-v09
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 \u0130nce ayar"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: -2.82}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -1.86, y: -2.82}
+      angle: 45
+    - kind: 2
+      position: {x: -1.86, y: 0.18}
+      angle: 45
+    - kind: 4
+      position: {x: -1.86, y: 1.18}
+      angle: 0
+    goals:
+    - position: {x: 2.64, y: 0.18}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -1.86, y: 3.58}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -0.36, y: -3.82}
+      b: {x: -0.36, y: -0.82}
+    - a: {x: 0.32, y: -0.9}
+      b: {x: 1.48, y: -0.9}
+    - a: {x: -4.18, y: 0.9}
+      b: {x: -3.02, y: 0.9}
+    waterZones: []
+  - id: garden-01-v10
+    displayName: "I\u015F\u0131k bah\xE7esi \xB7 Son prova"
+    lesson: "\xDC\xE7 par\xE7ayla iki hedefi birlikte ayd\u0131nlat."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: "Bile\u015Fim"
+    difficulty: 7
+    par: 3
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -3.18}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.75
+    stock: 000000000200000004000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.14, y: -3.18}
+      angle: 45
+    - kind: 2
+      position: {x: -2.14, y: -0.18}
+      angle: 45
+    - kind: 4
+      position: {x: -2.14, y: 0.82}
+      angle: 0
+    goals:
+    - position: {x: 2.36, y: -0.18}
+      band: 3
+      radius: 0.42
+      threshold: 0.24
+    - position: {x: -2.14, y: 3.22}
+      band: 6
+      radius: 0.19
+      threshold: 0.75
+    walls:
+    - a: {x: -0.64, y: -4.18}
+      b: {x: -0.64, y: -1.18}
+    - a: {x: -1.48, y: 3.6}
+      b: {x: -0.32, y: 3.6}
+    - a: {x: 0, y: 1.22}
+      b: {x: 0, y: 2.38}
+    waterZones: []
+  - id: symphony-01
+    displayName: Optik senfoni
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "Aynayla yukar\u0131 d\xF6n. K\u0131rm\u0131z\u0131 se\xE7iciyle k\u0131rm\u0131z\u0131y\u0131 suya ay\u0131r. Prizmayla ye\u015Fil ve maviyi ay\u0131r, k\xFCreyle odakla."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -4, y: -2.5}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: -2.5}
+      angle: 45
+    - kind: 3
+      position: {x: -2, y: -0.5}
+      angle: 45
+    - kind: 5
+      position: {x: 1.3, y: -0.5}
+      angle: 0
+    - kind: 1
+      position: {x: -2, y: 1.2}
+      angle: 90
+    goals:
+    - position: {x: 2.3, y: -0.5}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -3, y: 2.3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -0.3, y: 2.8}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -0.5, y: -4}
+      b: {x: -0.5, y: -0.8}
+    - a: {x: 0.5, y: 0.5}
+      b: {x: 0.5, y: 3.5}
+    - a: {x: -0.9, y: 0.32}
+      b: {x: -0.9, y: 1.48}
+    waterZones:
+    - min: {x: 0, y: -1.5}
+      max: {x: 3.5, y: 0.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v02
+    displayName: "Optik senfoni \xB7 Kuzey rotas\u0131"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: 2.5, y: -4}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2.5, y: -2}
+      angle: 135
+    - kind: 3
+      position: {x: 0.5, y: -2}
+      angle: 135
+    - kind: 5
+      position: {x: 0.5, y: 1.3}
+      angle: 90
+    - kind: 1
+      position: {x: -1.2, y: -2}
+      angle: 180
+    goals:
+    - position: {x: 0.5, y: 2.3}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -2.3, y: -3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -2.8, y: -0.3}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 4, y: -0.5}
+      b: {x: 0.8, y: -0.5}
+    - a: {x: -0.5, y: 0.5}
+      b: {x: -3.5, y: 0.5}
+    - a: {x: -1.48, y: -0.9}
+      b: {x: -0.32, y: -0.9}
+    waterZones:
+    - min: {x: -0.5, y: 0}
+      max: {x: 1.5, y: 3.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v03
+    displayName: "Optik senfoni \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: 4, y: 2.5}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: 2.5}
+      angle: 225
+    - kind: 3
+      position: {x: 2, y: 0.5}
+      angle: 225
+    - kind: 5
+      position: {x: -1.3, y: 0.5}
+      angle: 180
+    - kind: 1
+      position: {x: 2, y: -1.2}
+      angle: 270
+    goals:
+    - position: {x: -2.3, y: 0.5}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: 3, y: -2.3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: 0.3, y: -2.8}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 0.5, y: 4}
+      b: {x: 0.5, y: 0.8}
+    - a: {x: -0.5, y: -0.5}
+      b: {x: -0.5, y: -3.5}
+    - a: {x: 3.02, y: 3.6}
+      b: {x: 4.18, y: 3.6}
+    waterZones:
+    - min: {x: -3.5, y: -0.5}
+      max: {x: 0, y: 1.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v04
+    displayName: "Optik senfoni \xB7 G\xFCney rotas\u0131"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -2.5, y: 4}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.5, y: 2}
+      angle: 315
+    - kind: 3
+      position: {x: -0.5, y: 2}
+      angle: 315
+    - kind: 5
+      position: {x: -0.5, y: -1.3}
+      angle: 270
+    - kind: 1
+      position: {x: 1.2, y: 2}
+      angle: 0
+    goals:
+    - position: {x: -0.5, y: -2.3}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: 2.3, y: 3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: 2.8, y: 0.3}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -4, y: 0.5}
+      b: {x: -0.8, y: 0.5}
+    - a: {x: 0.5, y: -0.5}
+      b: {x: 3.5, y: -0.5}
+    - a: {x: 0.32, y: 3.6}
+      b: {x: 1.48, y: 3.6}
+    waterZones:
+    - min: {x: -1.5, y: -3.5}
+      max: {x: 0.5, y: 0}
+      refractiveIndex: 1.333
+  - id: symphony-01-v05
+    displayName: "Optik senfoni \xB7 Sessiz y\xFCzey"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -4, y: 2.5}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2, y: 2.5}
+      angle: 315
+    - kind: 3
+      position: {x: -2, y: 0.5}
+      angle: 315
+    - kind: 5
+      position: {x: 1.3, y: 0.5}
+      angle: 0
+    - kind: 1
+      position: {x: -2, y: -1.2}
+      angle: 270
+    goals:
+    - position: {x: 2.3, y: 0.5}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -3, y: -2.3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -0.3, y: -2.8}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -0.5, y: 4}
+      b: {x: -0.5, y: 0.8}
+    - a: {x: 0.5, y: -0.5}
+      b: {x: 0.5, y: -3.5}
+    - a: {x: -0.9, y: -1.48}
+      b: {x: -0.9, y: -0.32}
+    waterZones:
+    - min: {x: 0, y: -0.5}
+      max: {x: 3.5, y: 1.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v06
+    displayName: "Optik senfoni \xB7 Ters ufuk"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: 4, y: -2.5}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2, y: -2.5}
+      angle: 135
+    - kind: 3
+      position: {x: 2, y: -0.5}
+      angle: 135
+    - kind: 5
+      position: {x: -1.3, y: -0.5}
+      angle: 180
+    - kind: 1
+      position: {x: 2, y: 1.2}
+      angle: 90
+    goals:
+    - position: {x: -2.3, y: -0.5}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: 3, y: 2.3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: 0.3, y: 2.8}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 0.5, y: -4}
+      b: {x: 0.5, y: -0.8}
+    - a: {x: -0.5, y: 0.5}
+      b: {x: -0.5, y: 3.5}
+    - a: {x: -1.8, y: 0.32}
+      b: {x: -1.8, y: 1.48}
+    waterZones:
+    - min: {x: -3.5, y: -1.5}
+      max: {x: 0, y: 0.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v07
+    displayName: "Optik senfoni \xB7 \xC7apraz yol"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -2.5, y: -4}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.5, y: -2}
+      angle: 45
+    - kind: 3
+      position: {x: -0.5, y: -2}
+      angle: 45
+    - kind: 5
+      position: {x: -0.5, y: 1.3}
+      angle: 90
+    - kind: 1
+      position: {x: 1.2, y: -2}
+      angle: 0
+    goals:
+    - position: {x: -0.5, y: 2.3}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: 2.3, y: -3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: 2.8, y: -0.3}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -4, y: -0.5}
+      b: {x: -0.8, y: -0.5}
+    - a: {x: 0.5, y: 0.5}
+      b: {x: 3.5, y: 0.5}
+    - a: {x: -0.9, y: -4.18}
+      b: {x: -0.9, y: -3.02}
+    waterZones:
+    - min: {x: -1.5, y: 0}
+      max: {x: 0.5, y: 3.5}
+      refractiveIndex: 1.333
+  - id: symphony-01-v08
+    displayName: "Optik senfoni \xB7 K\u0131r\u0131k k\xF6\u015Fe"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: 2.5, y: 4}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2.5, y: 2}
+      angle: 225
+    - kind: 3
+      position: {x: 0.5, y: 2}
+      angle: 225
+    - kind: 5
+      position: {x: 0.5, y: -1.3}
+      angle: 270
+    - kind: 1
+      position: {x: -1.2, y: 2}
+      angle: 180
+    goals:
+    - position: {x: 0.5, y: -2.3}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -2.3, y: 3}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -2.8, y: 0.3}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: 4, y: 0.5}
+      b: {x: 0.8, y: 0.5}
+    - a: {x: -0.5, y: -0.5}
+      b: {x: -3.5, y: -0.5}
+    - a: {x: -4.18, y: 1.8}
+      b: {x: -3.02, y: 1.8}
+    waterZones:
+    - min: {x: -0.5, y: -3.5}
+      max: {x: 1.5, y: 0}
+      refractiveIndex: 1.333
+  - id: symphony-01-v09
+    displayName: "Optik senfoni \xB7 \u0130nce ayar"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -3.86, y: -2.32}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -1.86, y: -2.32}
+      angle: 45
+    - kind: 3
+      position: {x: -1.86, y: -0.32}
+      angle: 45
+    - kind: 5
+      position: {x: 1.44, y: -0.32}
+      angle: 0
+    - kind: 1
+      position: {x: -1.86, y: 1.38}
+      angle: 90
+    goals:
+    - position: {x: 2.44, y: -0.32}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -2.86, y: 2.48}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -0.16, y: 2.98}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -0.36, y: -3.82}
+      b: {x: -0.36, y: -0.62}
+    - a: {x: 0.64, y: 0.68}
+      b: {x: 0.64, y: 3.68}
+    - a: {x: -2.7, y: -1.48}
+      b: {x: -2.7, y: -0.32}
+    waterZones:
+    - min: {x: 0.14, y: -1.32}
+      max: {x: 3.64, y: 0.68}
+      refractiveIndex: 1.333
+  - id: symphony-01-v10
+    displayName: "Optik senfoni \xB7 Son prova"
+    lesson: "D\xF6rt par\xE7a, \xFC\xE7 hedef, tek bir uyum."
+    hint: "I\u015F\u0131\u011F\u0131n her etkile\u015Fimden sonraki y\xF6n\xFCn\xFC izle; \xF6nce par\xE7alar\u0131n s\u0131ras\u0131n\u0131, sonra a\xE7\u0131lar\u0131n\u0131 \xE7\xF6z."
+    chapter: Optik senfoni
+    difficulty: 8
+    par: 4
+    requireAllPiecesActive: 0
+    source: {x: -4.14, y: -2.68}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 00000000030000000100000005000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.14, y: -2.68}
+      angle: 45
+    - kind: 3
+      position: {x: -2.14, y: -0.68}
+      angle: 45
+    - kind: 5
+      position: {x: 1.16, y: -0.68}
+      angle: 0
+    - kind: 1
+      position: {x: -2.14, y: 1.02}
+      angle: 90
+    goals:
+    - position: {x: 2.16, y: -0.68}
+      band: 6
+      radius: 0.35
+      threshold: 0.35
+    - position: {x: -3.14, y: 2.12}
+      band: 3
+      radius: 0.45
+      threshold: 0.2
+    - position: {x: -0.44, y: 2.62}
+      band: 1
+      radius: 0.45
+      threshold: 0.2
+    walls:
+    - a: {x: -0.64, y: -4.18}
+      b: {x: -0.64, y: -0.98}
+    - a: {x: 0.36, y: 0.32}
+      b: {x: 0.36, y: 3.32}
+    - a: {x: -4.18, y: -3.6}
+      b: {x: -3.02, y: -3.6}
+    waterZones:
+    - min: {x: -0.14, y: -1.68}
+      max: {x: 3.36, y: 0.32}
+      refractiveIndex: 1.333
+  - id: geometry-3
+    displayName: "\xDC\xE7 a\xE7\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -4, y: -3.15}
+    direction: {x: 0.65249646, y: 0.7577918}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3.5291336, y: -2.6031482}
+      angle: 27.22031
+    - kind: 0
+      position: {x: -2.79375, y: -2.5366023}
+      angle: 33.97234
+    - kind: 0
+      position: {x: -2.0869386, y: -1.1628317}
+      angle: 52.446045
+    - kind: 0
+      position: {x: -1.1633519, y: -0.32777622}
+      angle: 12.145139
+    - kind: 0
+      position: {x: 1.369434, y: -1.1423227}
+      angle: 20.235287
+    goals:
+    - position: {x: 3.65, y: 2.55}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 1.22, y: -1.8}
+      b: {x: 2.38, y: -1.8}
+    - a: {x: -0.9, y: -2.38}
+      b: {x: -0.9, y: -1.22}
+    - a: {x: -2.7, y: -0.58}
+      b: {x: -2.7, y: 0.58}
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    waterZones: []
+  - id: geometry-3-v02
+    displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Kuzey rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: 3.15, y: -4}
+    direction: {x: -0.83386403, y: 0.55196995}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2.2427838, y: -3.399475}
+      angle: 99.35488
+    - kind: 0
+      position: {x: 2.7567444, y: -2.7365937}
+      angle: 108.96447
+    - kind: 0
+      position: {x: 1.1230333, y: -2.3206797}
+      angle: 143.71284
+    - kind: 0
+      position: {x: 0.17927131, y: -0.7931215}
+      angle: 87.581024
+    - kind: 0
+      position: {x: 1.4533596, y: 0.9257773}
+      angle: 99.609314
+    goals:
+    - position: {x: -2.55, y: 3.65}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 2.12, y: -1.8}
+      b: {x: 3.28, y: -1.8}
+    - a: {x: -0.9, y: 0.32}
+      b: {x: -0.9, y: 1.48}
+    - a: {x: 2.12, y: 0}
+      b: {x: 3.28, y: 0}
+    - a: {x: -1.8, y: 1.22}
+      b: {x: -1.8, y: 2.38}
+    waterZones: []
+  - id: geometry-3-v03
+    displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: 4, y: 3.15}
+    direction: {x: -0.49956268, y: -0.86627775}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3.5875714, y: 2.434819}
+      angle: 202.3257
+    - kind: 0
+      position: {x: 2.7326345, y: 2.6699471}
+      angle: 207.04453
+    - kind: 0
+      position: {x: 2.1395233, y: 1.0864155}
+      angle: 233.05528
+    - kind: 0
+      position: {x: 1.1289423, y: 0.33468753}
+      angle: 188.67279
+    - kind: 0
+      position: {x: -1.35951, y: 1.2060535}
+      angle: 199.6631
+    goals:
+    - position: {x: -3.65, y: -2.55}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 3.02, y: 0.9}
+      b: {x: 4.18, y: 0.9}
+    - a: {x: 1.8, y: 3.02}
+      b: {x: 1.8, y: 4.18}
+    - a: {x: -2.38, y: -1.8}
+      b: {x: -1.22, y: -1.8}
+    - a: {x: 0.9, y: -1.48}
+      b: {x: 0.9, y: -0.32}
+    waterZones: []
+  - id: geometry-3-v04
+    displayName: "\xDC\xE7 a\xE7\u0131 \xB7 G\xFCney rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -3.15, y: 4}
+    direction: {x: 0.8462889, y: -0.53272414}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.4630315, y: 3.5675652}
+      angle: 292.7455
+    - kind: 0
+      position: {x: -2.6603193, y: 2.6641824}
+      angle: 302.111
+    - kind: 0
+      position: {x: -1.0779513, y: 2.2854953}
+      angle: 322.2655
+    - kind: 0
+      position: {x: -0.35759228, y: 0.93011117}
+      angle: 273.23682
+    - kind: 0
+      position: {x: -1.1745034, y: -1.1420279}
+      angle: 287.26434
+    goals:
+    - position: {x: 2.55, y: -3.65}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 0.32, y: 1.8}
+      b: {x: 1.48, y: 1.8}
+    - a: {x: -1.8, y: -1.48}
+      b: {x: -1.8, y: -0.32}
+    - a: {x: -0.9, y: 3.02}
+      b: {x: -0.9, y: 4.18}
+    - a: {x: -4.18, y: 1.8}
+      b: {x: -3.02, y: 1.8}
+    waterZones: []
+  - id: geometry-3-v05
+    displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Sessiz y\xFCzey"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -4, y: 3.15}
+    direction: {x: 0.99954915, y: 0.030025842}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3.080825, y: 3.1776114}
+      angle: 325.9511
+    - kind: 0
+      position: {x: -2.809581, y: 2.439662}
+      angle: 310.1746
+    - kind: 0
+      position: {x: -1.6653913, y: 1.7835171}
+      angle: 311.58414
+    - kind: 0
+      position: {x: -0.9199143, y: 0.027346855}
+      angle: 344.6599
+    - kind: 0
+      position: {x: 1.0524974, y: 1.4772401}
+      angle: 349.57022
+    goals:
+    - position: {x: 3.65, y: -2.55}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 0.9, y: 2.12}
+      b: {x: 0.9, y: 3.28}
+    - a: {x: -3.6, y: 1.22}
+      b: {x: -3.6, y: 2.38}
+    - a: {x: 0.32, y: -0.9}
+      b: {x: 1.48, y: -0.9}
+    - a: {x: 3.6, y: -0.58}
+      b: {x: 3.6, y: 0.58}
+    waterZones: []
+  - id: geometry-4
+    displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -4, y: 2.95}
+    direction: {x: 0.9624891, y: -0.27132016}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3.217484, y: 2.7294133}
+      angle: 330.64587
+    - kind: 0
+      position: {x: -2.6775723, y: 2.2265465}
+      angle: 310.05334
+    - kind: 0
+      position: {x: -1.2058098, y: -0.033536725}
+      angle: 344.8777
+    - kind: 0
+      position: {x: 1.0197866, y: 1.0850078}
+      angle: 339.95123
+    - kind: 0
+      position: {x: 2.0382054, y: -1.2889462}
+      angle: 304.52814
+    goals:
+    - position: {x: 3.8, y: -3}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 1.22, y: 1.8}
+      b: {x: 2.38, y: 1.8}
+    - a: {x: -2.38, y: -0.9}
+      b: {x: -1.22, y: -0.9}
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    - a: {x: 0, y: 1.22}
+      b: {x: 0, y: 2.38}
+    waterZones: []
+  - id: geometry-4-v02
+    displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Kuzey rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -2.95, y: -4}
+    direction: {x: 0.170252, y: 0.98540056}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.8088436, y: -3.1830013}
+      angle: 60.780396
+    - kind: 0
+      position: {x: -2.2472985, y: -2.6885724}
+      angle: 36.41872
+    - kind: 0
+      position: {x: 0.149224, y: -1.2214667}
+      angle: 76.70494
+    - kind: 0
+      position: {x: -1.2737819, y: 1.0615159}
+      angle: 70.031815
+    - kind: 0
+      position: {x: 1.5164685, y: 1.9750156}
+      angle: 34.510117
+    goals:
+    - position: {x: 3, y: 3.8}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: -0.58, y: -2.7}
+      b: {x: 0.58, y: -2.7}
+    - a: {x: 1.22, y: -0.9}
+      b: {x: 2.38, y: -0.9}
+    - a: {x: 0.32, y: 0.9}
+      b: {x: 1.48, y: 0.9}
+    - a: {x: -3.6, y: -3.28}
+      b: {x: -3.6, y: -2.12}
+    waterZones: []
+  - id: geometry-4-v03
+    displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: 4, y: -2.95}
+    direction: {x: -0.99820584, y: 0.059875727}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3.156026, y: -2.8993757}
+      angle: 146.5025
+    - kind: 0
+      position: {x: 2.7344968, y: -2.0516107}
+      angle: 122.75899
+    - kind: 0
+      position: {x: 1.1638591, y: -0.117583275}
+      angle: 165.43224
+    - kind: 0
+      position: {x: -1.0005032, y: -0.98257345}
+      angle: 158.27347
+    - kind: 0
+      position: {x: -2.0312848, y: 1.2520552}
+      angle: 125.05058
+    goals:
+    - position: {x: -3.8, y: 3}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: -0.9, y: 1.22}
+      b: {x: -0.9, y: 2.38}
+    - a: {x: 0, y: -2.38}
+      b: {x: 0, y: -1.22}
+    - a: {x: 1.8, y: -3.28}
+      b: {x: 1.8, y: -2.12}
+    - a: {x: -2.7, y: -0.58}
+      b: {x: -2.7, y: 0.58}
+    waterZones: []
+  - id: geometry-4-v04
+    displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 G\xFCney rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: 2.95, y: 4}
+    direction: {x: 0.12980701, y: -0.9915393}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3.0634475, y: 3.1334243}
+      angle: 234.73627
+    - kind: 0
+      position: {x: 1.9284524, y: 2.891882}
+      angle: 210.34656
+    - kind: 0
+      position: {x: 0.17538844, y: 0.89788306}
+      angle: 263.24548
+    - kind: 0
+      position: {x: 1.0029367, y: -0.67091054}
+      angle: 256.81503
+    - kind: 0
+      position: {x: -1.3490632, y: -2.3683605}
+      angle: 218.37448
+    goals:
+    - position: {x: -3, y: -3.8}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 2.7, y: 1.22}
+      b: {x: 2.7, y: 2.38}
+    - a: {x: -0.9, y: -4.18}
+      b: {x: -0.9, y: -3.02}
+    - a: {x: 0.32, y: 3.6}
+      b: {x: 1.48, y: 3.6}
+    - a: {x: 1.22, y: -1.8}
+      b: {x: 2.38, y: -1.8}
+    waterZones: []
+  - id: geometry-4-v05
+    displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Sessiz y\xFCzey"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: Geometri
+    difficulty: 9
+    par: 5
+    requireAllPiecesActive: 1
+    source: {x: -4, y: -2.95}
+    direction: {x: 0.16761288, y: 0.9858529}
+    sourceWidth: 0.08
+    stock: 0000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3.8365295, y: -1.9885113}
+      angle: 31.175669
+    - kind: 0
+      position: {x: -2.4714732, y: -2.4320347}
+      angle: 24.423473
+    - kind: 0
+      position: {x: -1.3277211, y: 0.24253824}
+      angle: 17.170263
+    - kind: 0
+      position: {x: 1.0351516, y: -1.2631272}
+      angle: 17.578556
+    - kind: 0
+      position: {x: 2.1322045, y: 1.4068702}
+      angle: 55.67573
+    goals:
+    - position: {x: 3.8, y: 3}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 0, y: 0.32}
+      b: {x: 0, y: 1.48}
+    - a: {x: 0.9, y: -3.28}
+      b: {x: 0.9, y: -2.12}
+    - a: {x: 3.02, y: 0.9}
+      b: {x: 4.18, y: 0.9}
+    - a: {x: -3.28, y: 0}
+      b: {x: -2.12, y: 0}
+    waterZones: []
+  - id: mastery-5a
+    displayName: "A\xE7\u0131ortay laboratuvar\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -4, y: -3.05}
+    direction: {x: 0.59568757, y: 0.8032162}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -3.5704963, y: -2.4708636}
+      angle: 42.556995
+    - kind: 0
+      position: {x: -2.945671, y: -2.0853302}
+      angle: 42.9854
+    - kind: 0
+      position: {x: -1.3328004, y: 0.15881541}
+      angle: 4.177558
+    - kind: 0
+      position: {x: -0.117233835, y: -1.0973067}
+      angle: 7.0680037
+    - kind: 0
+      position: {x: 1.3457675, y: 1.4444698}
+      angle: 2.552645
+    - kind: 0
+      position: {x: 2.4932623, y: -0.19254306}
+      angle: 7.551392
+    goals:
+    - position: {x: 3.85, y: 3.55}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 2.7, y: 3.02}
+      b: {x: 2.7, y: 4.18}
+    - a: {x: 0, y: -3.28}
+      b: {x: 0, y: -2.12}
+    - a: {x: 1.8, y: -1.48}
+      b: {x: 1.8, y: -0.32}
+    - a: {x: 3.6, y: -0.58}
+      b: {x: 3.6, y: 0.58}
+    - a: {x: -3.28, y: -3.6}
+      b: {x: -2.12, y: -3.6}
+    waterZones: []
+  - id: mastery-5a-v02
+    displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 Kuzey rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: 3.05, y: -4}
+    direction: {x: -0.9698771, y: 0.24359462}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 1.9785211, y: -3.7308872}
+      angle: 113.652954
+    - kind: 0
+      position: {x: 2.5931537, y: -2.6033509}
+      angle: 113.61346
+    - kind: 0
+      position: {x: -0.5911447, y: -1.798913}
+      angle: 106.95861
+    - kind: 0
+      position: {x: 1.3765701, y: 0.3937561}
+      angle: 109.32009
+    - kind: 0
+      position: {x: -1.5204428, y: 0.8762014}
+      angle: 110.9521
+    - kind: 0
+      position: {x: 0.05139653, y: 2.842325}
+      angle: 107.86367
+    goals:
+    - position: {x: -3.55, y: 3.85}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 3.6, y: -2.38}
+      b: {x: 3.6, y: -1.22}
+    - a: {x: -2.38, y: -1.8}
+      b: {x: -1.22, y: -1.8}
+    - a: {x: -2.38, y: 0}
+      b: {x: -1.22, y: 0}
+    - a: {x: 0.9, y: 3.02}
+      b: {x: 0.9, y: 4.18}
+    - a: {x: -3.28, y: 1.8}
+      b: {x: -2.12, y: 1.8}
+    waterZones: []
+  - id: mastery-5a-v03
+    displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: 4, y: 3.05}
+    direction: {x: -0.46948177, y: -0.88294214}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 3.6303637, y: 2.3548346}
+      angle: 215.27257
+    - kind: 0
+      position: {x: 2.8972087, y: 2.2446647}
+      angle: 213.88673
+    - kind: 0
+      position: {x: 1.3609698, y: -0.33523324}
+      angle: 183.59966
+    - kind: 0
+      position: {x: 0.114523545, y: 1.2617749}
+      angle: 185.1607
+    - kind: 0
+      position: {x: -1.3690134, y: -1.5699217}
+      angle: 181.45262
+    - kind: 0
+      position: {x: -2.4483235, y: 0.25833303}
+      angle: 185.17455
+    goals:
+    - position: {x: -3.85, y: -3.55}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: -3.28, y: 0.9}
+      b: {x: -2.12, y: 0.9}
+    - a: {x: 3.02, y: 0.9}
+      b: {x: 4.18, y: 0.9}
+    - a: {x: 1.8, y: 2.12}
+      b: {x: 1.8, y: 3.28}
+    - a: {x: 0.9, y: -2.38}
+      b: {x: 0.9, y: -1.22}
+    - a: {x: 0, y: -1.48}
+      b: {x: 0, y: -0.32}
+    waterZones: []
+  - id: mastery-5a-v04
+    displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 G\xFCney rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -3.05, y: 4}
+    direction: {x: 0.9504733, y: -0.31080624}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.3665533, y: 3.776512}
+      angle: 308.73004
+    - kind: 0
+      position: {x: -2.259337, y: 2.676688}
+      angle: 306.8348
+    - kind: 0
+      position: {x: 0.3727649, y: 1.6186831}
+      angle: 282.1213
+    - kind: 0
+      position: {x: -1.3136779, y: -0.13629392}
+      angle: 283.39203
+    - kind: 0
+      position: {x: 1.6245725, y: -1.1685252}
+      angle: 278.26248
+    - kind: 0
+      position: {x: -0.30345085, y: -2.5632472}
+      angle: 278.70825
+    goals:
+    - position: {x: 3.55, y: -3.85}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 0.9, y: 2.12}
+      b: {x: 0.9, y: 3.28}
+    - a: {x: 3.02, y: -2.7}
+      b: {x: 4.18, y: -2.7}
+    - a: {x: -1.48, y: -3.6}
+      b: {x: -0.32, y: -3.6}
+    - a: {x: 1.8, y: -0.58}
+      b: {x: 1.8, y: 0.58}
+    - a: {x: -3.28, y: 1.8}
+      b: {x: -2.12, y: 1.8}
+    waterZones: []
+  - id: mastery-5b
+    displayName: Ters geometri
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -3.9, y: 3.15}
+    direction: {x: 0.82557327, y: -0.56429493}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.6122785, y: 2.269818}
+      angle: 317.07294
+    - kind: 0
+      position: {x: -1.4891274, y: 0.8577845}
+      angle: 299.10284
+    - kind: 0
+      position: {x: -1.0125347, y: -0.47281384}
+      angle: 349.35352
+    - kind: 0
+      position: {x: 0.36828136, y: 1.1156644}
+      angle: 353.23068
+    - kind: 0
+      position: {x: 1.7609849, y: -1.5641655}
+      angle: 0.060915947
+    - kind: 0
+      position: {x: 2.7301033, y: 0.31033534}
+      angle: 354.3671
+    goals:
+    - position: {x: 3.9, y: -3.75}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 2.7, y: 1.22}
+      b: {x: 2.7, y: 2.38}
+    - a: {x: 0.9, y: -3.28}
+      b: {x: 0.9, y: -2.12}
+    - a: {x: -0.58, y: -0.9}
+      b: {x: 0.58, y: -0.9}
+    - a: {x: -0.58, y: 1.8}
+      b: {x: 0.58, y: 1.8}
+    - a: {x: -3.28, y: 0}
+      b: {x: -2.12, y: 0}
+    waterZones: []
+  - id: mastery-5b-v02
+    displayName: "Ters geometri \xB7 Kuzey rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -3.15, y: -3.9}
+    direction: {x: 0.589159, y: 0.80801713}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.2331846, y: -2.6426103}
+      angle: 48.09682
+    - kind: 0
+      position: {x: -0.8533821, y: -1.387483}
+      angle: 25.974989
+    - kind: 0
+      position: {x: 0.43020397, y: -1.1690212}
+      angle: 70.11259
+    - kind: 0
+      position: {x: -1.0441148, y: 0.55315155}
+      angle: 76.358864
+    - kind: 0
+      position: {x: 1.477445, y: 1.5796938}
+      angle: 82.42597
+    - kind: 0
+      position: {x: -0.22408153, y: 2.8758905}
+      angle: 78.575485
+    goals:
+    - position: {x: 3.75, y: 3.9}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 1.22, y: -1.8}
+      b: {x: 2.38, y: -1.8}
+    - a: {x: -1.8, y: -1.48}
+      b: {x: -1.8, y: -0.32}
+    - a: {x: -1.8, y: 0.32}
+      b: {x: -1.8, y: 1.48}
+    - a: {x: 1.22, y: -0.9}
+      b: {x: 2.38, y: -0.9}
+    - a: {x: -2.38, y: 2.7}
+      b: {x: -1.22, y: 2.7}
+    waterZones: []
+  - id: mastery-6
+    displayName: Son teorem
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -4, y: -3.3}
+    direction: {x: 0.6574254, y: 0.7535196}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.8950791, y: -2.0335758}
+      angle: 59.002808
+    - kind: 0
+      position: {x: -1.9709377, y: 0.38770708}
+      angle: 13.470888
+    - kind: 0
+      position: {x: -0.32605523, y: -1.1020899}
+      angle: 10.980136
+    - kind: 0
+      position: {x: 0.92743963, y: 1.4825859}
+      angle: 2.0744183
+    - kind: 0
+      position: {x: 1.9762084, y: -0.3324047}
+      angle: 358.2648
+    - kind: 0
+      position: {x: 3.1566103, y: 1.4515762}
+      angle: 59.721546
+    goals:
+    - position: {x: 4.05, y: 3.2}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: -2.7, y: 0.32}
+      b: {x: -2.7, y: 1.48}
+    - a: {x: -1.8, y: -2.38}
+      b: {x: -1.8, y: -1.22}
+    - a: {x: 1.8, y: -2.38}
+      b: {x: 1.8, y: -1.22}
+    - a: {x: 0, y: -3.28}
+      b: {x: 0, y: -2.12}
+    - a: {x: -0.9, y: 0.32}
+      b: {x: -0.9, y: 1.48}
+    waterZones: []
+  - id: mastery-6-v02
+    displayName: "Son teorem \xB7 Kuzey rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: 3.3, y: -4}
+    direction: {x: -0.7524474, y: 0.6586523}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2.0793998, y: -2.931552}
+      angle: 148.8247
+    - kind: 0
+      position: {x: -0.52537227, y: -1.9236623}
+      angle: 99.52081
+    - kind: 0
+      position: {x: 1.3075215, y: -0.37501767}
+      angle: 98.12376
+    - kind: 0
+      position: {x: -1.7199513, y: 0.9695804}
+      angle: 89.6302
+    - kind: 0
+      position: {x: 0.56038225, y: 1.9473077}
+      angle: 87.03274
+    - kind: 0
+      position: {x: -1.6305692, y: 3.168904}
+      angle: 150.77359
+    goals:
+    - position: {x: -3.2, y: 4.05}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 3.6, y: -3.28}
+      b: {x: 3.6, y: -2.12}
+    - a: {x: 2.12, y: 0}
+      b: {x: 3.28, y: 0}
+    - a: {x: 1.22, y: 2.7}
+      b: {x: 2.38, y: 2.7}
+    - a: {x: -1.48, y: -2.7}
+      b: {x: -0.32, y: -2.7}
+    - a: {x: -2.38, y: -1.8}
+      b: {x: -1.22, y: -1.8}
+    waterZones: []
+  - id: mastery-6-v03
+    displayName: "Son teorem \xB7 Kar\u015F\u0131 k\u0131y\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: 4, y: 3.3}
+    direction: {x: -0.6337253, y: -0.7735582}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: 2.8800082, y: 1.9328794}
+      angle: 239.91373
+    - kind: 0
+      position: {x: 2.0095751, y: -0.35289675}
+      angle: 194.2613
+    - kind: 0
+      position: {x: 0.2709374, y: 1.1388943}
+      angle: 193.35739
+    - kind: 0
+      position: {x: -0.86595, y: -1.5849481}
+      angle: 183.38669
+    - kind: 0
+      position: {x: -2.0327928, y: 0.48347893}
+      angle: 181.13417
+    - kind: 0
+      position: {x: -3.1153088, y: -1.6265001}
+      angle: 241.06445
+    goals:
+    - position: {x: -4.05, y: -3.2}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: -3.6, y: -0.58}
+      b: {x: -3.6, y: 0.58}
+    - a: {x: -2.7, y: -4.18}
+      b: {x: -2.7, y: -3.02}
+    - a: {x: 2.7, y: -1.48}
+      b: {x: 2.7, y: -0.32}
+    - a: {x: 1.8, y: 1.22}
+      b: {x: 1.8, y: 2.38}
+    - a: {x: -1.48, y: 1.8}
+      b: {x: -0.32, y: 1.8}
+    waterZones: []
+  - id: mastery-6-v04
+    displayName: "Son teorem \xB7 G\xFCney rotas\u0131"
+    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
+    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    chapter: "Ustal\u0131k"
+    difficulty: 10
+    par: 6
+    requireAllPiecesActive: 1
+    source: {x: -3.3, y: 4}
+    direction: {x: 0.819631, y: -0.5728919}
+    sourceWidth: 0.08
+    stock: 000000000000000000000000000000000000000000000000i
+    initial: []
+    solution:
+    - kind: 0
+      position: {x: -2.0178895, y: 3.103852}
+      angle: 328.51825
+    - kind: 0
+      position: {x: 0.46920165, y: 1.7808102}
+      angle: 274.57394
+    - kind: 0
+      position: {x: -1.2669922, y: 0.46491238}
+      angle: 275.51486
+    - kind: 0
+      position: {x: 1.7024965, y: -0.99172384}
+      angle: 268.8658
+    - kind: 0
+      position: {x: -0.569203, y: -1.9965597}
+      angle: 269.2371
+    - kind: 0
+      position: {x: 1.664048, y: -3.0563622}
+      angle: 330.85672
+    goals:
+    - position: {x: 3.2, y: -4.05}
+      band: -1
+      radius: 0.34
+      threshold: 0.55
+    walls:
+    - a: {x: 3.02, y: -2.7}
+      b: {x: 4.18, y: -2.7}
+    - a: {x: -2.38, y: 1.8}
+      b: {x: -1.22, y: 1.8}
+    - a: {x: -3.6, y: 2.12}
+      b: {x: -3.6, y: 3.28}
+    - a: {x: -1.8, y: -3.28}
+      b: {x: -1.8, y: -2.12}
+    - a: {x: -0.58, y: -3.6}
+      b: {x: 0.58, y: -3.6}
+    waterZones: []
+  campaignRevision: 2026-09-30-brick-obstacles-v1

@@ -123,8 +123,10 @@ public sealed class LevelDefinition {
 [CreateAssetMenu(menuName="PrisM/Level Catalog",fileName="LevelCatalog")]
 public sealed class LevelCatalog : ScriptableObject {
  [SerializeField] LevelDefinition[] levels=Array.Empty<LevelDefinition>();
+ [SerializeField] string campaignRevision="";
 
  public int Count=>levels?.Length??0;
+ public string CampaignRevision=>campaignRevision;
  public LevelDefinition[] Definitions=>levels??Array.Empty<LevelDefinition>();
 
  public Level[] Build(){
@@ -134,8 +136,9 @@ public sealed class LevelCatalog : ScriptableObject {
   return result;
  }
 
- public void Import(Level[] source){
+ public void Import(Level[] source,string revision=null){
   if(source==null){levels=Array.Empty<LevelDefinition>();return;}
+  if(revision!=null)campaignRevision=revision;
   levels=new LevelDefinition[source.Length];
   for(int i=0;i<source.Length;i++){var definition=new LevelDefinition();definition.Import(source[i]);levels[i]=definition;}
  }
@@ -169,16 +172,17 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
  readonly LevelCatalog catalog;
  public ScriptableObjectLevelProvider(LevelCatalog catalog){this.catalog=catalog;}
  public Level[] Load(){
-  var fallback=Levels.Create();
-  if(catalog==null||catalog.Count!=fallback.Length)return fallback;
-  if(!catalog.Validate(out string message)){Debug.LogWarning("PrisM LevelCatalog ignored: "+message);return fallback;}
-  var authored=catalog.Build();
-  return authored.Length==fallback.Length?authored:fallback;
+  if(catalog!=null&&catalog.Count==100&&catalog.CampaignRevision==LevelCatalogLoader.CampaignRevision){
+   if(catalog.Validate(out string message))return catalog.Build();
+   Debug.LogWarning("PrisM LevelCatalog ignored: "+message);
+  }
+  return Levels.Create();
  }
 }
 
 public static class LevelCatalogLoader {
  const string ResourceName="LevelCatalog";
+ public const string CampaignRevision="2026-09-30-brick-obstacles-v1";
  public static Level[] Load(){
   var catalog=Resources.Load<LevelCatalog>(ResourceName);
   return new ScriptableObjectLevelProvider(catalog).Load();

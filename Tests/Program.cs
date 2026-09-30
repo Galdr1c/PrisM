@@ -53,8 +53,15 @@ class Program
         string ignore=File.Exists(ignorePath)?File.ReadAllText(ignorePath):"";
         Check("generated release assets stay out of source control",ignore.Contains("Builds/")&&ignore.Contains("Assets/Prism/Generated/"));
 
+        var curriculumTimer=System.Diagnostics.Stopwatch.StartNew();
         var levels=Levels.Create();
+        curriculumTimer.Stop();
+        Console.WriteLine("INFO Desktop curriculum generation: "+curriculumTimer.Elapsed.TotalMilliseconds.ToString("F0")+" ms (not a mobile benchmark)");
         Check("one hundred levels", levels.Length==100);
+        string bakedPath=Path.Combine(repoRoot,"Assets","Prism","Resources","LevelCatalog.asset");
+        string baked=File.Exists(bakedPath)?File.ReadAllText(bakedPath):"";
+        int bakedCount=System.Text.RegularExpressions.Regex.Matches(baked,@"(?m)^  - id: ").Count;
+        Check("build includes versioned one hundred level catalog",bakedCount==100&&baked.Contains("campaignRevision: 2026-09-30-brick-obstacles-v1"));
         var ids=new HashSet<string>();
         bool validIds=true;
         foreach(var level in levels){if(string.IsNullOrWhiteSpace(level.Id)||!ids.Add(level.Id))validIds=false;}
@@ -91,11 +98,17 @@ class Program
             foreach(var goal in level.Goals)if(Math.Abs(goal.Position.X)>4.5||Math.Abs(goal.Position.Y)>4.5)boundsValid=false;
             foreach(var piece in level.Solution)if(Math.Abs(piece.Position.X)>4.25||Math.Abs(piece.Position.Y)>4.25)boundsValid=false;
             if(i>=80&&!level.RequireAllPiecesActive)masteryStructure=false;
-            if(i>=80&&i<90&&level.Solution.Length<3)masteryStructure=false;
-            if(i>=90&&level.Solution.Length<5)masteryStructure=false;
+            if(i>=80&&i<90&&level.Solution.Length<5)masteryStructure=false;
+            if(i>=90&&level.Solution.Length<6)masteryStructure=false;
         }
         Check("curriculum par metadata matches known solutions",curriculumMetadata);
         Check("final 20 levels enforce multi-piece geometry mastery",masteryStructure);
+        bool wallProgression=true;
+        for(int i=1;i<levels.Length;i++){
+            int expected=i<20?1:i<50?2:i<80?3:i<90?4:5;
+            if(levels[i].Walls.Length<expected)wallProgression=false;
+        }
+        Check("brick wall obstacles grow through the campaign",wallProgression);
         var masteryGeometry=new HashSet<string>();
         for(int i=80;i<levels.Length;i++){
             var points=new List<V>{levels[i].Source};

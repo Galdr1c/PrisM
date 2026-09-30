@@ -111,6 +111,7 @@ public static class BuildProject {
   QualitySettings.vSyncCount=0;
 
   EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true)};
+  EnsureBakedCampaign();
   PlayerSettings.companyName="Prism Studio";
   PlayerSettings.productName="PrisM — Işık Atölyesi";
   PlayerSettings.defaultScreenWidth=810;
@@ -122,6 +123,21 @@ public static class BuildProject {
   PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Android,ApplicationId);
   PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.iOS,ApplicationId);
   AssetDatabase.SaveAssets();
+ }
+
+ static void EnsureBakedCampaign(){
+  const string path="Assets/Prism/Resources/LevelCatalog.asset";
+  var catalog=AssetDatabase.LoadAssetAtPath<LevelCatalog>(path);
+  if(catalog==null){
+   catalog=ScriptableObject.CreateInstance<LevelCatalog>();
+   AssetDatabase.CreateAsset(catalog,path);
+  }
+  if(catalog.Count!=100||catalog.CampaignRevision!=LevelCatalogLoader.CampaignRevision){
+   catalog.Import(Levels.Create(),LevelCatalogLoader.CampaignRevision);
+   EditorUtility.SetDirty(catalog);
+   AssetDatabase.SaveAssets();
+  }
+  if(!catalog.Validate(out string message))throw new Exception("Baked level catalog failed validation: "+message);
  }
 
  static void ValidateContent(){

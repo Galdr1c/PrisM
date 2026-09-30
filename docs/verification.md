@@ -1,6 +1,14 @@
 # PrisM doğrulama durumu
 
-29 Eylül 2026
+30 Eylül 2026
+
+## 30 Eylül görsel ve zorluk geçişi
+- Sabit duvarlar tuğla/mortar görünümüne geçirildi; ilk eğitim bölümü hariç bölüm duvar sayısı üniteyle birlikte 1→5 aralığında artar.
+- Son 20 bölümün tamamı en az 5, final ünitesi en az 6 aktif ayna ister. Bilinen çözüm yolları ve yerleştirme kuralları 100 bölümde tekrar doğrulandı.
+- Işın kenarı yumuşatıldı ve hüzme boyunca genişlik değişir; seçili objelerin yörünge halkası ve optik parçalar ışık katmanının önünde okunur.
+- Arayüzde daha yuvarlak paneller/butonlar ve sıcak turuncu odak rengi kullanılır. Seçili obje için açı kontrolü büyütüldü.
+- Windows Unity derlemesi ve 100 çözüm+100 reset smoke geçti; mağaza görüntüleri `Builds/StoreAssets/screens-20260930-130943` altında yenilendi.
+- İlk ölçümde `Levels.Create()` masaüstünde yaklaşık 7,5 saniye sürdü. Unity derlemesi bölümleri doğrulanmış `LevelCatalog.asset` olarak paketliyor; runtime bunu yükler ve yalnız katalog eksik/geçersizse prosedürel üretime geçer. Son Windows smoke 10,7 saniye sürdü (100 bölüm ve ekran görüntüsü dahil); gerçek telefon açılış süresi ayrıca ölçülmeli.
 
 ## Son yerel doğrulama
 - Birleştirilmiş Windows sürümü Unity 6000.6.0f1 ile başarıyla derlendi.

@@ -22,7 +22,8 @@ Shader "Prism/BeamGlow" {
    B vert(A v){B o;float3 w=TransformObjectToWorld(v.positionOS.xyz);o.positionCS=TransformWorldToHClip(w);o.color=v.color;o.uv=v.uv;o.kind=v.uv2.x;o.world=w.xy;return o;}
    half4 frag(B i):SV_Target {
     clip(4.98-abs(i.world.x));clip(4.98-abs(i.world.y));
-    float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):pow(saturate(1.0-abs(i.uv.y*2.0-1.0)),1.8);
+    float crossSection=1.0-smoothstep(0.0,1.0,abs(i.uv.y*2.0-1.0));
+    float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):crossSection;
     float core=pow(profile,5.0);
     float3 baseRgb=SRGBToLinear(i.color.rgb);
     float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(i.kind>0.5?0.35:1.0));

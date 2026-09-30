@@ -69,8 +69,122 @@ public static class Levels {
    level.Par=Math.Max(1,level.Solution?.Length??0);
    if(i>=80)level.RequireAllPiecesActive=true;
   }
+  IncreaseMasteryChains(levels);
   DistinguishMasteryGeometry(levels);
+  AddObstacleWalls(levels);
   return levels.ToArray();
+ }
+
+ static void IncreaseMasteryChains(List<Level> levels){
+  for(int index=80;index<levels.Count;index++){
+   var level=levels[index];
+   int target=index<90?5:6;
+   var points=new List<V>{level.Source};
+   foreach(var mirror in level.Solution)points.Add(mirror.Position);
+   points.Add(level.Goals[0].Position);
+   while(points.Count-2<target){
+    bool accepted=false;
+    for(int attempt=0;attempt<120&&!accepted;attempt++){
+     int segment=attempt%(points.Count-1);
+     V start=points[segment],end=points[segment+1];
+     V path=end-start;
+     if(path.Length<1.25)continue;
+     double amount=.34+(attempt/((points.Count-1)*2))*.10;
+     V side=path.Unit.Perp*((attempt/(points.Count-1))%2==0?amount:-amount);
+     V candidate=(start+end)*.5+side;
+     if(Math.Abs(candidate.X)>4.15||Math.Abs(candidate.Y)>4.15)continue;
+     var trial=new List<V>(points);trial.Insert(segment+1,candidate);
+     V incoming=(candidate-start).Unit,outgoing=(end-candidate).Unit;
+     double turn=Math.Abs(Math.Atan2(V.Cross(incoming,outgoing),V.Dot(incoming,outgoing))*180/Math.PI);
+     if(turn<18||turn>155)continue;
+     var mirrors=new Piece[trial.Count-2];var stock=new Kind[mirrors.Length];
+     for(int i=0;i<mirrors.Length;i++){
+      mirrors[i]=new Piece(Kind.Mirror,trial[i+1],MirrorLineAngle(trial[i+1]-trial[i],trial[i+2]-trial[i+1]));
+      stock[i]=Kind.Mirror;
+     }
+     var previousSolution=level.Solution;var previousStock=level.Stock;var previousDirection=level.Direction;
+     level.Solution=mirrors;level.Stock=stock;level.Direction=(trial[1]-trial[0]).Unit;
+     var session=new Session(level);bool placeable=true;
+     foreach(var piece in mirrors){
+      if(!session.Place(Kind.Mirror,piece.Position)){placeable=false;break;}
+      session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
+     }
+     bool solved=placeable&&session.IsComplete(Optics.Solve(level,session.Pieces));
+     if(solved){points=trial;accepted=true;}
+     else{level.Solution=previousSolution;level.Stock=previousStock;level.Direction=previousDirection;}
+    }
+    if(!accepted)throw new InvalidOperationException("Could not increase mastery chain: "+level.Id);
+   }
+   level.Par=target;
+  }
+ }
+
+ static void AddObstacleWalls(List<Level> levels){
+  for(int index=1;index<levels.Count;index++){
+   var level=levels[index];
+   int target=index<20?1:index<50?2:index<80?3:index<90?4:5;
+   var walls=new List<Wall>(level.Walls);
+   var beams=Optics.Solve(level,level.Solution).Beams;
+   while(walls.Count<target){
+    Wall best=new Wall();double bestScore=double.PositiveInfinity;
+    for(int row=0;row<9;row++)for(int column=0;column<9;column++)for(int orientation=0;orientation<2;orientation++){
+     double x=-3.6+column*.9,y=-3.6+row*.9;
+     V center=new V(x,y);
+     V direction=orientation==0?new V(1,0):new V(0,1);
+     var candidate=new Wall(center-direction*.58,center+direction*.58);
+     if((center-level.Source).Length<1.0)continue;
+     bool clear=true;
+     foreach(var goal in level.Goals)
+      if(PointSegmentDistance(goal.Position,candidate)<goal.Radius+.53){clear=false;break;}
+     if(!clear)continue;
+     foreach(var piece in level.Solution)
+      if(PointSegmentDistance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.24){clear=false;break;}
+     if(!clear)continue;
+     foreach(var wall in walls)
+      if(SegmentDistance(candidate,wall)<.55){clear=false;break;}
+     if(!clear)continue;
+     double nearest=double.PositiveInfinity;
+     foreach(var beam in beams){
+      double distance=SegmentDistance(candidate,new Wall(beam.A,beam.B));
+      if(distance<nearest)nearest=distance;
+      if(nearest<.35)break;
+     }
+     if(nearest<.35||nearest>2.0)continue;
+     // Keep obstacles near plausible optical paths; vary their placement by level.
+     double score=Math.Abs(nearest-(.60+((index+walls.Count)%4)*.13))
+      +((row*17+column*11+orientation*7+index*13)%19)*.008;
+     if(score<bestScore){bestScore=score;best=candidate;}
+    }
+    if(double.IsPositiveInfinity(bestScore))throw new InvalidOperationException("Could not place obstacle walls: "+level.Id);
+    walls.Add(best);
+   }
+   level.Walls=walls.ToArray();
+   var session=new Session(level);
+   foreach(var piece in level.Solution){
+    if(!session.Place(piece.Kind,piece.Position))throw new InvalidOperationException("Obstacle blocks known piece: "+level.Id);
+    session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
+   }
+   if(!session.IsComplete(Optics.Solve(level,session.Pieces)))throw new InvalidOperationException("Obstacle blocks known solution: "+level.Id);
+  }
+ }
+
+ static double PointSegmentDistance(V point,Wall wall){
+  V edge=wall.B-wall.A;
+  double lengthSquared=V.Dot(edge,edge);
+  double t=lengthSquared<1e-12?0:Math.Max(0,Math.Min(1,V.Dot(point-wall.A,edge)/lengthSquared));
+  return (point-(wall.A+edge*t)).Length;
+ }
+
+ static double SegmentDistance(Wall a,Wall b){
+  V da=a.B-a.A,db=b.B-b.A;
+  double denominator=V.Cross(da,db);
+  if(Math.Abs(denominator)>1e-10){
+   double t=V.Cross(b.A-a.A,db)/denominator;
+   double u=V.Cross(b.A-a.A,da)/denominator;
+   if(t>=0&&t<=1&&u>=0&&u<=1)return 0;
+  }
+  return Math.Min(Math.Min(PointSegmentDistance(a.A,b),PointSegmentDistance(a.B,b)),
+   Math.Min(PointSegmentDistance(b.A,a),PointSegmentDistance(b.B,a)));
  }
 
  static void DistinguishMasteryGeometry(List<Level> levels){

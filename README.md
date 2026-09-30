@@ -6,6 +6,8 @@ Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 - Son yerel teslim ve gerçek doğrulama sınırları: `docs/release-handoff.md` ve `docs/verification.md`.
 - Üç özgün laboratuvar/caustic/ustalık arka planı, fiziksel optik obje detayları, 48 saniyelik ambient BGM ve altı olay SFX'i. Müzik ve efektler bağımsız açılıp kapatılır.
 - **100 bölüm / 10 ünite**: yansıma, spektrum, seçici renk, odak, birleşik optik, kırılma, su/cam, senfoni, geometri ve ustalık.
+- Bölümlerde sabit tuğla duvarlar üniteyle birlikte sıklaşır; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları mobilde okunaklı kalacak şekilde ayrılır.
+- Bölümlerde sabit tuğla duvarlar üniteyle birlikte sıklaşır; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları mobilde okunaklı kalacak şekilde ayrılır.
 - İlk sekiz özgün mekanik seed'in stabil ID'leri korunur; mevcut ilerleme kayıtları bozulmadan 100 bölümlük kampanyaya geçebilir.
 - Son 20 bölümde 3–6 aynalı geometri zincirleri vardır. Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.
 - Çekirdek optik: ayna, prizma, renk seçici yüzeyler, ince lens, cam küre, su, duvarlar, renk hedefleri; 7 spektral bant ve kaynak genişliği örneklemesi.
@@ -58,6 +60,10 @@ Gizlilik politikası kaynağı: `docs/privacy-policy.md`
 `ILevelProvider` üzerinde ScriptableObject `LevelCatalog` / `LevelDefinition` authoring katmanı vardır. Unity Editor:
 
 `PrisM/Authoring/Create or Refresh Default Level Catalog`
+
+Derleme doğrulanmış 100 bölümlük kataloğu `Assets/Prism/Resources/LevelCatalog.asset` olarak paketler. Oyuncu açılışında pahalı prosedürel üretim yeniden çalıştırılmaz; kataloğun sürümü/validasyonu bozuksa built-in deterministik üretime geçilir.
+
+Derleme doğrulanmış 100 bölümlük kataloğu `Assets/Prism/Resources/LevelCatalog.asset` olarak paketler. Oyuncu açılışında pahalı prosedürel üretim yeniden çalıştırılmaz; kataloğun sürümü/validasyonu bozuksa built-in deterministik üretime geçilir.
 
 Runtime yalnız 100 bölüm sayısını ve tam catalog validasyonunu geçen authored catalog'u kabul eder; eski/bozuk asset bulunursa deterministik `Levels.Create()` kampanyasına fallback yapar.
 

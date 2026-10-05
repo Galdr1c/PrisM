@@ -1,4 +1,4 @@
-# PrisM — Işık Atölyesi
+# PRISM — Işık Yolları
 
 Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 
@@ -6,12 +6,12 @@ Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 - Son yerel teslim ve gerçek doğrulama sınırları: `docs/release-handoff.md` ve `docs/verification.md`.
 - Üç özgün laboratuvar/caustic/ustalık arka planı, fiziksel optik obje detayları, 48 saniyelik ambient BGM ve altı olay SFX'i. Müzik ve efektler bağımsız açılıp kapatılır.
 - **100 bölüm / 10 ünite**: yansıma, spektrum, seçici renk, odak, birleşik optik, kırılma, su/cam, senfoni, geometri ve ustalık.
-- Bölümlerde sabit tuğla duvarlar üniteyle birlikte sıklaşır; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları mobilde okunaklı kalacak şekilde ayrılır.
-- Bölümlerde sabit tuğla duvarlar üniteyle birlikte sıklaşır; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları mobilde okunaklı kalacak şekilde ayrılır.
+- Onaylanan marka/UI planı uygulandı: Canvas + TextMeshPro/Sora, sade gece moru HUD, doğrudan sürüklenen parça tepsisi, takımyıldız bölüm haritası, alt ayar/ipucu/sonuç sheet'leri ve optik katlama glyph'i.
+- Duvarlar yeni plandaki mat obsidiyen segmentler olarak sunulur; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları ayrılır.
 - İlk sekiz özgün mekanik seed'in stabil ID'leri korunur; mevcut ilerleme kayıtları bozulmadan 100 bölümlük kampanyaya geçebilir.
-- Son 20 bölümde 3–6 aynalı geometri zincirleri vardır. Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.
+- Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.
 - Çekirdek optik: ayna, prizma, renk seçici yüzeyler, ince lens, cam küre, su, duvarlar, renk hedefleri; 7 spektral bant ve kaynak genişliği örneklemesi.
-- Safe-area uyumlu dikey mobil layout, 10×10 bölüm haritası, sıralı kilit açma, ipucu, undo/reset, ayarlar, ses/titreşim ve Android geri davranışı.
+- Safe-area uyumlu dikey layout, 10×10 bölüm haritası, kademeli ipucu, undo/reset, hassas dönüş, azaltılmış hareket, yüksek kontrast, yedi renk sembolü, beam/bloom ayarları ve Android geri davranışı.
 - Katmanlı URP renderer: prosedürel board, additive HDR ışın, Bloom + ACES, cam ve su shader'ları.
 - Auto / Düşük / Orta / Yüksek cihaz kalite profilleri. Grafik kalitesi optik çözümü değiştirmez.
 - Yerel, versioned JSON ilerleme kaydı; eski PlayerPrefs completion verisi otomatik migrate edilir.

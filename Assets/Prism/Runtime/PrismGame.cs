@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -20,6 +19,101 @@ public class PrismGame : MonoBehaviour {
  BoardRenderer board;
  Camera cam;
  PrismFeedback feedback;
+ PrismPresentation presentation;
+ Piece trayGhost;
+ Kind? trayKind;
+ bool transitionBusy,completionPresented;
+ float dragStarted;
+ int invalidPlacementCount;
+ readonly List<UnityEngine.EventSystems.RaycastResult> uiHits=new List<UnityEngine.EventSystems.RaycastResult>();
+
+ public Level[] CampaignLevels=>levels;
+ public Level CurrentLevel=>session?.Level;
+ public int CurrentIndex=>levelIndex;
+ public IList<Piece> CurrentPieces=>session?.Pieces;
+ public Result CurrentResult=>result;
+ public int SelectedIndex=>selected;
+ public PrismFeedback Feedback=>feedback;
+ public int CompletedCount=>completedLevelIds.Count;
+ public bool IsLevelUnlocked(int index)=>IsUnlocked(index);
+ public bool IsLevelComplete(int index)=>index>=0&&index<levels.Length&&completedLevelIds.Contains(levels[index].Id);
+ public int Remaining(Kind kind)=>session.Remaining(kind);
+ public Kind? ArmedKind=>armed;
+ public bool InteractionBusy=>transitionBusy;
+ public bool IsAutomatedRun=>smoke||storeCapture;
+ public bool HasWon=>won;
+ public void RenderSolutionReveal(float fraction){board.SolutionReveal=Mathf.Clamp01(fraction);board.Draw(session.Level,session.Pieces,result,-1);}
+ public void CancelInteraction(){
+  if(dragging||rotating)session?.EndEdit();
+  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;dirty=true;
+ }
+
+ public void ContinueGame(){presentation.ShowGameplay();}
+ public void OpenLevel(int index){if(!IsUnlocked(index)){feedback?.Invalid();return;}Load(index);}
+ public void AdvanceLevel(){if(levelIndex<levels.Length-1)OpenLevel(levelIndex+1);else presentation.ShowMap();}
+ public void ArmPiece(Kind kind){if(session.Remaining(kind)<=0)return;armed=kind;selected=-1;dirty=true;feedback?.Click();}
+ public void RotateSelected(double degrees){Rotate(degrees);}
+ public void RemoveSelected(){if(selected<0||won||transitionBusy)return;session.Remove(selected);selected=-1;dirty=true;feedback?.Click();}
+ public void RequestHint(int stage){board.ShowHint(Mathf.Clamp(stage,1,3),session.Level,session.Pieces);}
+ public void SetReducedMotion(bool value){VisualEnvironment.SetReducedMotion(value);dirty=true;}
+ public void SetHighContrast(bool value){VisualEnvironment.SetHighContrast(value);dirty=true;}
+ public void SetColorSymbols(bool value){VisualEnvironment.SetColorSymbols(value);dirty=true;}
+ public void SetPrecisionMode(bool value){VisualEnvironment.SetPrecisionMode(value);}
+ public void SetBeamIntensity(float value){VisualEnvironment.SetBeamScale(value);dirty=true;}
+ public void SetBloomIntensity(float value){VisualEnvironment.SetBloomScale(value);}
+
+ public void StartTrayDrag(Kind kind,Vector2 screenPosition){
+  if(session.Remaining(kind)<=0||won)return;
+  trayKind=kind;armed=null;
+  double angle=kind==Kind.Lens||kind==Kind.Prism?90:kind==Kind.Sphere?0:45;
+  trayGhost=new Piece(kind,ScreenWorld(screenPosition),angle);
+  UpdateTrayDrag(screenPosition);
+ }
+ public void UpdateTrayDrag(Vector2 screenPosition){
+  if(trayGhost==null)return;
+  trayGhost.Position=ScreenWorld(screenPosition);
+  var preview=new List<Piece>(session.Pieces){trayGhost};
+  board.Draw(session.Level,preview,Optics.Solve(session.Level,preview),preview.Count-1);
+ }
+ public void EndTrayDrag(Vector2 screenPosition){
+  if(trayGhost==null)return;
+  var ghost=trayGhost;ghost.Position=ScreenWorld(screenPosition);
+  if(session.Place(ghost.Kind,ghost.Position)){
+   selected=session.Pieces.Count-1;session.Pieces[selected].Angle=ghost.Angle;feedback?.Place(ghost.Kind);
+  }else feedback?.Invalid();
+  trayGhost=null;trayKind=null;dirty=true;
+ }
+ public void UndoAction(){if(!transitionBusy&&!won)StartCoroutine(AnimateUndo());}
+ public void RestartLevel(){if(!transitionBusy)StartCoroutine(AnimateReset());}
+ IEnumerator AnimateUndo(){
+  transitionBusy=true;
+  var before=new List<Piece>();foreach(var p in session.Pieces)before.Add(p.Copy());
+  session.Undo();selected=-1;armed=null;settle=0;Solve();
+  if(!VisualEnvironment.ReducedMotion&&before.Count==session.Pieces.Count){
+   float start=Time.unscaledTime;
+   while(Time.unscaledTime-start<.18f){
+    float t=Mathf.SmoothStep(0,1,(Time.unscaledTime-start)/.18f);
+    var visual=new List<Piece>();
+    for(int i=0;i<before.Count;i++){
+     var final=session.Pieces[i];
+     visual.Add(new Piece(final.Kind,before[i].Position+(final.Position-before[i].Position)*t,
+      before[i].Angle+Mathf.DeltaAngle((float)before[i].Angle,(float)final.Angle)*t));
+    }
+    board.Draw(session.Level,visual,result,-1);yield return null;
+   }
+  }
+  transitionBusy=false;dirty=true;feedback?.Click();
+ }
+ IEnumerator AnimateReset(){
+  transitionBusy=true;selected=-1;armed=null;
+  var visual=new List<Piece>(session.Pieces);
+  session.Reset();won=false;completionPresented=false;settle=0;Solve();
+  if(!VisualEnvironment.ReducedMotion){
+   while(visual.Count>0){visual.RemoveAt(visual.Count-1);board.Draw(session.Level,visual,result,-1);yield return new WaitForSecondsRealtime(.04f);}
+  }
+  dirty=true;transitionBusy=false;
+  board.ClearHint();presentation.ShowGameplay();feedback?.Click();
+ }
  ProgressData progress=new ProgressData();
  readonly HashSet<string> completedLevelIds=new HashSet<string>();
 
@@ -33,21 +127,7 @@ public class PrismGame : MonoBehaviour {
  double startAngle;
  V startDirection;
  float scale=1,offsetX,offsetY;
- Font font;
- Texture2D circleTexture;
- float rotateCueUntil;
-
- readonly Color ink=new Color(.92f,.965f,.975f);
- readonly Color muted=new Color(.66f,.75f,.80f);
- readonly Color gold=new Color(1f,.73f,.42f);
- readonly Color cyan=new Color(.48f,.89f,.91f);
- readonly Color success=new Color(.34f,.92f,.68f);
  readonly Color danger=new Color(.96f,.40f,.42f);
- readonly Color surface=new Color(.055f,.10f,.16f);
- readonly Color panel=new Color(.085f,.15f,.22f);
- readonly Color raised=new Color(.13f,.22f,.30f);
- readonly Color border=new Color(.24f,.36f,.43f);
- static readonly CultureInfo TurkishCulture=new CultureInfo("tr-TR");
 
  string SavePath=>Path.Combine(Application.persistentDataPath,"progress.json");
  public static string PieceName(Kind k)=>PieceInfo.Name(k);
@@ -55,10 +135,11 @@ public class PrismGame : MonoBehaviour {
  void Start(){
   Application.targetFrameRate=60;
   Screen.sleepTimeout=SleepTimeout.NeverSleep;
-  font=Resources.GetBuiltinResource<Font>("LegacyRuntime.ttf");
+  // Presentation typography is owned by the Canvas/TMP view layer.
   var commandLine=Environment.GetCommandLineArgs();
   smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;
   storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
+  if(smoke||storeCapture)Application.runInBackground=true;
 
   levels=LevelCatalogLoader.Load();
   if(levels==null||levels.Length==0)throw new Exception("PrisM has no playable levels.");
@@ -77,6 +158,9 @@ public class PrismGame : MonoBehaviour {
 
   board=new GameObject("Light laboratory").AddComponent<BoardRenderer>();
   Load(FindLevel(progress.lastLevelId),true);
+  presentation=gameObject.AddComponent<PrismPresentation>();
+  presentation.Initialize(this);
+  if(smoke||storeCapture)presentation.ShowGameplay();else presentation.ShowHome();
   if(smoke)StartCoroutine(Smoke());
   else if(storeCapture)StartCoroutine(StoreCapture());
  }
@@ -89,14 +173,12 @@ public class PrismGame : MonoBehaviour {
  void LoadProgress(){
   progress=new ProgressData();
   completedLevelIds.Clear();
-  try{
-   if(File.Exists(SavePath)){
-    var loaded=JsonUtility.FromJson<ProgressData>(File.ReadAllText(SavePath));
-    if(loaded!=null)progress=loaded;
-   }
-  }catch(Exception e){
-   Debug.LogWarning("Progress could not be loaded: "+e.Message);
-   progress=new ProgressData();
+  foreach(var path in new[]{SavePath,SavePath+".tmp",SavePath+".bak"}){
+   if(!File.Exists(path))continue;
+   try{
+    var loaded=JsonUtility.FromJson<ProgressData>(File.ReadAllText(path));
+    if(loaded!=null){progress=loaded;break;}
+   }catch(Exception e){Debug.LogWarning("Progress copy could not be loaded: "+e.Message);}
   }
   if(progress.completedLevelIds==null)progress.completedLevelIds=new List<string>();
   foreach(var id in progress.completedLevelIds)if(!string.IsNullOrEmpty(id))completedLevelIds.Add(id);
@@ -130,26 +212,26 @@ public class PrismGame : MonoBehaviour {
    Directory.CreateDirectory(Application.persistentDataPath);
    string temp=SavePath+".tmp";
    File.WriteAllText(temp,JsonUtility.ToJson(progress,true));
-   if(File.Exists(SavePath))File.Delete(SavePath);
-   File.Move(temp,SavePath);
+   if(File.Exists(SavePath))File.Replace(temp,SavePath,SavePath+".bak");
+   else File.Move(temp,SavePath);
   }catch(Exception e){
    Debug.LogWarning("Progress could not be saved: "+e.Message);
   }
  }
 
- void OnApplicationPause(bool paused){if(paused)SaveProgress();}
+ void OnApplicationPause(bool paused){if(paused){CancelInteraction();SaveProgress();}}
+ void OnApplicationFocus(bool focused){if(!focused)CancelInteraction();}
  void OnApplicationQuit(){SaveProgress();}
- void OnDestroy(){if(circleTexture!=null)Destroy(circleTexture);}
 
  void Layout(){
   Rect safe=Screen.safeArea;
   if(safe.width<1||safe.height<1)safe=new Rect(0,0,Screen.width,Screen.height);
-  scale=Mathf.Max(.01f,Mathf.Min(safe.width/900f,safe.height/1540f));
-  float usedW=900f*scale,usedH=1540f*scale;
-  offsetX=safe.x+(safe.width-usedW)*.5f;
-  offsetY=(Screen.height-safe.yMax)+(safe.height-usedH)*.5f;
-  cam.orthographicSize=Screen.height/(scale*160f);
-  cam.transform.position=new Vector3(0,(offsetY+560f*scale-Screen.height*.5f)/(80f*scale),-10f);
+  float boardPixels=Mathf.Min(safe.width*.96f,safe.height*.76f);
+  float pixelsPerUnit=boardPixels/10f;
+  Vector2 center=new Vector2(safe.center.x,safe.yMin+safe.height*.53f);
+  cam.orthographicSize=Screen.height/(pixelsPerUnit*2f);
+  if(won&&!VisualEnvironment.ReducedMotion)cam.orthographicSize*=1f+.035f*Mathf.SmoothStep(0,1,(Time.unscaledTime-winShownAt)/.7f);
+  cam.transform.position=new Vector3((Screen.width*.5f-center.x)/pixelsPerUnit,(Screen.height*.5f-center.y)/pixelsPerUnit,-10f);
  }
 
  int HighestUnlocked(){
@@ -170,11 +252,15 @@ public class PrismGame : MonoBehaviour {
   levelIndex=index;
   session=new Session(levels[levelIndex]);
   previousLit=0;
+  completionPresented=false;trayGhost=null;trayKind=null;dragging=rotating=false;
+  board?.ClearHint();
+  if(board)board.SolutionReveal=1f;
   selected=-1;armed=null;showHint=false;showLevelMap=false;showSettings=false;mapChapter=-1;won=false;showWinPanel=false;settle=0;winShownAt=-10f;toast="";toastUntil=0;dirty=false;
   Solve();
   board?.SetCelebration(0f);
   VisualEnvironment.SetCelebration(0f);
   if(!smoke&&!storeCapture){progress.lastLevelId=session.Level.Id;SaveProgress();}
+  presentation?.ShowGameplay();
  }
 
  void Solve(){
@@ -196,11 +282,11 @@ public class PrismGame : MonoBehaviour {
   if(dirty)Solve();
 
   bool complete=session.IsComplete(result);
-  if(!won&&complete){
+  if(!transitionBusy&&!won&&complete){
    settle+=Time.deltaTime;
    if(settle>.58f){
     won=true;
-    showWinPanel=true;
+    showWinPanel=false;
     winShownAt=Time.unscaledTime;
     bool milestone=(levelIndex+1)%10==0||levelIndex==levels.Length-1;
     if(!smoke&&!storeCapture){
@@ -209,22 +295,28 @@ public class PrismGame : MonoBehaviour {
      feedback?.Complete(milestone);
     }
    }
-  }else if(!complete)settle=0;
+  }else if(!complete||transitionBusy)settle=0;
 
   float celebration=0f;
   if(won){
    float age=Time.unscaledTime-winShownAt;
    celebration=Mathf.Clamp01(1f-Mathf.Max(0f,age-1.2f)/2.4f);
+   if(!completionPresented&&!smoke&&!storeCapture){completionPresented=true;presentation.ShowCompletion(levelIndex==levels.Length-1);}
   }
+  VisualEnvironment.SetPaused(presentation!=null&&presentation.BlocksBoardInput&&!won);
+  float lift=dragging?Mathf.Clamp01((Time.unscaledTime-dragStarted-.12f)/.12f)*.32f:0f;
+  board?.SetInteraction(selected,dragging,rotating,lift);
   board?.SetCelebration(celebration);
   VisualEnvironment.SetCelebration(celebration);
  }
 
  Vector2 Design(Vector2 screen)=>new Vector2((screen.x-offsetX)/scale,(Screen.height-screen.y-offsetY)/scale);
  V World(Vector2 p)=>new V((p.x-450)/80,(560-p.y)/80);
+ V ScreenWorld(Vector2 point){var world=cam.ScreenToWorldPoint(new Vector3(point.x,point.y,10));return new V(world.x,world.y);}
 
  void HandleBack(){
   if(Keyboard.current==null||!Keyboard.current.escapeKey.wasPressedThisFrame)return;
+  if(presentation!=null){presentation.HandleBack();return;}
   if(showHint){showHint=false;return;}
   if(showSettings){showSettings=false;return;}
   if(showLevelMap){if(mapChapter>=0)mapChapter=-1;else showLevelMap=false;return;}
@@ -240,7 +332,7 @@ public class PrismGame : MonoBehaviour {
  }
 
  void Pointer(){
-  if(showHint||showLevelMap||showSettings||won)return;
+  if(showHint||showLevelMap||showSettings||won||transitionBusy||trayKind.HasValue||(presentation!=null&&presentation.BlocksBoardInput))return;
   Vector2 raw;
   bool down,held,up;
 
@@ -253,20 +345,20 @@ public class PrismGame : MonoBehaviour {
    if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&Math.Abs(m.scroll.ReadValue().y)>.01f&&!won){
     session.BeginEdit();
     session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+Math.Sign(m.scroll.ReadValue().y));
-    session.EndEdit();dirty=true;rotateCueUntil=Time.unscaledTime+.85f;feedback?.Rotate();
+    session.EndEdit();dirty=true;feedback?.Rotate();
    }
   }else return;
 
-  Vector2 p=Design(raw);
-  V w=World(p);
-  bool onBoard=new Rect(50,160,800,800).Contains(p);
+  V w=ScreenWorld(raw);
+  bool onBoard=Math.Abs(w.X)<4.8&&Math.Abs(w.Y)<4.8;
+  if(down&&IsOverPresentation(raw))return;
 
   if(down&&onBoard&&!won){
    if(armed.HasValue){
     if(session.Place(armed.Value,w)){
      selected=session.Pieces.Count-1;armed=null;dirty=true;feedback?.Place();
     }else{
-     feedback?.Invalid();Notify("Buraya yerleştirilemez · kaynak, hedef, duvar veya başka bir parçayla çakışıyor.",danger);
+     feedback?.Invalid();if(invalidPlacementCount++<3)Notify("Buraya yerleşemez",danger);
     }
     return;
    }
@@ -283,6 +375,7 @@ public class PrismGame : MonoBehaviour {
     if(selected>=0){
      feedback?.Click();
      session.BeginEdit();dragging=true;
+     dragStarted=Time.unscaledTime;
      V delta=session.Pieces[selected].Position-w;
      dragOffset=new Vector2((float)delta.X,(float)delta.Y);
     }
@@ -299,7 +392,10 @@ public class PrismGame : MonoBehaviour {
    }
    if(rotating&&PieceInfo.CanRotate(piece.Kind)){
     V dir=w-piece.Position;
-    piece.Angle=Normalize(startAngle+(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI);
+    double before=piece.Angle;
+    double rotation=(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI;
+    piece.Angle=Normalize(startAngle+rotation*(VisualEnvironment.PrecisionMode ? .35 : 1));
+    if((int)(before/15)!=(int)(piece.Angle/15))feedback?.Rotate();
     dirty=true;
    }
   }
@@ -307,16 +403,25 @@ public class PrismGame : MonoBehaviour {
   if(up&&(dragging||rotating)){
    bool changedAngle=rotating&&selected>=0&&Math.Abs(session.Pieces[selected].Angle-startAngle)>.1;
    session.EndEdit();
-   if(changedAngle){rotateCueUntil=Time.unscaledTime+.85f;feedback?.Rotate();}
+   if(changedAngle)feedback?.Rotate();
    else feedback?.Click();
    dragging=rotating=false;
   }
  }
 
  void Notify(string message,Color color){
+  presentation?.ShowFeedback(message);
   toast=message??"";
   toastColor=color;
   toastUntil=Time.unscaledTime+2.25f;
+ }
+
+ bool IsOverPresentation(Vector2 position){
+  var events=UnityEngine.EventSystems.EventSystem.current;
+  if(events==null)return false;
+  uiHits.Clear();
+  events.RaycastAll(new UnityEngine.EventSystems.PointerEventData(events){position=position},uiHits);
+  return uiHits.Count>0;
  }
 
  static double Normalize(double angle)=>(angle%360+360)%360;
@@ -330,454 +435,9 @@ public class PrismGame : MonoBehaviour {
   return lit;
  }
 
- GUIStyle TextStyle(int size,Color c,FontStyle weight=FontStyle.Normal,TextAnchor align=TextAnchor.MiddleLeft){
-  return new GUIStyle(GUI.skin.label){
-   font=font,fontSize=size,fontStyle=weight,alignment=align,
-   normal={textColor=c},wordWrap=true,clipping=TextClipping.Clip
-  };
- }
-
- void Text(Rect r,string text,int size,Color c,FontStyle weight=FontStyle.Normal,TextAnchor align=TextAnchor.MiddleLeft){
-  GUI.Label(r,text,TextStyle(size,c,weight,align));
- }
-
- void Box(Rect r,Color c){
-  Color old=GUI.color;GUI.color=c;GUI.DrawTexture(r,Texture2D.whiteTexture);GUI.color=old;
- }
-
- void RoundedBox(Rect r,Color fill,float radius=22){
-  radius=Mathf.Min(radius,r.width*.5f,r.height*.5f);
-  if(radius<1){Box(r,fill);return;}
-  if(circleTexture==null){
-   circleTexture=new Texture2D(64,64,TextureFormat.RGBA32,false);
-   circleTexture.wrapMode=TextureWrapMode.Clamp;
-   for(int y=0;y<64;y++)for(int x=0;x<64;x++){
-    float distance=Vector2.Distance(new Vector2(x+.5f,y+.5f),new Vector2(32,32));
-    circleTexture.SetPixel(x,y,new Color(1,1,1,Mathf.Clamp01(32f-distance)));
-   }
-   circleTexture.Apply(false,true);
-  }
-  Box(new Rect(r.x+radius,r.y,r.width-2*radius,r.height),fill);
-  Box(new Rect(r.x,r.y+radius,r.width,r.height-2*radius),fill);
-  Color old=GUI.color;GUI.color=fill;
-  float diameter=radius*2;
-  GUI.DrawTexture(new Rect(r.x,r.y,diameter,diameter),circleTexture);
-  GUI.DrawTexture(new Rect(r.xMax-diameter,r.y,diameter,diameter),circleTexture);
-  GUI.DrawTexture(new Rect(r.x,r.yMax-diameter,diameter,diameter),circleTexture);
-  GUI.DrawTexture(new Rect(r.xMax-diameter,r.yMax-diameter,diameter,diameter),circleTexture);
-  GUI.color=old;
- }
-
- void Line(Vector2 a,Vector2 b,Color color,float width=3){
-  Matrix4x4 old=GUI.matrix;
-  GUIUtility.RotateAroundPivot(Mathf.Atan2(b.y-a.y,b.x-a.x)*Mathf.Rad2Deg,a);
-  Box(new Rect(a.x,a.y-width*.5f,Vector2.Distance(a,b),width),color);
-  GUI.matrix=old;
- }
-
- void PieceIcon(Rect r,Kind kind,Color color){
-  Vector2 c=r.center;float s=Mathf.Min(r.width,r.height)*.38f;
-  if(kind==Kind.Prism){
-   Vector2 a=c+new Vector2(0,-s),b=c+new Vector2(-s,s),d=c+new Vector2(s,s);
-   Line(a,b,color);Line(b,d,color);Line(d,a,color);
-   Line(c+new Vector2(-s*1.4f,0),c,color,2);Line(c,c+new Vector2(s*1.4f,-s*.4f),gold,2);
-  }else if(kind==Kind.Lens||kind==Kind.Sphere){
-   Vector2 previous=c+new Vector2(s,0);
-   for(int i=1;i<=24;i++){
-    float angle=i*Mathf.PI/12;Vector2 next=c+new Vector2(Mathf.Cos(angle)*s*(kind==Kind.Lens?.45f:1),Mathf.Sin(angle)*s);
-    if(i==1)previous=c+new Vector2(s*(kind==Kind.Lens?.45f:1),0);
-    Line(previous,next,color,2);previous=next;
-   }
-   Line(c+new Vector2(-s*1.35f,0),c+new Vector2(s*1.35f,0),gold,2);
-  }else{
-   Color optic=kind==Kind.Red?new Color(.95f,.40f,.35f):kind==Kind.Green?new Color(.40f,.85f,.63f):color;
-   Line(c+new Vector2(-s,s),c+new Vector2(s,-s),optic,6);
-   Line(c+new Vector2(-s*1.3f,-s*.35f),c+new Vector2(0,-s*.35f),gold,2);
-   Line(c+new Vector2(0,-s*.35f),c+new Vector2(0,-s*1.25f),gold,2);
-  }
- }
-
- void Card(Rect r,Color fill,Color edge){
-  RoundedBox(new Rect(r.x+3,r.y+6,r.width,r.height),new Color(0,0,0,.23f),24);
-  RoundedBox(r,edge,24);
-  RoundedBox(new Rect(r.x+2,r.y+2,r.width-4,r.height-4),fill,22);
-  Box(new Rect(r.x+24,r.y+4,r.width-48,2),new Color(1,1,1,.08f));
- }
-
- void ProgressBar(Rect r,float value,Color fill){
-  value=Mathf.Clamp01(value);
-  RoundedBox(r,new Color(.08f,.13f,.18f,.9f),r.height*.5f);
-  if(value>0f)RoundedBox(new Rect(r.x,r.y,r.width*value,r.height),fill,r.height*.5f);
- }
-
- void Pill(Rect r,string label,Color accent,int fontSize=13){
-  RoundedBox(r,new Color(accent.r*.20f,accent.g*.20f,accent.b*.20f,.97f),r.height*.48f);
-  RoundedBox(new Rect(r.x+5,r.y+5,Mathf.Min(8,r.height-10),Mathf.Min(8,r.height-10)),accent,4);
-  Text(r,label,fontSize,accent,FontStyle.Bold,TextAnchor.MiddleCenter);
- }
-
- bool Button(Rect r,string label,bool active=false,bool enabled=true,int fontSize=24,bool primary=false,bool destructive=false){
-  Color accent=destructive?danger:(primary?gold:(active?cyan:border));
-  Color fill=destructive?new Color(.35f,.14f,.18f):primary?new Color(.86f,.43f,.20f):(active?new Color(.13f,.38f,.43f):raised);
-  if(!enabled)fill=new Color(panel.r,panel.g,panel.b,.85f);
-  bool hover=enabled&&r.Contains(Event.current.mousePosition)&&!storeCapture;
-  if(hover)fill=Color.Lerp(fill,Color.white,.12f);
-  RoundedBox(new Rect(r.x+2,r.y+5,r.width,r.height),new Color(0,0,0,.28f),22);
-  RoundedBox(r,enabled?accent:new Color(border.r,border.g,border.b,.65f),22);
-  RoundedBox(new Rect(r.x+3,r.y+3,r.width-6,r.height-7),fill,19);
-  Box(new Rect(r.x+22,r.y+6,r.width-44,2),new Color(1,1,1,enabled?.24f:.07f));
-  if(primary)RoundedBox(new Rect(r.x+13,r.center.y-4,8,8),new Color(1,.91f,.68f),4);
-  Text(r,label,fontSize,enabled?(primary?new Color(.14f,.095f,.08f):(active?new Color(.87f,1,1):ink)):muted,primary||active?FontStyle.Bold:FontStyle.Normal,TextAnchor.MiddleCenter);
-  bool old=GUI.enabled;
-  GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);
-  bool hit=GUI.Button(r,GUIContent.none,GUIStyle.none);
-  GUI.enabled=old;
-  if(hit)feedback?.Click();
-  return hit;
- }
-
- int GoalsLit(){
-  if(result==null||result.Energy==null)return 0;
-  int lit=0,count=Mathf.Min(result.Energy.Length,session.Level.Goals.Length);
-  for(int i=0;i<count;i++)if(result.Energy[i]>=session.Level.Goals[i].Threshold)lit++;
-  return lit;
- }
-
- int ChapterCompleted(int chapterIndex){
-  if(chapterIndex<0||chapterIndex*10>=levels.Length)return 0;
-  int first=chapterIndex*10,end=Mathf.Min(first+10,levels.Length),count=0;
-  for(int i=first;i<end;i++)if(completedLevelIds.Contains(levels[i].Id))count++;
-  return count;
- }
-
- int ChapterSize(int chapterIndex)=>Mathf.Clamp(levels.Length-chapterIndex*10,0,10);
-
- void DrawHeader(){
-  Rect mapButton=new Rect(62,34,72,72);
-  if(CircleButton(mapButton,"",false)){
-   showLevelMap=true;mapChapter=-1;showHint=false;showSettings=false;
-  }
-  DrawGridGlyph(new Rect(84,56,28,28),ink);
-
-  Rect settingsButton=new Rect(766,34,72,72);
-  if(CircleButton(settingsButton,"",showSettings)){
-   showSettings=true;showHint=false;showLevelMap=false;
-  }
-  DrawDotsGlyph(new Rect(788,63,28,12),showSettings?gold:muted);
-
-  int titleSize=session.Level.Name.Length>38?27:session.Level.Name.Length>26?30:34;
-  Text(new Rect(160,22,580,46),session.Level.Name,titleSize,ink,FontStyle.Bold,TextAnchor.MiddleCenter);
-  Text(new Rect(160,64,580,28),"Deney "+(levelIndex+1)+" / "+levels.Length,18,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
-  DrawGoalDots();
- }
-
- bool CircleButton(Rect r,string label,bool active=false,bool enabled=true){
-  Color edge=active?gold:border;
-  Color fill=active?new Color(.16f,.13f,.08f,.98f):new Color(.075f,.095f,.17f,.97f);
-  RoundedBox(new Rect(r.x+2,r.y+4,r.width,r.height),new Color(0,0,0,.28f),r.width*.5f);
-  RoundedBox(r,enabled?edge:new Color(border.r,border.g,border.b,.5f),r.width*.5f);
-  RoundedBox(new Rect(r.x+2,r.y+2,r.width-4,r.height-4),fill,(r.width-4)*.5f);
-  if(!string.IsNullOrEmpty(label))Text(r,label,26,enabled?ink:muted,FontStyle.Bold,TextAnchor.MiddleCenter);
-  bool old=GUI.enabled;
-  GUI.enabled=enabled&&(!(showHint||showLevelMap||showSettings||(won&&showWinPanel))||drawingOverlay);
-  bool hit=GUI.Button(r,GUIContent.none,GUIStyle.none);
-  GUI.enabled=old;
-  if(hit)feedback?.Click();
-  return hit;
- }
-
- void DrawGridGlyph(Rect r,Color color){
-  float cell=9f,gap=5f;
-  for(int row=0;row<2;row++)for(int col=0;col<2;col++)
-   RoundedBox(new Rect(r.x+col*(cell+gap),r.y+row*(cell+gap),cell,cell),color,2.5f);
- }
-
- void DrawDotsGlyph(Rect r,Color color){
-  float size=7f;
-  for(int i=0;i<3;i++)RoundedBox(new Rect(r.x+i*10.5f,r.y+2,size,size),color,size*.5f);
- }
-
- void DrawGoalDots(){
-  int count=session.Level.Goals.Length;
-  if(count<=0)return;
-  float spacing=count>6?24f:30f;
-  float start=450f-(count-1)*spacing*.5f;
-  for(int i=0;i<count;i++){
-   var goal=session.Level.Goals[i];
-   Color c=goal.Band<0?ink:BoardRenderer.Spectrum[goal.Band];
-   bool lit=result!=null&&result.Energy!=null&&i<result.Energy.Length&&result.Energy[i]>=goal.Threshold;
-   float radius=lit?9f:8f;
-   if(lit)RoundedBox(new Rect(start+i*spacing-13,112,26,26),new Color(c.r,c.g,c.b,.18f),13);
-   RoundedBox(new Rect(start+i*spacing-radius,125-radius,2*radius,2*radius),lit?c:new Color(c.r,c.g,c.b,.72f),radius);
-  }
- }
-
- void DrawBoardHud(){
-  Box(new Rect(49,159,802,1),new Color(border.r,border.g,border.b,.65f));
-  Box(new Rect(49,960,802,1),new Color(border.r,border.g,border.b,.65f));
-  Box(new Rect(49,160,1,800),new Color(border.r,border.g,border.b,.65f));
-  Box(new Rect(850,160,1,800),new Color(border.r,border.g,border.b,.65f));
-
-  if(armed.HasValue&&!won){
-   RoundedBox(new Rect(70,178,390,42),new Color(.045f,.09f,.105f,.90f),21);
-   Text(new Rect(86,184,358,30),PieceName(armed.Value)+" hazır · tahtaya dokun",14,cyan,FontStyle.Bold);
-  }else if(session.Pieces.Count==0&&!won){
-   Text(new Rect(70,178,420,30),"Bir parça seç ve ışığın yolunu kur.",14,new Color(.65f,.76f,.79f));
-  }
-
-  if(selected>=0&&selected<session.Pieces.Count&&!won){
-   if(Button(new Rect(704,174,126,48),"KALDIR",false,true,14,false,true)){
-    session.Remove(selected);selected=-1;dirty=true;
-   }
-  }else if(session.Level.RequireAllPiecesActive){
-   int active=result!=null?result.ActivePieceCount:0;
-   Pill(new Rect(690,178,140,32),"AKTİF "+active+" / "+session.Pieces.Count,active>=session.Pieces.Count&&session.Pieces.Count>0?success:gold,11);
-  }
-
-  if(!won&&Time.unscaledTime<toastUntil&&!string.IsNullOrEmpty(toast)){
-   float fade=Mathf.Clamp01((toastUntil-Time.unscaledTime)/.35f);
-   Card(new Rect(120,878,660,58),new Color(.045f,.065f,.07f,.94f*fade),new Color(toastColor.r,toastColor.g,toastColor.b,.72f*fade));
-   Text(new Rect(142,888,616,38),toast,13,new Color(toastColor.r,toastColor.g,toastColor.b,fade),FontStyle.Bold,TextAnchor.MiddleCenter);
-  }
-
-  if(won&&!showWinPanel){
-   Card(new Rect(175,874,550,64),new Color(.04f,.11f,.095f,.96f),new Color(success.r,success.g,success.b,.7f));
-   Text(new Rect(195,884,510,24),"✓  DENEY TAMAMLANDI",15,success,FontStyle.Bold,TextAnchor.MiddleCenter);
-   Text(new Rect(195,908,510,20),"Çözüm görünümü · ışık yolunu inceleyebilirsin",12,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
-  }
-  DrawInteractionCue();
- }
-
- void DrawInteractionCue(){
-  if(selected<0||selected>=session.Pieces.Count||won)return;
-  bool recentRotate=Time.unscaledTime<rotateCueUntil;
-  if(!dragging&&!rotating&&!recentRotate)return;
-  var piece=session.Pieces[selected];
-  float x=450+(float)piece.Position.X*80,y=560-(float)piece.Position.Y*80;
-  float rise=recentRotate&&!rotating?(rotateCueUntil-Time.unscaledTime)*8f:0f;
-  Rect cue=new Rect(Mathf.Clamp(x-112,64,612),Mathf.Clamp(y-153-rise,235,864),224,48);
-  Color accent=rotating||recentRotate?gold:cyan;
-  RoundedBox(cue,new Color(.10f,.18f,.24f,.97f),23);
-  string label=rotating||recentRotate?"DÖNÜYOR  "+piece.Angle.ToString("0")+"°":"PARÇAYI TAŞI";
-  Text(cue,label,20,accent,FontStyle.Bold,TextAnchor.MiddleCenter);
- }
-
- float PaletteY=>1030f;
- float NavigationY=>1335f;
-
- void DrawPalette(){
-  Card(new Rect(50,1008,800,176),new Color(.055f,.065f,.14f,.97f),new Color(.17f,.22f,.42f,.9f));
-  var kinds=new List<Kind>();
-  foreach(var k in session.Level.Stock)if(!kinds.Contains(k))kinds.Add(k);
-  int count=Mathf.Max(1,kinds.Count);
-  float gap=12f,width=(764f-gap*(count-1))/count;
-  for(int i=0;i<kinds.Count;i++){
-   var k=kinds[i];
-   int n=session.Remaining(k);
-   Rect r=new Rect(68+i*(width+gap),1024,width,142);
-   if(Button(r,"",armed==k,n>0&&!won,24,false)){
-    armed=armed==k?(Kind?)null:k;
-    selected=-1;dirty=true;
-   }
-   PieceIcon(new Rect(r.center.x-34,r.y+10,68,58),k,n>0?ink:muted);
-   Text(new Rect(r.x+10,r.y+76,r.width-20,42),PieceName(k),20,n>0?ink:muted,FontStyle.Normal,TextAnchor.MiddleCenter);
-   RoundedBox(new Rect(r.xMax-42,r.y+9,30,30),n>0?new Color(gold.r,gold.g,gold.b,.95f):new Color(border.r,border.g,border.b,.7f),15);
-   Text(new Rect(r.xMax-42,r.y+8,30,30),n.ToString(),16,n>0?new Color(.15f,.10f,.05f):muted,FontStyle.Bold,TextAnchor.MiddleCenter);
-  }
- }
-
- void DrawNavigation(){
-  if(won&&!showWinPanel){
-   Rect resultButton=new Rect(86,NavigationY,88,88);
-   if(CircleButton(resultButton,"✓",true)){showWinPanel=true;winShownAt=Time.unscaledTime-.55f;}
-   if(Button(new Rect(236,NavigationY,428,88),levelIndex<levels.Length-1?"SONRAKİ DENEY  →":"BÖLÜM HARİTASI",false,true,20,true)){
-    if(levelIndex<levels.Length-1)Load(levelIndex+1,true);
-    else{showLevelMap=true;mapChapter=-1;}
-   }
-   Rect mapButton=new Rect(726,NavigationY,88,88);
-   if(CircleButton(mapButton,"",false)){showLevelMap=true;mapChapter=-1;}
-   DrawGridGlyph(new Rect(756,NavigationY+30,28,28),ink);
-   return;
-  }
-
-  if(CircleButton(new Rect(96,NavigationY,88,88),"↶",false,!won)){session.Undo();selected=-1;armed=null;dirty=true;}
-  if(Button(new Rect(282,NavigationY,336,88),"İpucu",showHint,!won,23,true)){showHint=true;showLevelMap=false;showSettings=false;}
-  if(CircleButton(new Rect(716,NavigationY,88,88),"↻",false,!won)){session.Reset();selected=-1;armed=null;settle=0;dirty=true;}
- }
-
  void Rotate(double degrees){
-  if(selected<0||!PieceInfo.CanRotate(session.Pieces[selected].Kind))return;
-  session.BeginEdit();session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+degrees);session.EndEdit();dirty=true;rotateCueUntil=Time.unscaledTime+.85f;feedback?.Rotate();
- }
-
- void OnGUI(){
-  if(session==null)return;
-  GUI.matrix=Matrix4x4.TRS(new Vector3(offsetX,offsetY,0),Quaternion.identity,new Vector3(scale,scale,1));
-
-  DrawHeader();
-  DrawBoardHud();
-  DrawPalette();
-  DrawNavigation();
-
-  bool modal=showHint||showLevelMap||showSettings||(won&&showWinPanel);
-  if(modal)Box(new Rect(0,0,900,1540),new Color(0,0,0,.70f));
-  drawingOverlay=true;
-  if(showHint)DrawHint();
-  else if(showLevelMap)DrawLevelMap();
-  else if(showSettings)DrawSettings();
-  else if(won&&showWinPanel)DrawWin();
-  drawingOverlay=false;
- }
-
- void DrawHint(){
-  Rect r=new Rect(78,740,744,420);
-  Card(r,new Color(.035f,.068f,.086f,.995f),new Color(gold.r,gold.g,gold.b,.55f));
-  Pill(new Rect(110,776,136,34),"İPUCU",gold,12);
-  Text(new Rect(110,830,680,38),"Bir sonraki düşünce adımı",25,ink,FontStyle.Bold);
-  Text(new Rect(110,884,680,135),session.Level.Hint,19,new Color(.82f,.88f,.89f));
-  Box(new Rect(110,1035,680,1),border);
-  Text(new Rect(110,1052,390,30),"Çözümü vermeden yön gösterir.",13,muted);
-  if(Button(new Rect(540,1046,250,100),"TAHTAYA DÖN",false,true,24,true))showHint=false;
- }
-
- void DrawLevelMap(){
-  Rect modal=new Rect(48,112,804,1195);
-  Card(modal,new Color(.025f,.052f,.068f,.995f),border);
-  Text(new Rect(82,142,590,42),mapChapter<0?"BÖLÜM HARİTASI":(mapChapter+1).ToString("00")+"  ·  "+levels[mapChapter*10].Chapter.ToUpper(TurkishCulture),27,ink,FontStyle.Bold);
-  Text(new Rect(82,184,590,28),mapChapter<0?((levels.Length+9)/10)+" ünite · "+levels.Length+" deney · ilerleme cihazında saklanır":"Bir deney tamamlandığında sıradaki otomatik açılır.",17,muted);
-  if(Button(new Rect(704,140,112,100),"KAPAT",false,true,22))showLevelMap=false;
-
-  int chapterCount=(levels.Length+9)/10;
-  if(mapChapter<0){
-   for(int i=0;i<chapterCount;i++){
-    int row=i/2,col=i%2;
-    Rect r=new Rect(82+col*365,240+row*180,350,154);
-    int completed=ChapterCompleted(i),tileChapterSize=ChapterSize(i);
-    bool current=i==levelIndex/10;
-    if(Button(r,"",current,true,18,current)){
-     mapChapter=i;return;
-    }
-    Text(new Rect(r.x+20,r.y+18,r.width-40,32),(i+1).ToString("00")+"   "+levels[i*10].Chapter.ToUpper(TurkishCulture),21,current?gold:ink,FontStyle.Bold);
-    Text(new Rect(r.x+20,r.y+60,r.width-40,26),completed+" / "+tileChapterSize+" tamamlandı",17,completed==tileChapterSize?success:muted,completed==tileChapterSize?FontStyle.Bold:FontStyle.Normal);
-    ProgressBar(new Rect(r.x+20,r.y+100,r.width-40,9),completed/(float)Mathf.Max(1,tileChapterSize),completed==tileChapterSize?success:(current?gold:cyan));
-    string state=completed==tileChapterSize?"ÜNİTE TAMAM":current?"DEVAM EDİYOR":IsUnlocked(i*10)?"AÇIK":"KİLİTLİ";
-    Text(new Rect(r.x+20,r.y+115,r.width-40,24),state,14,completed==tileChapterSize?success:(current?gold:muted),FontStyle.Bold,TextAnchor.MiddleRight);
-   }
-   return;
-  }
-
-  int first=mapChapter*10;
-  int count=Mathf.Min(10,levels.Length-first);
-  for(int i=0;i<count;i++){
-   int row=i/2,col=i%2,index=first+i;
-   bool unlocked=IsUnlocked(index);
-   bool complete=completedLevelIds.Contains(levels[index].Id);
-   Rect r=new Rect(82+col*365,240+row*154,350,130);
-   string status=complete?"✓  TAMAM":unlocked?(index==levelIndex?"ŞİMDİ":"AÇIK"):"KİLİTLİ";
-   Color state=complete?success:(index==levelIndex?gold:muted);
-   if(Button(r,"DENEY "+(index+1).ToString("000")+"   "+status+Environment.NewLine+levels[index].Name,index==levelIndex,unlocked,16,index==levelIndex)){
-    Load(index);return;
-   }
-   Text(new Rect(r.x+18,r.y+98,r.width-36,20),"Zorluk "+levels[index].Difficulty+"/10",10,state,FontStyle.Bold,TextAnchor.MiddleRight);
-  }
-  if(Button(new Rect(82,1128,250,100),"←  ÜNİTELER",false,true,22)){mapChapter=-1;return;}
-  int chapterDone=ChapterCompleted(mapChapter);
-  int chapterSize=ChapterSize(mapChapter);
-  Text(new Rect(355,1143,270,30),chapterDone+" / "+chapterSize+" tamamlandı",17,chapterDone==chapterSize?success:muted,FontStyle.Bold,TextAnchor.MiddleCenter);
-  ProgressBar(new Rect(372,1184,236,7),chapterDone/(float)Mathf.Max(1,chapterSize),chapterDone==chapterSize?success:gold);
- }
-
- void DrawSettings(){
-  Rect modal=new Rect(95,218,710,1120);
-  Card(modal,new Color(.025f,.052f,.068f,.995f),border);
-  Text(new Rect(130,250,520,44),"AYARLAR",28,ink,FontStyle.Bold);
-  Text(new Rect(130,294,520,28),"Sessiz, çevrimdışı ve dikkat dağıtmayan oyun deneyimi",14,muted);
-  if(Button(new Rect(660,244,110,100),"KAPAT",false,true,22))showSettings=false;
-
-  SettingRow(new Rect(130,350,640,128),"SES EFEKTLERİ","Dokunma, hata ve tamamlanma sesleri.",feedback!=null&&feedback.AudioEnabled?"AÇIK":"KAPALI",feedback!=null&&feedback.AudioEnabled,
-   ()=>{if(feedback!=null)feedback.SetAudio(!feedback.AudioEnabled);});
-  SettingRow(new Rect(130,496,640,128),"MÜZİK","Optik laboratuvar için sakin arka plan müziği.",feedback!=null&&feedback.MusicEnabled?"AÇIK":"KAPALI",feedback!=null&&feedback.MusicEnabled,
-   ()=>{if(feedback!=null)feedback.SetMusic(!feedback.MusicEnabled);});
-  SettingRow(new Rect(130,642,640,128),"TİTREŞİM","Bölüm tamamlandığında cihaz geri bildirimi.",feedback!=null&&feedback.HapticsEnabled?"AÇIK":"KAPALI",feedback!=null&&feedback.HapticsEnabled,
-   ()=>{if(feedback!=null)feedback.SetHaptics(!feedback.HapticsEnabled);});
-
-  Text(new Rect(130,800,640,24),"GÖRSEL KALİTE",18,muted,FontStyle.Bold);
-  Text(new Rect(130,832,640,28),"Optik çözüm değişmez; yalnız render maliyeti ölçeklenir.",18,muted);
-  VisualQualityTier[] tiers={VisualQualityTier.Auto,VisualQualityTier.Low,VisualQualityTier.Medium,VisualQualityTier.High};
-  string[] labels={"OTOMATİK","DÜŞÜK","ORTA","YÜKSEK"};
-  for(int i=0;i<4;i++){
-   if(Button(new Rect(130+i*158,880,148,100),labels[i],VisualEnvironment.Requested==tiers[i],true,20,VisualEnvironment.Requested==tiers[i])){
-    VisualEnvironment.SetQuality(tiers[i]);dirty=true;
-   }
-  }
-  Text(new Rect(130,997,640,24),"Etkin profil: "+VisualEnvironment.QualityLabel,18,cyan,FontStyle.Bold);
-
-  Box(new Rect(130,1040,640,1),border);
-  int complete=completedLevelIds.Count;
-  Text(new Rect(130,1070,330,28),"KAMPANYA İLERLEMESİ",18,muted,FontStyle.Bold);
-  Text(new Rect(610,1066,160,34),complete+" / "+levels.Length,24,complete==levels.Length?success:gold,FontStyle.Bold,TextAnchor.MiddleRight);
-  ProgressBar(new Rect(130,1110,640,8),complete/(float)levels.Length,complete==levels.Length?success:gold);
-  Text(new Rect(130,1142,640,72),"İlerleme yerel olarak saklanır. Reklam, hesap, analytics veya zorunlu internet bağlantısı yoktur.",20,muted);
- }
-
- void SettingRow(Rect r,string title,string description,string state,bool on,Action toggle){
-  Card(r,panel,on?new Color(cyan.r,cyan.g,cyan.b,.45f):border);
-  Text(new Rect(r.x+22,r.y+18,330,26),title,20,ink,FontStyle.Bold);
-  Text(new Rect(r.x+22,r.y+49,380,60),description,19,muted);
-  if(Button(new Rect(r.xMax-190,r.y+14,160,100),state,on,true,24,on))toggle();
- }
-
- void DrawWin(){
-  float t=Mathf.Clamp01((Time.unscaledTime-winShownAt)/.58f);
-  float ease=1f-Mathf.Pow(1f-t,3f);
-  float width=Mathf.Lerp(630f,690f,ease);
-  float height=840f;
-  Rect r=new Rect(450-width*.5f,770-height*.5f,width,height);
-  Card(r,new Color(.027f,.061f,.075f,.997f),new Color(gold.r,gold.g,gold.b,.68f));
-
-  float spectrumWidth=(r.width-80)/7f;
-  for(int i=0;i<7;i++)Box(new Rect(r.x+40+i*spectrumWidth,r.y+34,spectrumWidth+1,5),new Color(BoardRenderer.Spectrum[i].r,BoardRenderer.Spectrum[i].g,BoardRenderer.Spectrum[i].b,.9f));
-
-  bool final=levelIndex==levels.Length-1;
-  bool chapterEnd=(levelIndex+1)%10==0;
-  string kicker=final?"KAMPANYA TAMAMLANDI":chapterEnd?"ÜNİTE TAMAMLANDI":"DENEY TAMAMLANDI";
-  Color kickerColor=final?success:gold;
-  Text(new Rect(r.x+40,r.y+62,r.width-80,34),kicker,14,kickerColor,FontStyle.Bold,TextAnchor.MiddleCenter);
-  Text(new Rect(r.x+42,r.y+106,r.width-84,58),final?levels.Length+" ışık problemi çözüldü.":"Işık yolu kilitlendi.",31,ink,FontStyle.Bold,TextAnchor.MiddleCenter);
-  Text(new Rect(r.x+55,r.y+166,r.width-110,54),session.Level.Name,17,muted,FontStyle.Normal,TextAnchor.MiddleCenter);
-
-  int lit=GoalsLit();
-  int active=result!=null?result.ActivePieceCount:0;
-  float metricY=r.y+244;
-  float metricW=(r.width-130)/3f;
-  WinMetric(new Rect(r.x+45,metricY,metricW,100),"HEDEF",lit+" / "+session.Level.Goals.Length,success);
-  WinMetric(new Rect(r.x+55+metricW,metricY,metricW,100),"AKTİF",active+" / "+session.Pieces.Count,cyan);
-  WinMetric(new Rect(r.x+65+metricW*2,metricY,metricW,100),"ZORLUK",session.Level.Difficulty+" / 10",gold);
-
-  string message=final
-   ?"Bütün deneyler tamamlandı. Artık bölüm haritasından istediğin düzeneğe geri dönebilirsin."
-   :chapterEnd
-    ?"Bu ünitenin bütün deneyleri açıldı ve tamamlandı. Sıradaki ünite daha yoğun bir optik dil kuruyor."
-    :"Düzenek kararlı. Bütün hedef eşikleri sağlandı ve ilerlemen kaydedildi.";
-  Text(new Rect(r.x+55,r.y+372,r.width-110,76),message,15,new Color(.76f,.84f,.86f),FontStyle.Normal,TextAnchor.MiddleCenter);
-
-  float campaign=(levelIndex+1)/(float)levels.Length;
-  Text(new Rect(r.x+55,r.y+466,r.width-110,22),"KAMPANYA  "+(levelIndex+1)+" / "+levels.Length,11,muted,FontStyle.Bold);
-  ProgressBar(new Rect(r.x+55,r.y+496,r.width-110,7),campaign,final?success:gold);
-
-  string primary=final?"BÖLÜM HARİTASI":chapterEnd?"SONRAKİ ÜNİTE  →":"SONRAKİ DENEY  →";
-  if(Button(new Rect(r.x+55,r.yMax-220,r.width-110,105),primary,false,true,25,true)){
-   if(levelIndex<levels.Length-1)Load(levelIndex+1,true);
-   else{showWinPanel=false;showLevelMap=true;mapChapter=-1;}
-  }
-  if(Button(new Rect(r.x+55,r.yMax-100,r.width-110,90),"ÇÖZÜMÜ İNCELE",false,true,23))showWinPanel=false;
- }
-
- void WinMetric(Rect r,string title,string value,Color accent){
-  RoundedBox(r,new Color(surface.r,surface.g,surface.b,.95f),17);
-  RoundedBox(new Rect(r.x+20,r.y+7,r.width-40,5),accent,2.5f);
-  Text(new Rect(r.x+8,r.y+14,r.width-16,20),title,10,muted,FontStyle.Bold,TextAnchor.MiddleCenter);
-  Text(new Rect(r.x+8,r.y+40,r.width-16,40),value,21,accent,FontStyle.Bold,TextAnchor.MiddleCenter);
+  if(selected<0||won||transitionBusy||!PieceInfo.CanRotate(session.Pieces[selected].Kind))return;
+  session.BeginEdit();session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+degrees);session.EndEdit();dirty=true;feedback?.Rotate();
  }
 
  IEnumerator StoreCapture(){
@@ -786,8 +446,8 @@ public class PrismGame : MonoBehaviour {
   Screen.SetResolution(540,960,false);
   yield return new WaitForSeconds(.5f);
 
-  int[] picks={0,29,69,59,99};
-  string[] names={"01-reflection","02-color","03-combination","04-water-glass","05-mastery"};
+  int[] picks={19,99,59,0,79};
+  string[] names={"01-spectrum","02-mastery","03-water-glass","04-reflection","05-symphony"};
   for(int n=0;n<picks.Length;n++){
    int index=Mathf.Clamp(picks[n],0,levels.Length-1);
    Load(index,true);
@@ -800,11 +460,18 @@ public class PrismGame : MonoBehaviour {
   }
 
   Load(49,true);
-  showLevelMap=true;
+  presentation.ShowMap();
   yield return null;
   yield return new WaitForSeconds(.18f);
   yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"06-level-map.png")));
   yield return new WaitForSeconds(.08f);
+
+  presentation.ShowHome();
+  yield return new WaitForSeconds(1.7f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"07-main-menu.png")));
+  presentation.ShowSettings();
+  yield return new WaitForSeconds(.3f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"08-settings.png")));
 
   File.WriteAllText(Path.Combine(output,"capture-complete.txt"),"PrisM store capture complete: "+DateTime.UtcNow.ToString("O"));
   Application.Quit(0);
@@ -833,13 +500,41 @@ public class PrismGame : MonoBehaviour {
   string output=CaptureOutputDirectory("TestResults");
   Directory.CreateDirectory(output);
   yield return null;
+  var checks=new List<string>();
+  presentation.ShowHome();yield return null;
+  if(!presentation.BlocksBoardInput)throw new Exception("Main menu does not block board input");
+  ContinueGame();yield return null;
+  if(presentation.BlocksBoardInput)throw new Exception("Gameplay input remains blocked");
+  presentation.ShowSettings();yield return null;
+  if(!presentation.BlocksBoardInput)throw new Exception("Settings does not block board input");
+  presentation.HandleBack();yield return null;
+  if(presentation.BlocksBoardInput)throw new Exception("Closing settings does not resume gameplay");
+  checks.Add("PASS Canvas menu settings back input flow");
+  Load(0,true);yield return null;
+  Vector3 drop=cam.WorldToScreenPoint(new Vector3(0,-2,0));
+  StartTrayDrag(Kind.Mirror,new Vector2(drop.x,drop.y));
+  EndTrayDrag(new Vector2(drop.x,drop.y));yield return null;
+  if(session.Pieces.Count!=1||session.Remaining(Kind.Mirror)!=0)throw new Exception("Tray drag does not place piece");
+  UndoAction();yield return new WaitForSecondsRealtime(.25f);
+  if(session.Pieces.Count!=0||session.Remaining(Kind.Mirror)!=1)throw new Exception("Tray undo does not restore inventory");
+  checks.Add("PASS Canvas tray placement undo inventory");
+
+  Load(0,true);session.Reveal();session.Pieces[0].Angle+=20;
+  session.BeginEdit();session.Pieces[0].Angle=levels[0].Solution[0].Angle;session.EndEdit();dirty=true;
+  yield return new WaitForSecondsRealtime(.49f);
+  if(won||!session.IsComplete(result))throw new Exception("Undo regression setup is not a pending solution");
+  UndoAction();yield return new WaitForSecondsRealtime(.25f);
+  if(won||session.IsComplete(result)||settle>0)throw new Exception("Undo animation completed an obsolete solution");
+  checks.Add("PASS Canvas undo cancels pending completion");
+  Load(0,true);StartTrayDrag(Kind.Mirror,new Vector2(drop.x,drop.y));presentation.ShowHome();ContinueGame();yield return null;
+  if(trayGhost!=null||trayKind.HasValue||presentation.BlocksBoardInput)throw new Exception("Screen change did not cancel tray interaction");
+  checks.Add("PASS Canvas screen change cancels tray interaction");
 
   Load(0,true);
   yield return new WaitForSeconds(.15f);
   ScreenCapture.CaptureScreenshot(Path.Combine(output,"01-start.png"));
   yield return new WaitForSeconds(.15f);
 
-  var checks=new List<string>();
   for(int i=0;i<levels.Length;i++){
    Load(i,true);
    foreach(var piece in levels[i].Solution){
@@ -870,6 +565,14 @@ public class PrismGame : MonoBehaviour {
   session.Reveal();dirty=true;yield return null;
   ScreenCapture.CaptureScreenshot(Path.Combine(output,"03-final.png"));
   yield return new WaitForSeconds(.25f);
+
+  presentation.ShowCompletion(true);
+  yield return new WaitForSecondsRealtime(5.6f);
+  ScreenCapture.CaptureScreenshot(Path.Combine(output,"04-campaign-final.png"));
+  yield return new WaitForSecondsRealtime(.2f);
+  presentation.ShowHome();
+  yield return null;
+  checks.Add("PASS Canvas campaign finale returns home");
 
   File.WriteAllLines(Path.Combine(output,"runtime-smoke.txt"),checks);
   Application.Quit(0);

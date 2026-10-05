@@ -15,6 +15,7 @@ Shader "Prism/Glass" {
    #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
    float4 _Tint;
    float _EdgeIntensity;
+   float _PrismMotionTime;
    struct A {float4 positionOS:POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;};
    struct B {float4 positionCS:SV_POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float2 world:TEXCOORD1;};
    B vert(A v){B o;float3 w=TransformObjectToWorld(v.positionOS.xyz);o.positionCS=TransformWorldToHClip(w);o.color=v.color;o.uv=v.uv;o.world=w.xy;return o;}
@@ -22,8 +23,8 @@ Shader "Prism/Glass" {
     clip(4.98-abs(i.world.x));clip(4.98-abs(i.world.y));
     float2 p=i.uv*2.0-1.0;
     float edge=smoothstep(0.42,1.0,length(p));
-    float shimmer=0.5+0.5*sin(i.world.x*5.4+i.world.y*3.7+_Time.y*0.2);
-    float spectral=0.5+0.5*sin((i.world.x-i.world.y)*8.0+_Time.y*0.35);
+    float shimmer=0.5+0.5*sin(i.world.x*5.4+i.world.y*3.7+_PrismMotionTime*0.2);
+    float spectral=0.5+0.5*sin((i.world.x-i.world.y)*8.0+_PrismMotionTime*0.35);
     float3 rainbow=lerp(float3(0.45,0.8,1.0),float3(1.0,0.5,0.85),spectral);
     float highlight=pow(saturate(1.0-length(p-float2(-0.35,0.4))*0.9),5.0);
     float3 rgb=lerp(_Tint.rgb*SRGBToLinear(i.color.rgb),rainbow,edge*0.16);

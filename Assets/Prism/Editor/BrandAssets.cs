@@ -13,16 +13,24 @@ public static class BrandAssets {
  const string IconPath=GeneratedDir+"/AppIcon.png";
  const string AdaptiveForegroundPath=GeneratedDir+"/AdaptiveForeground.png";
  const string AdaptiveBackgroundPath=GeneratedDir+"/AdaptiveBackground.png";
+ const string MonochromePath=GeneratedDir+"/MonochromeIcon.png";
+ const string GlyphPath="Assets/Prism/Resources/Brand/OpticalGlyph.png";
  const string StoreDir="Builds/StoreAssets";
 
- [MenuItem("PrisM/Release/Generate Store Assets")]
+ [MenuItem("PRISM/Release/Generate Store Assets")]
  public static void GenerateStoreAssets(){
   Directory.CreateDirectory(StoreDir);
   string storeIcon=Path.Combine(StoreDir,"play-icon-512.png");
   WritePng(storeIcon,CreateIcon(512));
   if(new FileInfo(storeIcon).Length>1024*1024)throw new Exception("Play icon exceeds the 1024 KB upload limit: "+storeIcon);
   WritePng(Path.Combine(StoreDir,"feature-graphic-1024x500.png"),CreateFeatureGraphic());
-  Debug.Log("PrisM store assets generated in "+Path.GetFullPath(StoreDir));
+  WritePng(GlyphPath,CreateGlyph(512,false));
+  WritePng(MonochromePath,CreateGlyph(1024,true,.64f));
+  foreach(int size in new[]{32,48,64,128,192}){
+   WritePng(Path.Combine(StoreDir,"icon-"+size+".png"),CreateIcon(size));
+   WritePng(Path.Combine(StoreDir,"monochrome-"+size+".png"),CreateGlyph(size,true));
+  }
+  Debug.Log("PRISM store assets generated in "+Path.GetFullPath(StoreDir));
  }
 
  public static void PrepareAndroidBranding(){
@@ -44,6 +52,7 @@ public static class BrandAssets {
   var loaded=AssetDatabase.LoadAssetAtPath<Texture2D>(IconPath);
   if(loaded==null)throw new Exception("Generated Android icon could not be imported.");
 
+  GenerateStoreAssets();
   var target=NamedBuildTarget.Android;
   int[] sizes=PlayerSettings.GetIconSizes(target,IconKind.Application);
   if(sizes==null||sizes.Length==0)throw new Exception("Android icon slots are unavailable. Install Android Build Support for this Unity editor.");
@@ -56,10 +65,10 @@ public static class BrandAssets {
   WritePng(AdaptiveBackgroundPath,CreateIconBackground(1024));
   var foreground=ImportIcon(AdaptiveForegroundPath);
   var background=ImportIcon(AdaptiveBackgroundPath);
-  ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,foreground,background);
+  var monochrome=ImportIcon(MonochromePath);
+  ApplyPlatformIcons(target,AndroidPlatformIconKind.Adaptive,foreground,background,monochrome);
 #endif
 
-  GenerateStoreAssets();
   AssetDatabase.SaveAssets();
  }
 
@@ -69,6 +78,7 @@ public static class BrandAssets {
   var importer=AssetImporter.GetAtPath(path) as TextureImporter;
   if(importer==null)throw new Exception("Generated Android icon could not be imported: "+path);
   importer.textureType=TextureImporterType.Default;
+  importer.textureShape=TextureImporterShape.Texture2D;
   importer.textureCompression=TextureImporterCompression.Uncompressed;
   importer.mipmapEnabled=false;
   importer.alphaIsTransparency=true;
@@ -79,12 +89,13 @@ public static class BrandAssets {
   return texture;
  }
 
- static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D foreground,Texture2D background){
+ static void ApplyPlatformIcons(NamedBuildTarget target,PlatformIconKind kind,Texture2D foreground,Texture2D background,Texture2D monochrome){
   var slots=PlayerSettings.GetPlatformIcons(target,kind);
   for(int i=0;i<slots.Length;i++){
    var textures=new Texture2D[slots[i].maxLayerCount];
    textures[0]=foreground;
    if(textures.Length>1)textures[1]=background;
+   if(textures.Length>2)textures[2]=monochrome;
    slots[i].SetTextures(textures);
   }
   PlayerSettings.SetPlatformIcons(target,kind,slots);
@@ -98,89 +109,76 @@ public static class BrandAssets {
   return tex;
  }
 
+ // All outputs share this optical fold; no triangle illustration or thin rainbow rays.
+ static readonly Color32 Background=new Color32(9,8,18,255);
+ static readonly Color[] Spectrum={
+  new Color(.55f,.39f,1),new Color(.35f,.53f,1),new Color(.42f,.84f,.96f),
+  new Color(.53f,.89f,.72f),new Color(.96f,.91f,.57f),new Color(1,.66f,.50f),new Color(.96f,.43f,.62f)
+ };
+
  static Texture2D CreateIconBackground(int size){
-  var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,true);
+  var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);
   var pixels=new Color32[size*size];
-  Color32 bg0=new Color32(4,11,18,255),bg1=new Color32(10,34,45,255);
-  Vector2 center=new Vector2(size*.5f,size*.5f);
-  float max=size*.72f;
-  for(int y=0;y<size;y++)for(int x=0;x<size;x++){
-   float d=Vector2.Distance(new Vector2(x,y),center)/max;
-   pixels[y*size+x]=Lerp(bg1,bg0,Mathf.Clamp01(d));
-  }
-  tex.SetPixels32(pixels);
-  tex.Apply(false,false);
-  return tex;
+  for(int i=0;i<pixels.Length;i++)pixels[i]=Background;
+  tex.SetPixels32(pixels);tex.Apply(false,false);return tex;
  }
 
- static Texture2D CreateAdaptiveForeground(int size){
-  var tex=new Texture2D(size,size,TextureFormat.RGBA32,false,true);
-  var pixels=new Color32[size*size];
-  tex.SetPixels32(pixels);
-  // Android's adaptive mask uses only the central portion of each layer.
-  DrawIconArt(tex,size,.64f);
-  tex.Apply(false,false);
-  return tex;
+ static Texture2D CreateAdaptiveForeground(int size)=>CreateGlyph(size,false,.64f);
+
+ static Texture2D CreateGlyph(int size,bool monochrome,float scale=1){
+  var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);
+  tex.SetPixels32(new Color32[size*size]);
+  DrawGlyph(tex,new Vector2(size*.5f,size*.5f),size*scale,monochrome);
+  tex.Apply(false,false);return tex;
  }
 
- static void DrawIconArt(Texture2D tex,int size,float scale){
-  float s=size;
-  Vector2 Center(Vector2 p)=>new Vector2(.5f*s,.5f*s)+(p-new Vector2(.5f*s,.5f*s))*scale;
-  Vector2 a=Center(new Vector2(.31f*s,.70f*s));
-  Vector2 b=Center(new Vector2(.50f*s,.28f*s));
-  Vector2 c=Center(new Vector2(.69f*s,.70f*s));
+ static void DrawIconArt(Texture2D tex,int size,float scale)=>DrawGlyph(tex,new Vector2(size*.5f,size*.5f),size*scale,false);
 
-  DrawGlowLine(tex,Center(new Vector2(.08f*s,.52f*s)),Center(new Vector2(.39f*s,.52f*s)),.028f*s*scale,new Color(1f,.96f,.82f,1));
-  Color[] spectrum={
-   new Color(.43f,.28f,1),new Color(.22f,.5f,1),new Color(.08f,.82f,1),
-   new Color(.3f,1,.58f),new Color(.92f,1,.38f),new Color(1,.62f,.18f),new Color(1,.26f,.30f)
-  };
-  for(int i=0;i<spectrum.Length;i++){
-   float oy=(i-3)*.032f*s;
-   DrawGlowLine(tex,Center(new Vector2(.57f*s,.52f*s)),Center(new Vector2(.91f*s,.35f*s+oy)),.012f*s*scale,spectrum[i]);
+ static void DrawGlyph(Texture2D tex,Vector2 center,float size,bool monochrome){
+  Vector2 P(float x,float y)=>center+new Vector2(x-.5f,y-.5f)*size;
+  // A broad exit wedge and angular beam stay distinct even at launcher scale.
+  Vector2 tip=P(.56f,.60f),top=P(.88f,.84f),bottom=P(.88f,.48f);
+  int minX=Mathf.Clamp(Mathf.FloorToInt(tip.x),0,tex.width-1);
+  int maxX=Mathf.Clamp(Mathf.CeilToInt(top.x),0,tex.width-1);
+  int minY=Mathf.Clamp(Mathf.FloorToInt(bottom.y),0,tex.height-1);
+  int maxY=Mathf.Clamp(Mathf.CeilToInt(top.y),0,tex.height-1);
+  for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++){
+   float t=(x+.5f-tip.x)/(top.x-tip.x);
+   float lo=Mathf.Lerp(tip.y,bottom.y,t),hi=Mathf.Lerp(tip.y,top.y,t);
+   float v=(y+.5f-lo)/Mathf.Max(.001f,hi-lo);
+   if(t>=0&&t<=1&&v>=0&&v<=1){
+    float band=v*(Spectrum.Length-1);int index=Mathf.Min(Mathf.FloorToInt(band),Spectrum.Length-2);
+    Blend(tex,x,y,monochrome?Color.white:Color.Lerp(Spectrum[index],Spectrum[index+1],band-index));
+   }
   }
+  Color ivory=monochrome?Color.white:new Color(.96f,.95f,.91f);
+  // Two corners describe optical folding without depending on color.
+  Vector2[] fold={P(.12f,.36f),P(.43f,.36f),P(.32f,.62f),P(.56f,.62f),P(.56f,.54f),P(.44f,.54f),P(.55f,.28f),P(.12f,.28f)};
+  FillPolygon(tex,fold,ivory);
+ }
 
-  FillTriangle(tex,a,b,c,new Color(.16f,.48f,.62f,.34f));
-  DrawGlowLine(tex,a,b,.014f*s*scale,new Color(.82f,.96f,1,1));
-  DrawGlowLine(tex,b,c,.014f*s*scale,new Color(.82f,.96f,1,1));
-  DrawGlowLine(tex,c,a,.014f*s*scale,new Color(.82f,.96f,1,1));
+ static void FillPolygon(Texture2D tex,Vector2[] points,Color color){
+  float lx=tex.width,rx=0,ly=tex.height,ry=0;
+  foreach(var p in points){lx=Mathf.Min(lx,p.x);rx=Mathf.Max(rx,p.x);ly=Mathf.Min(ly,p.y);ry=Mathf.Max(ry,p.y);}
+  for(int y=Mathf.Max(0,Mathf.FloorToInt(ly));y<=Mathf.Min(tex.height-1,Mathf.CeilToInt(ry));y++)
+   for(int x=Mathf.Max(0,Mathf.FloorToInt(lx));x<=Mathf.Min(tex.width-1,Mathf.CeilToInt(rx));x++){
+    bool inside=false;float px=x+.5f,py=y+.5f;
+    for(int i=0,j=points.Length-1;i<points.Length;j=i++){
+     var a=points[i];var b=points[j];
+     if((a.y>py)!=(b.y>py)&&px<(b.x-a.x)*(py-a.y)/(b.y-a.y)+a.x)inside=!inside;
+    }
+    if(inside)Blend(tex,x,y,color);
+   }
  }
 
  static Texture2D CreateFeatureGraphic(){
   const int w=1024,h=500;
-  var tex=new Texture2D(w,h,TextureFormat.RGB24,false,true);
+  var tex=new Texture2D(w,h,TextureFormat.RGB24,false);
   var pixels=new Color32[w*h];
-  Color32 left=new Color32(4,12,20,255),right=new Color32(7,28,38,255);
-  for(int y=0;y<h;y++)for(int x=0;x<w;x++){
-   float tx=x/(float)(w-1);
-   float vignette=Mathf.Clamp01(Vector2.Distance(new Vector2(x/(float)w,y/(float)h),new Vector2(.55f,.5f))/.82f);
-   pixels[y*w+x]=Lerp(Lerp(left,right,tx),new Color32(2,7,12,255),vignette*.45f);
-  }
+  for(int i=0;i<pixels.Length;i++)pixels[i]=Background;
   tex.SetPixels32(pixels);
-
-  for(int x=34;x<w;x+=34)for(int y=28;y<h;y+=34)DrawDisc(tex,new Vector2(x,y),1.4f,new Color(.18f,.36f,.43f,.45f));
-
-  Vector2 a=new Vector2(410,365),b=new Vector2(520,118),c=new Vector2(630,365);
-  DrawGlowLine(tex,new Vector2(75,250),new Vector2(456,250),20,new Color(1,.96f,.84f,1));
-
-  Color[] spectrum={
-   new Color(.43f,.28f,1),new Color(.22f,.5f,1),new Color(.08f,.82f,1),
-   new Color(.3f,1,.58f),new Color(.92f,1,.38f),new Color(1,.62f,.18f),new Color(1,.26f,.30f)
-  };
-  for(int i=0;i<spectrum.Length;i++){
-   float offset=(i-3)*27;
-   DrawGlowLine(tex,new Vector2(570,250),new Vector2(962,142+offset),8,spectrum[i]);
-  }
-
-  FillTriangle(tex,a,b,c,new Color(.12f,.46f,.62f,.28f));
-  DrawGlowLine(tex,a,b,8,new Color(.78f,.96f,1,1));
-  DrawGlowLine(tex,b,c,8,new Color(.78f,.96f,1,1));
-  DrawGlowLine(tex,c,a,8,new Color(.78f,.96f,1,1));
-  DrawDisc(tex,new Vector2(140,90),38,new Color(.91f,.77f,.49f,.16f));
-  DrawDisc(tex,new Vector2(880,402),62,new Color(.12f,.7f,.9f,.08f));
-
-  tex.Apply(false,false);
-  return tex;
+  DrawGlyph(tex,new Vector2(512,250),520,false);
+  tex.Apply(false,false);return tex;
  }
 
  static void WritePng(string path,Texture2D tex){
@@ -188,55 +186,6 @@ public static class BrandAssets {
   if(!string.IsNullOrEmpty(dir))Directory.CreateDirectory(dir);
   File.WriteAllBytes(path,tex.EncodeToPNG());
   UnityEngine.Object.DestroyImmediate(tex);
- }
-
- static void FillTriangle(Texture2D tex,Vector2 a,Vector2 b,Vector2 c,Color color){
-  int minX=Mathf.Clamp(Mathf.FloorToInt(Mathf.Min(a.x,Mathf.Min(b.x,c.x))),0,tex.width-1);
-  int maxX=Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(a.x,Mathf.Max(b.x,c.x))),0,tex.width-1);
-  int minY=Mathf.Clamp(Mathf.FloorToInt(Mathf.Min(a.y,Mathf.Min(b.y,c.y))),0,tex.height-1);
-  int maxY=Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(a.y,Mathf.Max(b.y,c.y))),0,tex.height-1);
-  float area=Cross(b-a,c-a);
-  if(Mathf.Abs(area)<.001f)return;
-  for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++){
-   Vector2 p=new Vector2(x+.5f,y+.5f);
-   float u=Cross(b-a,p-a)/area,v=Cross(c-b,p-b)/area,w=Cross(a-c,p-c)/area;
-   if((u>=0&&v>=0&&w>=0)||(u<=0&&v<=0&&w<=0))Blend(tex,x,y,color);
-  }
- }
-
- static float Cross(Vector2 a,Vector2 b)=>a.x*b.y-a.y*b.x;
-
- static void DrawGlowLine(Texture2D tex,Vector2 a,Vector2 b,float width,Color color){
-  DrawLine(tex,a,b,width*2.8f,new Color(color.r,color.g,color.b,.10f));
-  DrawLine(tex,a,b,width*1.55f,new Color(color.r,color.g,color.b,.26f));
-  DrawLine(tex,a,b,width,color);
-  DrawLine(tex,a,b,Mathf.Max(1,width*.26f),Color.Lerp(color,Color.white,.72f));
- }
-
- static void DrawLine(Texture2D tex,Vector2 a,Vector2 b,float width,Color color){
-  int minX=Mathf.Clamp(Mathf.FloorToInt(Mathf.Min(a.x,b.x)-width),0,tex.width-1);
-  int maxX=Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(a.x,b.x)+width),0,tex.width-1);
-  int minY=Mathf.Clamp(Mathf.FloorToInt(Mathf.Min(a.y,b.y)-width),0,tex.height-1);
-  int maxY=Mathf.Clamp(Mathf.CeilToInt(Mathf.Max(a.y,b.y)+width),0,tex.height-1);
-  Vector2 ab=b-a;float denom=Mathf.Max(.0001f,Vector2.Dot(ab,ab));
-  float radius=width*.5f;
-  for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++){
-   Vector2 p=new Vector2(x+.5f,y+.5f);
-   float t=Mathf.Clamp01(Vector2.Dot(p-a,ab)/denom);
-   float dist=Vector2.Distance(p,a+ab*t);
-   if(dist<=radius)Blend(tex,x,y,new Color(color.r,color.g,color.b,color.a*(1-dist/Mathf.Max(.001f,radius)*.25f)));
-  }
- }
-
- static void DrawDisc(Texture2D tex,Vector2 center,float radius,Color color){
-  int minX=Mathf.Clamp(Mathf.FloorToInt(center.x-radius),0,tex.width-1);
-  int maxX=Mathf.Clamp(Mathf.CeilToInt(center.x+radius),0,tex.width-1);
-  int minY=Mathf.Clamp(Mathf.FloorToInt(center.y-radius),0,tex.height-1);
-  int maxY=Mathf.Clamp(Mathf.CeilToInt(center.y+radius),0,tex.height-1);
-  for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++){
-   float d=Vector2.Distance(new Vector2(x+.5f,y+.5f),center);
-   if(d<=radius)Blend(tex,x,y,new Color(color.r,color.g,color.b,color.a*(1-d/radius*.35f)));
-  }
  }
 
  static void Blend(Texture2D tex,int x,int y,Color src){
@@ -251,13 +200,5 @@ public static class BrandAssets {
    outA));
  }
 
- static Color32 Lerp(Color32 a,Color32 b,float t){
-  t=Mathf.Clamp01(t);
-  return new Color32(
-   (byte)Mathf.RoundToInt(Mathf.Lerp(a.r,b.r,t)),
-   (byte)Mathf.RoundToInt(Mathf.Lerp(a.g,b.g,t)),
-   (byte)Mathf.RoundToInt(Mathf.Lerp(a.b,b.b,t)),
-   (byte)Mathf.RoundToInt(Mathf.Lerp(a.a,b.a,t)));
- }
 }
 }

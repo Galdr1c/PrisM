@@ -1,14 +1,14 @@
-# PrisM store listing
+# PRISM store listing
 
 ## Turkish
 **App name**  
-PrisM — Işık Atölyesi
+PRISM — Işık Yolları
 
 **Short description**  
 Işığı yönlendir, renkleri ayır ve 100 optik bulmacada geometrini zorla.
 
 **Full description**  
-PrisM, ışığın davranışını doğrudan oynanışa dönüştüren sakin ama giderek zorlaşan bir optik bulmaca oyunudur.
+PRISM, ışığın davranışını doğrudan oynanışa dönüştüren sakin ama giderek zorlaşan bir optik bulmaca oyunudur.
 
 Bir ışık kaynağını hedeflere ulaştırmak için aynaları döndür, prizmayla beyaz ışığı tayfa ayır, renk seçici yüzeylerle ışınları farklı yollara gönder, lenslerle odakla ve su ile camın kırılma davranışını kullan.
 
@@ -29,13 +29,13 @@ Pre-release test sürümü: 100 bölümlük tam ilerleme, yeni bölüm haritası
 
 ## English
 **App name**  
-PrisM — Light Workshop
+PRISM — Paths of Light
 
 **Short description**  
 Bend, split and focus light through 100 challenging optical puzzles.
 
 **Full description**  
-PrisM turns the behavior of light into a calm, tactile puzzle game.
+PRISM turns the behavior of light into a calm, tactile puzzle game.
 
 Rotate mirrors, split white light with prisms, route selected colors, focus beams with lenses, and use refraction through water and glass to illuminate every target.
 

@@ -7,7 +7,7 @@ Bu teslim Google Play Internal testing için hazırlanmış sürüm adayıdır. 
 - Windows deneme paketi: `Builds/Windows/PrisM.exe` ve yanındaki veri/DLL klasörleri.
 - Android: `Builds/Android/PrisM-0.9.0-90.aab`; paket `com.prismstudio.lightworkshop`, API 36, min API 26, ARM64, IL2CPP.
 - Mağaza ikonu ve feature graphic: `Builds/StoreAssets`.
-- Altı 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20260930-130943`.
+- Sekiz 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20261005-120559` (spectrum, mastery, water/glass, reflection, symphony, map, menu, settings).
 - TR/EN metinler: `docs/store-listing.md`; deklarasyon rehberi: `docs/play-console-declarations.md`.
 - Gizlilik politikası kaynağı: `docs/privacy-policy.md`. Play hesabında gerçek destek adresi ve herkese açık HTTPS politika URL'si tamamlanmalıdır.
 
@@ -24,5 +24,7 @@ Yerel upload anahtarı `Builds/Secrets/prism-upload.p12`, alias `prism-upload`. 
 30 Eylül görsel ve bölüm düzeni: sabit tuğla duvarlar artırıldı, son 20 bölümde en az 5 ve final ünitesinde en az 6 aktif ayna kullanılır. Genişleyen ışık hüzmesi, ön plandaki optik parçalar, belirgin döndürme yörüngesi ve sıcak/yuvarlak UI Windows'da derlenip 100 bölüm smoke testinden geçti. Yeni `LevelCatalog.asset` açılış için 100 bölümü önceden içerir.
 
 Güncel signed AAB SHA256: `FBC6D20DEBC159C2CA31DE1668F823CA3E21534AE75520E1507784A2A83C2AAA` (27.676.757 byte; bundletool validation ve 16 KB kontrolü PASS). Final manifest API 36/min API 26 ve yalnız VIBRATE iznini içerir.
+
+05 Ekim sunum geçişi: Canvas/TMP + Sora sunum katmanı, yeni PRISM glyph/icon seti, obsidiyen segment duvarlar, drag tepsisi, takımyıldız haritası, sheet modal akışı, üç aşamalı ipucu, accessibility ayarları ve final ışık sekansı kaynakta tamamlandı. Undo/reset geçişleri sonuç hesaplamasını kilitler; gesture iptali ekran/pause/focus değişimlerinde temizlenir; ilerleme dosyası atomik replace ve `.bak`/`.tmp` fallback kullanır. Son doğrulanmış AAB yukarıdaki hash'tir; bu son kaynak değişikliklerinden sonra Unity lisans kanalına erişim gerektiren yeniden paketleme bu makine oturumunda otomatik onay kotasına takıldı ve cihaz/Play pre-launch testleri hâlâ ayrıdır.
 
 Kalan cihaz kontrolleri: farklı ekran/safe-area, touch/rotate, ünite geri dönüşü, Android Back, müzik/SFX ayarları, pause/resume, düşük/orta/yüksek kalite, ısınma ve uzun oturum. Bunlar masaüstü testleriyle doğrulanmış sayılmaz.

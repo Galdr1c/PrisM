@@ -113,7 +113,7 @@ public static class BuildProject {
   EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(ScenePath,true)};
   EnsureBakedCampaign();
   PlayerSettings.companyName="Prism Studio";
-  PlayerSettings.productName="PrisM — Işık Atölyesi";
+  PlayerSettings.productName="PRISM — Işık Yolları";
   PlayerSettings.defaultScreenWidth=810;
   PlayerSettings.defaultScreenHeight=1206;
   PlayerSettings.fullScreenMode=FullScreenMode.Windowed;

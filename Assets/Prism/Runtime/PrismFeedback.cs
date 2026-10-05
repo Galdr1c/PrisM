@@ -7,7 +7,9 @@ public sealed class PrismFeedback : MonoBehaviour {
  float lastClickTime=-1f;
  float lastRotateTime=-1f;
  float lastGoalTime=-1f;
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
  float lastHapticTime=-10f;
+#endif
  bool appPaused,appFocused=true,musicStarted;
  public bool AudioEnabled {get;private set;}
  public bool MusicEnabled {get;private set;}
@@ -81,21 +83,24 @@ public sealed class PrismFeedback : MonoBehaviour {
   lastClickTime=Time.unscaledTime;
   Play(clickClip);
  }
- public void Place(){Play(placeClip);}
+ public void Place(){Place(Kind.Prism);}
+ public void Place(Kind kind){Play(placeClip,kind==Kind.Mirror ? 1.25f : kind==Kind.Sphere ? .82f : kind==Kind.Lens ? .94f : 1f);Pulse(new long[]{0,12},new int[]{0,30});}
  public void Rotate(){
   if(!CanPlay()||Time.unscaledTime-lastRotateTime<.09f)return;
   lastRotateTime=Time.unscaledTime;
   Play(rotateClip);
  }
  public void Goal(){
-  if(!CanPlay()||Time.unscaledTime-lastGoalTime<.12f)return;
+  if(Time.unscaledTime-lastGoalTime<.12f)return;
   lastGoalTime=Time.unscaledTime;
   Play(goalClip);
+  Pulse(new long[]{0,8},new int[]{0,22});
  }
- public void Invalid(){Play(invalidClip);}
+ public void Invalid(){Play(invalidClip);Pulse(new long[]{0,10,45,10},new int[]{0,25,0,25});}
  public void Complete(bool milestone=false){
   Play(milestone?milestoneClip:completeClip);
-#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+  Pulse(milestone?new long[]{0,18,60,18,85,45}:new long[]{0,14,55,14,75,28},new int[]{0,40,0,40,0,milestone?90:65});
+#if UNITY_IOS && !UNITY_EDITOR
   if(HapticsEnabled&&!appPaused&&appFocused&&Time.unscaledTime-lastHapticTime>=1f){
    lastHapticTime=Time.unscaledTime;
    Handheld.Vibrate();
@@ -103,8 +108,18 @@ public sealed class PrismFeedback : MonoBehaviour {
 #endif
  }
 
+ void Pulse(long[] timings,int[] amplitudes){
+#if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
+  if(!HapticsEnabled||appPaused||!appFocused||Time.unscaledTime-lastHapticTime<.18f)return;
+  lastHapticTime=Time.unscaledTime;
+  // Handheld.Vibrate is intentionally used here instead of a platform JNI bridge;
+  // it keeps the release player portable while preserving a short tactile cue.
+  Handheld.Vibrate();
+#endif
+ }
+
  bool CanPlay()=>AudioEnabled&&source!=null&&!appPaused&&appFocused;
- void Play(AudioClip clip){if(CanPlay()&&clip!=null)source.PlayOneShot(clip);}
+ void Play(AudioClip clip,float pitch=1f){if(CanPlay()&&clip!=null){source.pitch=pitch;source.PlayOneShot(clip);}}
  static AudioClip LoadClip(string name){
   var clip=Resources.Load<AudioClip>("Audio/"+name);
   if(clip==null)Debug.LogWarning("PrisM audio asset missing: "+name);

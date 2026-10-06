@@ -1,5 +1,7 @@
 # PRISM brand presentation
 
+**6 October 2026 update:** the user supplied an illustration exclusively for app icon/store art. [Icon integration](app-icon-integration.md) documents its source and exports. The old optical fold below is historical: [UI polish](ui-polish-review.md) replaces its in-game use with an independent Canvas-native prism motif; the supplied illustration never appears as the in-game logo.
+
 Implemented from `PrisM_Marka_UIUX_Yeniden_Tasarim_Spesifikasyonu.docx` (4 October 2026), especially sections 3, 13, 21 and 22. **PRISM is the temporary public name.** No final naming or clearance decision is made; Rayfold and Lightfold remain excluded from product branding. Namespace, save identifiers and package identity remain independent of the public name.
 
 ## Optical fold

@@ -3,6 +3,7 @@ Shader "Prism/BeamGlow" {
   _Intensity("HDR Intensity", Range(0.5,8)) = 2.4
   _CoreWhite("Core White", Range(0,1)) = 0.16
   _Celebration("Completion Celebration", Range(0,1)) = 0
+  [HideInInspector] _SelectedPosition("Selected optical center", Vector) = (0,0,0,0)
  }
  SubShader {
   Tags { "RenderPipeline"="UniversalPipeline" "RenderType"="Transparent" "Queue"="Transparent+20" }
@@ -17,6 +18,7 @@ Shader "Prism/BeamGlow" {
    float _Intensity;
    float _CoreWhite;
    float _Celebration;
+   float4 _SelectedPosition;
    float _PrismMotionTime;
    struct A {float4 positionOS:POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float2 uv2:TEXCOORD1;};
    struct B {float4 positionCS:SV_POSITION;float4 color:COLOR;float2 uv:TEXCOORD0;float kind:TEXCOORD1;float2 world:TEXCOORD2;};
@@ -24,16 +26,18 @@ Shader "Prism/BeamGlow" {
    half4 frag(B i):SV_Target {
     clip(4.98-abs(i.world.x));clip(4.98-abs(i.world.y));
     float crossSection=1.0-smoothstep(0.0,1.0,abs(i.uv.y*2.0-1.0));
-    float profile=i.kind>0.5?pow(saturate(1.0-length(i.uv)),2.0):crossSection;
+    float radial=i.kind>0.5&&i.kind<1.5?1.0:0.0;
+    float profile=radial>0.5?pow(saturate(1.0-length(i.uv)),2.0):crossSection;
     float core=pow(profile,5.0);
     float3 baseRgb=SRGBToLinear(i.color.rgb);
-    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(i.kind>0.5?0.35:1.0));
+    float3 rgb=lerp(baseRgb,1.0.xxx,core*_CoreWhite*(radial>0.5?0.35:1.0));
     float pulse=0.975+0.025*sin(_PrismMotionTime*2.1+i.uv.x*9.0);
     float victoryWave=0.5+0.5*sin(_PrismMotionTime*9.5+i.world.x*3.4-i.world.y*2.7);
     float victoryGain=1.0+_Celebration*(0.35+0.45*victoryWave);
     float sparkle=pow(victoryWave,14.0)*_Celebration*profile;
     rgb=rgb*victoryGain+sparkle*0.42;
-    return half4(rgb*(i.color.a*profile*_Intensity*pulse),1);
+    float separation=i.kind<1.5&&_SelectedPosition.w>0.5?lerp(.7,1.0,smoothstep(.5,.8,distance(i.world,_SelectedPosition.xy))):1.0;
+    return half4(rgb*(i.color.a*profile*_Intensity*pulse*separation),1);
    }
    ENDHLSL
   }

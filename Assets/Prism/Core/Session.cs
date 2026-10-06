@@ -11,19 +11,13 @@ public static class PlacementRules {
    default:return .36;
   }
  }
- static double DistanceToSegment(V p,Wall wall){
-  V edge=wall.B-wall.A;double denom=V.Dot(edge,edge);
-  if(denom<1e-10)return (p-wall.A).Length;
-  double t=Math.Max(0,Math.Min(1,V.Dot(p-wall.A,edge)/denom));
-  return (p-(wall.A+edge*t)).Length;
- }
  public static bool IsValid(Level level,IList<Piece> pieces,Kind kind,V position,int ignoreIndex=-1){
   if(level==null||pieces==null)return false;
   if(Math.Abs(position.X)>BoardHalfExtent||Math.Abs(position.Y)>BoardHalfExtent)return false;
   double clearance=Clearance(kind);
   if((position-level.Source).Length<clearance+.35)return false;
   foreach(var goal in level.Goals)if((position-goal.Position).Length<clearance+goal.Radius)return false;
-  foreach(var wall in level.Walls)if(DistanceToSegment(position,wall)<clearance)return false;
+  foreach(var wall in level.Walls)if(WallGeometry.Distance(position,wall)<clearance)return false;
   for(int i=0;i<pieces.Count;i++){
    if(i==ignoreIndex)continue;
    var other=pieces[i];

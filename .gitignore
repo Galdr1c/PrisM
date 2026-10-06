@@ -7,9 +7,12 @@ Logs/
 UserSettings/
 Builds/
 TestResults/
+Assets/Resources/PerformanceTestRun*.json
+Assets/Resources/PerformanceTestRun*.json.meta
 **/bin/
 **/obj/
 .vs/
+.gradle-temp/
 *.csproj.user
 *.log
 Assets/Prism/Generated/\n

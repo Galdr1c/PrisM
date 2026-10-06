@@ -11,7 +11,7 @@ public sealed class LevelCatalogEditor : UnityEditor.Editor {
 
   if(GUILayout.Button("Import Built-in Levels")){
    Undo.RecordObject(catalog,"Import PrisM built-in levels");
-   catalog.Import(Levels.Create());
+   catalog.Import(Levels.Create(),LevelCatalogLoader.CampaignRevision);
    EditorUtility.SetDirty(catalog);
    AssetDatabase.SaveAssets();
   }
@@ -40,7 +40,7 @@ public sealed class LevelCatalogEditor : UnityEditor.Editor {
   }
 
   Undo.RecordObject(catalog,"Refresh PrisM default level catalog");
-  catalog.Import(Levels.Create());
+  catalog.Import(Levels.Create(),LevelCatalogLoader.CampaignRevision);
   EditorUtility.SetDirty(catalog);
   AssetDatabase.SaveAssets();
   AssetDatabase.Refresh();

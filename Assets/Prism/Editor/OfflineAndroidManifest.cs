@@ -16,6 +16,14 @@ public sealed class OfflineAndroidManifest : IPostGenerateGradleAndroidProject {
   var manifest=document.DocumentElement;
   foreach(XmlNode node in document.SelectNodes("/manifest/uses-permission"))
    if(node.Attributes?["name",AndroidNamespace]?.Value=="android.permission.INTERNET")manifest.RemoveChild(node);
+  bool vibrate=false;
+  foreach(XmlNode node in document.SelectNodes("/manifest/uses-permission"))
+   if(node.Attributes?["name",AndroidNamespace]?.Value=="android.permission.VIBRATE")vibrate=true;
+  if(!vibrate){
+   var permission=document.CreateElement("uses-permission");
+   var permissionName=document.CreateAttribute("android","name",AndroidNamespace);permissionName.Value="android.permission.VIBRATE";permission.Attributes.Append(permissionName);
+   manifest.AppendChild(permission);
+  }
   manifest.SetAttribute("xmlns:tools",ToolsNamespace);
   var removal=document.CreateElement("uses-permission");
   var name=document.CreateAttribute("android","name",AndroidNamespace);name.Value="android.permission.INTERNET";removal.Attributes.Append(name);

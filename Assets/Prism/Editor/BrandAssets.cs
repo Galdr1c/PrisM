@@ -14,8 +14,8 @@ public static class BrandAssets {
  const string AdaptiveForegroundPath=GeneratedDir+"/AdaptiveForeground.png";
  const string AdaptiveBackgroundPath=GeneratedDir+"/AdaptiveBackground.png";
  const string MonochromePath=GeneratedDir+"/MonochromeIcon.png";
- const string GlyphPath="Assets/Prism/Resources/Brand/OpticalGlyph.png";
  const string StoreDir="Builds/StoreAssets";
+ const string SourceArtPath="artifacts/logo.png";
 
  [MenuItem("PRISM/Release/Generate Store Assets")]
  public static void GenerateStoreAssets(){
@@ -24,12 +24,12 @@ public static class BrandAssets {
   WritePng(storeIcon,CreateIcon(512));
   if(new FileInfo(storeIcon).Length>1024*1024)throw new Exception("Play icon exceeds the 1024 KB upload limit: "+storeIcon);
   WritePng(Path.Combine(StoreDir,"feature-graphic-1024x500.png"),CreateFeatureGraphic());
-  WritePng(GlyphPath,CreateGlyph(512,false));
   WritePng(MonochromePath,CreateGlyph(1024,true,.64f));
   foreach(int size in new[]{32,48,64,128,192}){
    WritePng(Path.Combine(StoreDir,"icon-"+size+".png"),CreateIcon(size));
    WritePng(Path.Combine(StoreDir,"monochrome-"+size+".png"),CreateGlyph(size,true));
   }
+  AssetDatabase.ImportAsset(MonochromePath,ImportAssetOptions.ForceUpdate|ImportAssetOptions.ForceSynchronousImport);
   Debug.Log("PRISM store assets generated in "+Path.GetFullPath(StoreDir));
  }
 
@@ -103,18 +103,11 @@ public static class BrandAssets {
 #endif
 
  static Texture2D CreateIcon(int size){
-  var tex=CreateIconBackground(size);
-  DrawIconArt(tex,size,1f);
-  tex.Apply(false,false);
-  return tex;
+  return SampleSource(size,size,1f,false);
  }
 
- // All outputs share this optical fold; no triangle illustration or thin rainbow rays.
+ // Full-color branding is supplied by the player, never replaced by a fallback glyph.
  static readonly Color32 Background=new Color32(9,8,18,255);
- static readonly Color[] Spectrum={
-  new Color(.55f,.39f,1),new Color(.35f,.53f,1),new Color(.42f,.84f,.96f),
-  new Color(.53f,.89f,.72f),new Color(.96f,.91f,.57f),new Color(1,.66f,.50f),new Color(.96f,.43f,.62f)
- };
 
  static Texture2D CreateIconBackground(int size){
   var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);
@@ -123,38 +116,45 @@ public static class BrandAssets {
   tex.SetPixels32(pixels);tex.Apply(false,false);return tex;
  }
 
- static Texture2D CreateAdaptiveForeground(int size)=>CreateGlyph(size,false,.64f);
+ static Texture2D CreateAdaptiveForeground(int size)=>SampleSource(size,size,.74f,true);
+
+ static Texture2D SampleSource(int width,int height,float scale,bool transparent){
+  if(!File.Exists(SourceArtPath))throw new FileNotFoundException("PRISM supplied icon is missing.",SourceArtPath);
+  var bytes=File.ReadAllBytes(SourceArtPath);
+  if(bytes.Length<8||bytes[0]!=137||bytes[1]!=80||bytes[2]!=78||bytes[3]!=71||bytes[4]!=13||bytes[5]!=10||bytes[6]!=26||bytes[7]!=10)throw new Exception("PRISM icon source must be a PNG.");
+  var source=new Texture2D(2,2,TextureFormat.RGBA32,false);
+  try{
+   if(!ImageConversion.LoadImage(source,bytes,false))throw new Exception("PRISM icon is not a valid PNG.");
+   if(source.width!=source.height)throw new Exception("PRISM supplied icon must be square.");
+   var output=new Texture2D(width,height,TextureFormat.RGBA32,false);
+   var pixels=new Color32[width*height];
+   float span=Mathf.Min(width,height)*scale,left=(width-span)*.5f,bottom=(height-span)*.5f;
+   for(int y=0;y<height;y++)for(int x=0;x<width;x++){
+    float u=(x+.5f-left)/span,v=(y+.5f-bottom)/span;
+    pixels[y*width+x]=u>=0&&u<=1&&v>=0&&v<=1 ? (Color32)source.GetPixelBilinear(u,v) : transparent ? new Color32(0,0,0,0) : Background;
+   }
+   output.SetPixels32(pixels);output.Apply(false,false);return output;
+  }finally{UnityEngine.Object.DestroyImmediate(source);}
+ }
 
  static Texture2D CreateGlyph(int size,bool monochrome,float scale=1){
   var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);
   tex.SetPixels32(new Color32[size*size]);
-  DrawGlyph(tex,new Vector2(size*.5f,size*.5f),size*scale,monochrome);
+  DrawGlyph(tex,new Vector2(size*.5f,size*.5f),size*scale);
   tex.Apply(false,false);return tex;
  }
 
- static void DrawIconArt(Texture2D tex,int size,float scale)=>DrawGlyph(tex,new Vector2(size*.5f,size*.5f),size*scale,false);
-
- static void DrawGlyph(Texture2D tex,Vector2 center,float size,bool monochrome){
+ static void DrawGlyph(Texture2D tex,Vector2 center,float size){
   Vector2 P(float x,float y)=>center+new Vector2(x-.5f,y-.5f)*size;
-  // A broad exit wedge and angular beam stay distinct even at launcher scale.
-  Vector2 tip=P(.56f,.60f),top=P(.88f,.84f),bottom=P(.88f,.48f);
-  int minX=Mathf.Clamp(Mathf.FloorToInt(tip.x),0,tex.width-1);
-  int maxX=Mathf.Clamp(Mathf.CeilToInt(top.x),0,tex.width-1);
-  int minY=Mathf.Clamp(Mathf.FloorToInt(bottom.y),0,tex.height-1);
-  int maxY=Mathf.Clamp(Mathf.CeilToInt(top.y),0,tex.height-1);
-  for(int y=minY;y<=maxY;y++)for(int x=minX;x<=maxX;x++){
-   float t=(x+.5f-tip.x)/(top.x-tip.x);
-   float lo=Mathf.Lerp(tip.y,bottom.y,t),hi=Mathf.Lerp(tip.y,top.y,t);
-   float v=(y+.5f-lo)/Mathf.Max(.001f,hi-lo);
-   if(t>=0&&t<=1&&v>=0&&v<=1){
-    float band=v*(Spectrum.Length-1);int index=Mathf.Min(Mathf.FloorToInt(band),Spectrum.Length-2);
-    Blend(tex,x,y,monochrome?Color.white:Color.Lerp(Spectrum[index],Spectrum[index+1],band-index));
-   }
+  // Themed launcher silhouette follows the supplied prism / incoming beam / downward exit.
+  FillPolygon(tex,new[]{P(.14f,.69f),P(.46f,.69f),P(.46f,.74f),P(.14f,.74f)},Color.white);
+  FillPolygon(tex,new[]{P(.48f,.85f),P(.40f,.57f),P(.73f,.66f)},Color.white);
+  FillPolygon(tex,new[]{P(.54f,.57f),P(.64f,.60f),P(.69f,.24f),P(.54f,.24f)},Color.white);
+  Vector2 target=P(.61f,.22f);
+  for(int y=0;y<tex.height;y++)for(int x=0;x<tex.width;x++){
+   float distance=Vector2.Distance(new Vector2(x+.5f,y+.5f),target)/size;
+   if(distance<.12f&&distance>.075f)Blend(tex,x,y,Color.white);
   }
-  Color ivory=monochrome?Color.white:new Color(.96f,.95f,.91f);
-  // Two corners describe optical folding without depending on color.
-  Vector2[] fold={P(.12f,.36f),P(.43f,.36f),P(.32f,.62f),P(.56f,.62f),P(.56f,.54f),P(.44f,.54f),P(.55f,.28f),P(.12f,.28f)};
-  FillPolygon(tex,fold,ivory);
  }
 
  static void FillPolygon(Texture2D tex,Vector2[] points,Color color){
@@ -172,13 +172,7 @@ public static class BrandAssets {
  }
 
  static Texture2D CreateFeatureGraphic(){
-  const int w=1024,h=500;
-  var tex=new Texture2D(w,h,TextureFormat.RGB24,false);
-  var pixels=new Color32[w*h];
-  for(int i=0;i<pixels.Length;i++)pixels[i]=Background;
-  tex.SetPixels32(pixels);
-  DrawGlyph(tex,new Vector2(512,250),520,false);
-  tex.Apply(false,false);return tex;
+  return SampleSource(1024,500,1f,false);
  }
 
  static void WritePng(string path,Texture2D tex){

@@ -28,9 +28,12 @@ public struct GoalDefinition {
 public struct WallDefinition {
  [SerializeField] Vector2 a;
  [SerializeField] Vector2 b;
+ [SerializeField] float thickness;
+ [SerializeField] string purpose;
+ [SerializeField] int cluster;
 
- public Wall ToWall()=>new Wall(new V(a.x,a.y),new V(b.x,b.y));
- public static WallDefinition FromWall(Wall wall)=>new WallDefinition{a=new Vector2((float)wall.A.X,(float)wall.A.Y),b=new Vector2((float)wall.B.X,(float)wall.B.Y)};
+ public Wall ToWall()=>new Wall(new V(a.x,a.y),new V(b.x,b.y),thickness>0?thickness:Wall.DefaultThickness,purpose,cluster);
+ public static WallDefinition FromWall(Wall wall)=>new WallDefinition{a=new Vector2((float)wall.A.X,(float)wall.A.Y),b=new Vector2((float)wall.B.X,(float)wall.B.Y),thickness=(float)WallGeometry.Thickness(wall),purpose=wall.Purpose,cluster=wall.Cluster};
 }
 
 [Serializable]
@@ -143,7 +146,7 @@ public sealed class LevelCatalog : ScriptableObject {
   for(int i=0;i<source.Length;i++){var definition=new LevelDefinition();definition.Import(source[i]);levels[i]=definition;}
  }
 
- public bool Validate(out string message){
+ public bool Validate(out string message,bool verifySolutions=true){
   if(levels==null||levels.Length==0){message="Catalog has no levels.";return false;}
   var ids=new HashSet<string>(StringComparer.Ordinal);
   for(int i=0;i<levels.Length;i++){
@@ -156,6 +159,16 @@ public sealed class LevelCatalog : ScriptableObject {
    if(runtime.Goals==null||runtime.Goals.Length==0){message="Level "+definition.Id+" has no goals.";return false;}
    if(runtime.Difficulty<1||runtime.Difficulty>10){message="Level "+definition.Id+" has invalid difficulty.";return false;}
    if(string.IsNullOrWhiteSpace(runtime.Chapter)){message="Level "+definition.Id+" has no chapter.";return false;}
+   foreach(var wall in runtime.Walls)if((wall.B-wall.A).Length<1e-6){message="Level "+definition.Id+" has a degenerate wall.";return false;}
+   if(!verifySolutions)continue;
+   for(int w=0;w<runtime.Walls.Length;w++){
+    V from,to;if(!SpatialValidation.TryWitness(runtime,w,out from,out to)){message="Level "+definition.Id+" has a wall without a constraint witness.";return false;}
+   }
+   var placement=new Session(runtime);
+   foreach(var piece in runtime.Solution){
+    if(!placement.Place(piece.Kind,piece.Position)){message="Level "+definition.Id+" known solution cannot be placed.";return false;}
+    placement.Pieces[placement.Pieces.Count-1].Angle=piece.Angle;
+   }
    var initialResult=Optics.Solve(runtime,runtime.Initial);
    if(initialResult.Complete){message="Level "+definition.Id+" starts solved.";return false;}
    var solutionResult=Optics.Solve(runtime,runtime.Solution);
@@ -163,7 +176,7 @@ public sealed class LevelCatalog : ScriptableObject {
    if(solutionResult.Truncated){message="Level "+definition.Id+" known solution exceeds the optical interaction budget.";return false;}
    var session=new Session(runtime);session.Reveal();if(!session.IsComplete(Optics.Solve(runtime,session.Pieces))){message="Level "+definition.Id+" fails gameplay completion rules.";return false;}
   }
-  message=levels.Length+" levels valid, including known-solution checks.";
+  message=levels.Length+(verifySolutions?" levels valid, including placement, wall witnesses and known solutions.":" level definitions valid.");
   return true;
  }
 }
@@ -173,7 +186,7 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
  public ScriptableObjectLevelProvider(LevelCatalog catalog){this.catalog=catalog;}
  public Level[] Load(){
   if(catalog!=null&&catalog.Count==100&&catalog.CampaignRevision==LevelCatalogLoader.CampaignRevision){
-   if(catalog.Validate(out string message))return catalog.Build();
+   if(catalog.Validate(out string message,false))return catalog.Build();
    Debug.LogWarning("PrisM LevelCatalog ignored: "+message);
   }
   return Levels.Create();
@@ -182,7 +195,7 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
 
 public static class LevelCatalogLoader {
  const string ResourceName="LevelCatalog";
- public const string CampaignRevision="2026-09-30-brick-obstacles-v1";
+ public const string CampaignRevision="2026-10-06-spatial-optics-v2";
  public static Level[] Load(){
   var catalog=Resources.Load<LevelCatalog>(ResourceName);
   return new ScriptableObjectLevelProvider(catalog).Load();

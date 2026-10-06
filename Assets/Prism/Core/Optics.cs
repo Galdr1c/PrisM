@@ -26,7 +26,38 @@ public static class PieceInfo {
 }
 public class Piece { public Kind Kind; public V Position; public double Angle; public Piece(Kind k,V p,double a=0){Kind=k;Position=p;Angle=a;} public Piece Copy()=>new Piece(Kind,Position,Angle); }
 public class Goal { public V Position; public int Band; public double Radius=0.42; public double Threshold=0.24; public Goal(V p,int b){Position=p;Band=b;} }
-public struct Wall { public V A,B; public Wall(V a,V b){A=a;B=b;} }
+public struct Wall {
+ public const double DefaultThickness=.36;
+ public V A,B; public double Thickness; public string Purpose; public int Cluster;
+ public Wall(V a,V b,double thickness=DefaultThickness,string purpose="",int cluster=0){A=a;B=b;Thickness=thickness;Purpose=purpose;Cluster=cluster;}
+}
+public static class WallGeometry {
+ public static double Thickness(Wall wall)=>wall.Thickness>0?wall.Thickness:Wall.DefaultThickness;
+ public static V[] Vertices(Wall wall){V normal=(wall.B-wall.A).Unit.Perp*(Thickness(wall)*.5);return new[]{wall.A+normal,wall.A-normal,wall.B-normal,wall.B+normal};}
+ public static double Distance(V point,Wall wall){
+  V axis=(wall.B-wall.A).Unit;double length=(wall.B-wall.A).Length;
+  if(length<1e-12)return (point-wall.A).Length;
+  V relative=point-wall.A;double along=V.Dot(relative,axis),across=Math.Abs(V.Dot(relative,axis.Perp));
+  double dx=Math.Max(0,Math.Max(-along,along-length)),dy=Math.Max(0,across-Thickness(wall)*.5);
+  return Math.Sqrt(dx*dx+dy*dy);
+ }
+ public static bool Raycast(V origin,V direction,Wall wall,out double distance,out V normal){
+  distance=double.PositiveInfinity;normal=new V();
+  V offset=(wall.B-wall.A).Unit.Perp*(Thickness(wall)*.5);
+  V a=wall.A+offset,b=wall.A-offset,c=wall.B-offset,d=wall.B+offset;
+  HitEdge(origin,direction,a,b,ref distance,ref normal);
+  HitEdge(origin,direction,b,c,ref distance,ref normal);
+  HitEdge(origin,direction,c,d,ref distance,ref normal);
+  HitEdge(origin,direction,d,a,ref distance,ref normal);
+  return !double.IsPositiveInfinity(distance);
+ }
+ static void HitEdge(V origin,V direction,V a,V b,ref double distance,ref V normal){
+  V edge=b-a;double cross=V.Cross(direction,edge);if(Math.Abs(cross)<1e-10)return;
+  double t=V.Cross(a-origin,edge)/cross,u=V.Cross(a-origin,direction)/cross;
+  if(t>.0001&&u>=0&&u<=1&&t<distance){distance=t;normal=-edge.Perp.Unit;}
+ }
+ public static bool Blocks(Wall wall,V a,V b){double distance;V normal;return Raycast(a,(b-a).Unit,wall,out distance,out normal)&&distance<(b-a).Length;}
+}
 public struct WaterZone { public V Min,Max; public double Index; public WaterZone(V min,V max,double idx=1.333){Min=min;Max=max;Index=idx;} public bool Contains(V p)=>p.X>=Min.X-1e-5&&p.X<=Max.X+1e-5&&p.Y>=Min.Y-1e-5&&p.Y<=Max.Y+1e-5; }
 public class Level { public string Id="",Name="",Lesson="",Hint="",Chapter=""; public int Difficulty=1,Par=0; public bool RequireAllPiecesActive; public V Source,Direction; public Piece[] Initial=new Piece[0],Solution=new Piece[0]; public Goal[] Goals=new Goal[0]; public Wall[] Walls=new Wall[0]; public WaterZone[] WaterZones=new WaterZone[0]; public Kind[] Stock=new Kind[0]; public double Width=0.32; }
 public struct Beam { public V A,B; public int Band; public double Power; public Beam(V a,V b,int band,double p){A=a;B=b;Band=band;Power=p;} }
@@ -59,7 +90,7 @@ public static class Optics {
    V d=level.Direction.Unit,o=level.Source+d.Perp*((sample/(double)(samples-1)-0.5)*level.Width);double power=1.0/samples;
    for(int bounce=0;bounce<24;bounce++){
     double nearest=30; V normal=new V();Piece hit=null;int hitIndex=-1,goal=-1;bool wall=false;WaterZone? hitZone=null;
-    foreach(var w in level.Walls){double t;V n;if(Intersect(o,d,w.A,w.B,out t,out n)&&t<nearest){nearest=t;normal=n;wall=true;hitZone=null;hit=null;hitIndex=-1;}}
+    foreach(var w in level.Walls){double t;V n;if(WallGeometry.Raycast(o,d,w,out t,out n)&&t<nearest){nearest=t;normal=n;wall=true;hitZone=null;hit=null;hitIndex=-1;}}
     foreach(var wz in level.WaterZones){
      V b0=new V(wz.Min.X,wz.Min.Y), b1=new V(wz.Max.X,wz.Min.Y), b2=new V(wz.Max.X,wz.Max.Y), b3=new V(wz.Min.X,wz.Max.Y);
      double t; V n;

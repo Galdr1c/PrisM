@@ -11,13 +11,14 @@ namespace Prism.Editor {
 public static class BuildProject {
  const string ScenePath="Assets/Scenes/Prism.unity";
  const string ApplicationId="com.prismstudio.lightworkshop";
- const string DefaultVersion="0.9.0";
- const int DefaultVersionCode=90;
+ const string DefaultVersion="0.9.1";
+ const int DefaultVersionCode=91;
 
  public static void Build(){BuildWindowsDevelopment();}
 
  public static void BuildWindowsDevelopment(){
   if(EditorUserBuildSettings.activeBuildTarget!=BuildTarget.StandaloneWindows64)throw new Exception("Windows build must launch Unity with -buildTarget win64.");
+  BrandAssets.GenerateStoreAssets();
   ConfigureCommon();
   Directory.CreateDirectory("Builds/Windows");
   var report=BuildPipeline.BuildPlayer(new BuildPlayerOptions{
@@ -114,6 +115,8 @@ public static class BuildProject {
   EnsureBakedCampaign();
   PlayerSettings.companyName="Prism Studio";
   PlayerSettings.productName="PRISM — Işık Yolları";
+  string version=Environment.GetEnvironmentVariable("PRISM_VERSION_NAME");
+  PlayerSettings.bundleVersion=string.IsNullOrWhiteSpace(version)?DefaultVersion:version;
   PlayerSettings.defaultScreenWidth=810;
   PlayerSettings.defaultScreenHeight=1206;
   PlayerSettings.fullScreenMode=FullScreenMode.Windowed;
@@ -132,11 +135,10 @@ public static class BuildProject {
    catalog=ScriptableObject.CreateInstance<LevelCatalog>();
    AssetDatabase.CreateAsset(catalog,path);
   }
-  if(catalog.Count!=100||catalog.CampaignRevision!=LevelCatalogLoader.CampaignRevision){
-   catalog.Import(Levels.Create(),LevelCatalogLoader.CampaignRevision);
-   EditorUtility.SetDirty(catalog);
-   AssetDatabase.SaveAssets();
-  }
+  // Rebuild deterministically so text/geometry edits within a revision cannot leave stale content.
+  catalog.Import(Levels.Create(),LevelCatalogLoader.CampaignRevision);
+  EditorUtility.SetDirty(catalog);
+  AssetDatabase.SaveAssets();
   if(!catalog.Validate(out string message))throw new Exception("Baked level catalog failed validation: "+message);
  }
 

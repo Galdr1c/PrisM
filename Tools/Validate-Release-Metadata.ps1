@@ -23,7 +23,7 @@ Assert-True ($build.Contains('PRISM_KEYSTORE_PATH')) 'Release signing must use e
 
 $projectSettings = Get-Content -LiteralPath (Join-Path $projectRoot 'ProjectSettings\ProjectSettings.asset') -Raw
 Assert-True ($projectSettings -match 'AndroidTargetSdkVersion:\s*36') 'ProjectSettings Android target SDK must be 36.'
-Assert-True ($projectSettings -match 'AndroidBundleVersionCode:\s*90') 'ProjectSettings pre-release versionCode must be 90.'
+Assert-True ($projectSettings -match 'AndroidBundleVersionCode:\s*91') 'ProjectSettings pre-release versionCode must be 91.'
 
 Write-Host '== PowerShell syntax =='
 Get-ChildItem -LiteralPath $PSScriptRoot -Filter '*.ps1' | ForEach-Object {

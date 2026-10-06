@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.LowLevel;
 
 namespace Prism {
 public class PrismGame : MonoBehaviour {
@@ -23,7 +24,28 @@ public class PrismGame : MonoBehaviour {
  Piece trayGhost;
  Kind? trayKind;
  bool transitionBusy,completionPresented;
+ Coroutine visualTransition;
  float dragStarted;
+ InputAction backAction;
+ bool backRequested;
+ public int LastRequestedHintStage { get; private set; }
+ public Result CurrentVisualResult { get; private set; }
+ public IList<Piece> CurrentVisualPieces { get; private set; }
+ public void RequestBackNavigation(){backRequested=true;}
+ void OnEnable(){
+  backAction=new InputAction("Navigate back",InputActionType.Button,"<Keyboard>/escape");
+  backAction.performed+=OnBackPerformed;backAction.Enable();
+ }
+ void OnBackPerformed(InputAction.CallbackContext context){RequestBackNavigation();}
+ void OnDisable(){Application.logMessageReceived-=OnAutomatedLog;CancelInteraction();if(backAction!=null){backAction.performed-=OnBackPerformed;backAction.Dispose();backAction=null;}}
+ void OnAutomatedLog(string message,string stackTrace,LogType type){if(type==LogType.Exception||type==LogType.Error||type==LogType.Assert)Application.Quit(1);}
+ V OffsetPointer(Vector2 screenPosition,float amount=1f)=>ScreenWorld(screenPosition+Vector2.up*(26f*Screen.width/360f*amount));
+ void DrawVisual(IList<Piece> pieces,int selection=-1){
+  // Visual snapshots own their optical result; logical completion never reads this solve.
+  CurrentVisualPieces=pieces;CurrentVisualResult=Optics.Solve(session.Level,pieces);
+  board.SetInteraction(selection,trayGhost!=null,false,0);
+  board.Draw(session.Level,pieces,CurrentVisualResult,selection);
+ }
  int invalidPlacementCount;
  readonly List<UnityEngine.EventSystems.RaycastResult> uiHits=new List<UnityEngine.EventSystems.RaycastResult>();
 
@@ -44,17 +66,18 @@ public class PrismGame : MonoBehaviour {
  public bool HasWon=>won;
  public void RenderSolutionReveal(float fraction){board.SolutionReveal=Mathf.Clamp01(fraction);board.Draw(session.Level,session.Pieces,result,-1);}
  public void CancelInteraction(){
+  if(transitionBusy&&visualTransition!=null){StopCoroutine(visualTransition);visualTransition=null;transitionBusy=false;}
   if(dragging||rotating)session?.EndEdit();
-  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;dirty=true;
+  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;board?.SetPointerAnchor(null);presentation?.CancelTrayGesture();dirty=true;
  }
 
  public void ContinueGame(){presentation.ShowGameplay();}
  public void OpenLevel(int index){if(!IsUnlocked(index)){feedback?.Invalid();return;}Load(index);}
  public void AdvanceLevel(){if(levelIndex<levels.Length-1)OpenLevel(levelIndex+1);else presentation.ShowMap();}
- public void ArmPiece(Kind kind){if(session.Remaining(kind)<=0)return;armed=kind;selected=-1;dirty=true;feedback?.Click();}
+ public void ArmPiece(Kind kind){if(won||transitionBusy||session.Remaining(kind)<=0)return;armed=kind;selected=-1;dirty=true;feedback?.Click();}
  public void RotateSelected(double degrees){Rotate(degrees);}
  public void RemoveSelected(){if(selected<0||won||transitionBusy)return;session.Remove(selected);selected=-1;dirty=true;feedback?.Click();}
- public void RequestHint(int stage){board.ShowHint(Mathf.Clamp(stage,1,3),session.Level,session.Pieces);}
+ public void RequestHint(int stage){LastRequestedHintStage=Mathf.Clamp(stage,1,3);board.ShowHint(LastRequestedHintStage,session.Level,session.Pieces);dirty=true;}
  public void SetReducedMotion(bool value){VisualEnvironment.SetReducedMotion(value);dirty=true;}
  public void SetHighContrast(bool value){VisualEnvironment.SetHighContrast(value);dirty=true;}
  public void SetColorSymbols(bool value){VisualEnvironment.SetColorSymbols(value);dirty=true;}
@@ -63,28 +86,30 @@ public class PrismGame : MonoBehaviour {
  public void SetBloomIntensity(float value){VisualEnvironment.SetBloomScale(value);}
 
  public void StartTrayDrag(Kind kind,Vector2 screenPosition){
-  if(session.Remaining(kind)<=0||won)return;
+  if(session.Remaining(kind)<=0||won||transitionBusy)return;
   trayKind=kind;armed=null;
   double angle=kind==Kind.Lens||kind==Kind.Prism?90:kind==Kind.Sphere?0:45;
   trayGhost=new Piece(kind,ScreenWorld(screenPosition),angle);
   UpdateTrayDrag(screenPosition);
  }
  public void UpdateTrayDrag(Vector2 screenPosition){
+  if(won||transitionBusy){CancelInteraction();return;}
   if(trayGhost==null)return;
-  trayGhost.Position=ScreenWorld(screenPosition);
+  trayGhost.Position=OffsetPointer(screenPosition);
   var preview=new List<Piece>(session.Pieces){trayGhost};
-  board.Draw(session.Level,preview,Optics.Solve(session.Level,preview),preview.Count-1);
+  board.SetPointerAnchor(ScreenWorld(screenPosition));DrawVisual(preview,preview.Count-1);dirty=false;
  }
  public void EndTrayDrag(Vector2 screenPosition){
+  if(won||transitionBusy){CancelInteraction();return;}
   if(trayGhost==null)return;
-  var ghost=trayGhost;ghost.Position=ScreenWorld(screenPosition);
+  var ghost=trayGhost;ghost.Position=OffsetPointer(screenPosition);
   if(session.Place(ghost.Kind,ghost.Position)){
    selected=session.Pieces.Count-1;session.Pieces[selected].Angle=ghost.Angle;feedback?.Place(ghost.Kind);
   }else feedback?.Invalid();
-  trayGhost=null;trayKind=null;dirty=true;
+  trayGhost=null;trayKind=null;board.SetPointerAnchor(null);dirty=true;
  }
- public void UndoAction(){if(!transitionBusy&&!won)StartCoroutine(AnimateUndo());}
- public void RestartLevel(){if(!transitionBusy)StartCoroutine(AnimateReset());}
+ public void UndoAction(){if(!transitionBusy&&!won){CancelInteraction();visualTransition=StartCoroutine(AnimateUndo());}}
+ public void RestartLevel(){if(!transitionBusy){CancelInteraction();visualTransition=StartCoroutine(AnimateReset());}}
  IEnumerator AnimateUndo(){
   transitionBusy=true;
   var before=new List<Piece>();foreach(var p in session.Pieces)before.Add(p.Copy());
@@ -99,19 +124,19 @@ public class PrismGame : MonoBehaviour {
      visual.Add(new Piece(final.Kind,before[i].Position+(final.Position-before[i].Position)*t,
       before[i].Angle+Mathf.DeltaAngle((float)before[i].Angle,(float)final.Angle)*t));
     }
-    board.Draw(session.Level,visual,result,-1);yield return null;
+    DrawVisual(visual);yield return null;
    }
   }
-  transitionBusy=false;dirty=true;feedback?.Click();
+  transitionBusy=false;visualTransition=null;dirty=true;feedback?.Click();
  }
  IEnumerator AnimateReset(){
   transitionBusy=true;selected=-1;armed=null;
   var visual=new List<Piece>(session.Pieces);
   session.Reset();won=false;completionPresented=false;settle=0;Solve();
   if(!VisualEnvironment.ReducedMotion){
-   while(visual.Count>0){visual.RemoveAt(visual.Count-1);board.Draw(session.Level,visual,result,-1);yield return new WaitForSecondsRealtime(.04f);}
+   while(visual.Count>0){visual.RemoveAt(visual.Count-1);DrawVisual(visual);yield return new WaitForSecondsRealtime(.04f);}
   }
-  dirty=true;transitionBusy=false;
+  dirty=true;transitionBusy=false;visualTransition=null;
   board.ClearHint();presentation.ShowGameplay();feedback?.Click();
  }
  ProgressData progress=new ProgressData();
@@ -139,7 +164,11 @@ public class PrismGame : MonoBehaviour {
   var commandLine=Environment.GetCommandLineArgs();
   smoke=Array.IndexOf(commandLine,"-prismSmoke")>=0;
   storeCapture=Array.IndexOf(commandLine,"-prismStoreCapture")>=0;
-  if(smoke||storeCapture)Application.runInBackground=true;
+  if(smoke||storeCapture){
+   Application.runInBackground=true;
+   InputSystem.settings.backgroundBehavior=InputSettings.BackgroundBehavior.IgnoreFocus;
+   Application.logMessageReceived+=OnAutomatedLog;
+  }
 
   levels=LevelCatalogLoader.Load();
   if(levels==null||levels.Length==0)throw new Exception("PrisM has no playable levels.");
@@ -248,7 +277,7 @@ public class PrismGame : MonoBehaviour {
 
  void Load(int index,bool force=false){
   index=Mathf.Clamp(index,0,levels.Length-1);
-  if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu deney henüz kilitli.",danger);return;}
+  if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu bölüm henüz kilitli.",danger);return;}
   levelIndex=index;
   session=new Session(levels[levelIndex]);
   previousLit=0;
@@ -268,6 +297,8 @@ public class PrismGame : MonoBehaviour {
   int lit=LitGoals();
   if(lit>previousLit&&!smoke&&!storeCapture)feedback?.Goal();
   previousLit=lit;
+  CurrentVisualPieces=session.Pieces;CurrentVisualResult=result;
+  board.SetInteraction(selected,dragging,rotating,0);
   board.Draw(session.Level,session.Pieces,result,selected);
   dirty=false;
  }
@@ -275,14 +306,15 @@ public class PrismGame : MonoBehaviour {
  void Update(){
   if(session==null)return;
   Layout();
+  HandleBack();
   if(!smoke&&!storeCapture){
-   HandleBack();
    Pointer();
   }
   if(dirty)Solve();
 
   bool complete=session.IsComplete(result);
-  if(!transitionBusy&&!won&&complete){
+  bool evaluating=presentation==null||presentation.IsGameplay&&!presentation.BlocksBoardInput;
+  if(!transitionBusy&&!won&&complete&&evaluating){
    settle+=Time.deltaTime;
    if(settle>.58f){
     won=true;
@@ -295,7 +327,7 @@ public class PrismGame : MonoBehaviour {
      feedback?.Complete(milestone);
     }
    }
-  }else if(!complete||transitionBusy)settle=0;
+  }else if(!complete||transitionBusy||!evaluating)settle=0;
 
   float celebration=0f;
   if(won){
@@ -303,9 +335,10 @@ public class PrismGame : MonoBehaviour {
    celebration=Mathf.Clamp01(1f-Mathf.Max(0f,age-1.2f)/2.4f);
    if(!completionPresented&&!smoke&&!storeCapture){completionPresented=true;presentation.ShowCompletion(levelIndex==levels.Length-1);}
   }
-  VisualEnvironment.SetPaused(presentation!=null&&presentation.BlocksBoardInput&&!won);
-  float lift=dragging?Mathf.Clamp01((Time.unscaledTime-dragStarted-.12f)/.12f)*.32f:0f;
-  board?.SetInteraction(selected,dragging,rotating,lift);
+  VisualEnvironment.SetPaused(presentation!=null&&presentation.BlocksBoardInput&&(!won||presentation.HasModal));
+  // Finger clearance is physical placement, so preview, beams and drop share one position.
+  float lift=0f;
+  board?.SetInteraction(trayGhost!=null?session.Pieces.Count:selected,dragging||trayGhost!=null,rotating,lift);
   board?.SetCelebration(celebration);
   VisualEnvironment.SetCelebration(celebration);
  }
@@ -315,7 +348,8 @@ public class PrismGame : MonoBehaviour {
  V ScreenWorld(Vector2 point){var world=cam.ScreenToWorldPoint(new Vector3(point.x,point.y,10));return new V(world.x,world.y);}
 
  void HandleBack(){
-  if(Keyboard.current==null||!Keyboard.current.escapeKey.wasPressedThisFrame)return;
+  if(!backRequested)return;
+  backRequested=false;
   if(presentation!=null){presentation.HandleBack();return;}
   if(showHint){showHint=false;return;}
   if(showSettings){showSettings=false;return;}
@@ -350,6 +384,7 @@ public class PrismGame : MonoBehaviour {
   }else return;
 
   V w=ScreenWorld(raw);
+  board.SetPointerAnchor(dragging?w:(V?)null);
   bool onBoard=Math.Abs(w.X)<4.8&&Math.Abs(w.Y)<4.8;
   if(down&&IsOverPresentation(raw))return;
 
@@ -386,7 +421,9 @@ public class PrismGame : MonoBehaviour {
   if(held&&selected>=0&&!won){
    var piece=session.Pieces[selected];
    if(dragging){
-    V proposed=w+new V(dragOffset.x,dragOffset.y);
+    dirty=true;
+    float clearance=Mathf.Clamp01((Time.unscaledTime-dragStarted-.12f)/.12f);
+    V proposed=OffsetPointer(raw,clearance)+new V(dragOffset.x,dragOffset.y);
     proposed=new V(Math.Max(-4.25,Math.Min(4.25,proposed.X)),Math.Max(-4.25,Math.Min(4.25,proposed.Y)));
     if(PlacementRules.IsValid(session.Level,session.Pieces,piece.Kind,proposed,selected)){piece.Position=proposed;dirty=true;}
    }
@@ -405,7 +442,7 @@ public class PrismGame : MonoBehaviour {
    session.EndEdit();
    if(changedAngle)feedback?.Rotate();
    else feedback?.Click();
-   dragging=rotating=false;
+   dragging=rotating=false;board.SetPointerAnchor(null);dirty=true;
   }
  }
 
@@ -496,6 +533,14 @@ public class PrismGame : MonoBehaviour {
   return output;
  }
 
+ void AssertVisualSynchrony(){
+  var expected=Optics.Solve(session.Level,CurrentVisualPieces);
+  if(CurrentVisualResult.Beams.Count!=expected.Beams.Count)throw new Exception("Visual snapshot beam count is stale");
+  for(int i=0;i<expected.Beams.Count;i++){
+   var actual=CurrentVisualResult.Beams[i];var beam=expected.Beams[i];
+   if((actual.A-beam.A).Length>1e-6||(actual.B-beam.B).Length>1e-6||actual.Band!=beam.Band)throw new Exception("Visual snapshot beams do not follow animated pieces");
+  }
+ }
  IEnumerator Smoke(){
   string output=CaptureOutputDirectory("TestResults");
   Directory.CreateDirectory(output);
@@ -507,14 +552,46 @@ public class PrismGame : MonoBehaviour {
   if(presentation.BlocksBoardInput)throw new Exception("Gameplay input remains blocked");
   presentation.ShowSettings();yield return null;
   if(!presentation.BlocksBoardInput)throw new Exception("Settings does not block board input");
-  presentation.HandleBack();yield return null;
+  var testKeyboard=InputSystem.AddDevice<Keyboard>();
+  InputSystem.QueueStateEvent(testKeyboard,new KeyboardState(Key.Escape));InputSystem.Update();yield return null;
+  InputSystem.QueueStateEvent(testKeyboard,new KeyboardState());InputSystem.Update();InputSystem.RemoveDevice(testKeyboard);
   if(presentation.BlocksBoardInput)throw new Exception("Closing settings does not resume gameplay");
   checks.Add("PASS Canvas menu settings back input flow");
+  for(int stage=1;stage<=3;stage++){
+   presentation.ShowHint();presentation.RevealNextHint();yield return null;
+   if(LastRequestedHintStage!=(stage==1?1:3))throw new Exception("Hint skipped reveal stage "+stage);
+  }
+  checks.Add("PASS hints reveal region before exact direction");
+  Load(0,true);yield return null;
+  var dragData=new UnityEngine.EventSystems.PointerEventData(UnityEngine.EventSystems.EventSystem.current){position=cam.WorldToScreenPoint(new Vector3(0,-2,0))};
+  var trayTrigger=Array.Find(presentation.GetComponentsInChildren<UnityEngine.EventSystems.EventTrigger>(),t=>t.triggers.Exists(e=>e.eventID==UnityEngine.EventSystems.EventTriggerType.BeginDrag));
+  UnityEngine.EventSystems.ExecuteEvents.Execute(trayTrigger.gameObject,dragData,UnityEngine.EventSystems.ExecuteEvents.beginDragHandler);
+  if(!presentation.BlocksBoardInput||trayGhost==null)throw new Exception("Lifecycle regression did not begin a real UI drag");
+  CancelInteraction();
+  if(presentation.BlocksBoardInput||trayGhost!=null)throw new Exception("Lifecycle cancellation leaves tray input blocked");
+  checks.Add("PASS lifecycle cancellation clears controller and tray UI");
+  Load(80,true);yield return null;
+  session.Place(Kind.Mirror,levels[80].Solution[0].Position);
+  session.BeginEdit();session.Pieces[0].Angle=20;session.EndEdit();dirty=true;yield return null;
+  UndoAction();
+  trayTrigger=Array.Find(presentation.GetComponentsInChildren<UnityEngine.EventSystems.EventTrigger>(),t=>t.triggers.Exists(e=>e.eventID==UnityEngine.EventSystems.EventTriggerType.BeginDrag));
+  UnityEngine.EventSystems.ExecuteEvents.Execute(trayTrigger.gameObject,dragData,UnityEngine.EventSystems.ExecuteEvents.beginDragHandler);
+  if(trayGhost!=null||presentation.BlocksBoardInput)throw new Exception("Tray pickup bypasses undo animation exclusion");
+  yield return new WaitForSecondsRealtime(.25f);
+  checks.Add("PASS tray pickup respects animation exclusion");
+  session.BeginEdit();session.Pieces[0].Angle=30;session.EndEdit();
+  UndoAction();presentation.ShowMap();yield return null;
+  if(transitionBusy)throw new Exception("Navigation retained an old visual transition");
+  checks.Add("PASS navigation cancels visual transition");
   Load(0,true);yield return null;
   Vector3 drop=cam.WorldToScreenPoint(new Vector3(0,-2,0));
   StartTrayDrag(Kind.Mirror,new Vector2(drop.x,drop.y));
+  V previewPosition=trayGhost.Position;
+  double clearance=previewPosition.Y-ScreenWorld(new Vector2(drop.x,drop.y)).Y;
+  if(clearance<=0)throw new Exception("Tray piece remains beneath pointer");
+  AssertVisualSynchrony();
   EndTrayDrag(new Vector2(drop.x,drop.y));yield return null;
-  if(session.Pieces.Count!=1||session.Remaining(Kind.Mirror)!=0)throw new Exception("Tray drag does not place piece");
+  if(session.Pieces.Count!=1||session.Remaining(Kind.Mirror)!=0||(session.Pieces[0].Position-previewPosition).Length>1e-6)throw new Exception("Tray drag does not place piece");
   UndoAction();yield return new WaitForSecondsRealtime(.25f);
   if(session.Pieces.Count!=0||session.Remaining(Kind.Mirror)!=1)throw new Exception("Tray undo does not restore inventory");
   checks.Add("PASS Canvas tray placement undo inventory");
@@ -523,9 +600,14 @@ public class PrismGame : MonoBehaviour {
   session.BeginEdit();session.Pieces[0].Angle=levels[0].Solution[0].Angle;session.EndEdit();dirty=true;
   yield return new WaitForSecondsRealtime(.49f);
   if(won||!session.IsComplete(result))throw new Exception("Undo regression setup is not a pending solution");
-  UndoAction();yield return new WaitForSecondsRealtime(.25f);
+  UndoAction();yield return new WaitForSecondsRealtime(.09f);AssertVisualSynchrony();yield return new WaitForSecondsRealtime(.16f);
   if(won||session.IsComplete(result)||settle>0)throw new Exception("Undo animation completed an obsolete solution");
   checks.Add("PASS Canvas undo cancels pending completion");
+  int resetLevel=0;for(int i=0;i<levels.Length;i++)if(levels[i].Solution.Length>1){resetLevel=i;break;}
+  Load(resetLevel,true);session.Reveal();dirty=true;yield return new WaitForSecondsRealtime(.45f);
+  RestartLevel();yield return null;AssertVisualSynchrony();yield return new WaitForSecondsRealtime(.25f);
+  if(won||session.Pieces.Count!=session.Level.Initial.Length||session.IsComplete(result)||settle>0)throw new Exception("Reset retained pending completion");
+  checks.Add("PASS Canvas reset cancels pending completion");
   Load(0,true);StartTrayDrag(Kind.Mirror,new Vector2(drop.x,drop.y));presentation.ShowHome();ContinueGame();yield return null;
   if(trayGhost!=null||trayKind.HasValue||presentation.BlocksBoardInput)throw new Exception("Screen change did not cancel tray interaction");
   checks.Add("PASS Canvas screen change cancels tray interaction");
@@ -573,6 +655,11 @@ public class PrismGame : MonoBehaviour {
   presentation.ShowHome();
   yield return null;
   checks.Add("PASS Canvas campaign finale returns home");
+  yield return new WaitForSecondsRealtime(.3f);yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"05-home-optical.png")));
+  presentation.ShowSettings();yield return new WaitForSecondsRealtime(.3f);yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"06-settings.png")));
+  presentation.ShowQuality();yield return new WaitForSecondsRealtime(.3f);yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"07-quality-options.png")));
+  presentation.ShowAdvanced();yield return new WaitForSecondsRealtime(.3f);yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"08-advanced-preview.png")));
+  presentation.HandleBack();presentation.HandleBack();
 
   File.WriteAllLines(Path.Combine(output,"runtime-smoke.txt"),checks);
   Application.Quit(0);

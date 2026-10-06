@@ -69,178 +69,137 @@ public static class Levels {
    level.Par=Math.Max(1,level.Solution?.Length??0);
    if(i>=80)level.RequireAllPiecesActive=true;
   }
-  IncreaseMasteryChains(levels);
-  DistinguishMasteryGeometry(levels);
-  AddObstacleWalls(levels);
+  AuthorMasteryRooms(levels);
+  AddSpatialConstraints(levels);
   return levels.ToArray();
  }
 
- static void IncreaseMasteryChains(List<Level> levels){
-  for(int index=80;index<levels.Count;index++){
-   var level=levels[index];
-   int target=index<90?5:6;
-   var points=new List<V>{level.Source};
-   foreach(var mirror in level.Solution)points.Add(mirror.Position);
-   points.Add(level.Goals[0].Position);
-   while(points.Count-2<target){
-    bool accepted=false;
-    for(int attempt=0;attempt<120&&!accepted;attempt++){
-     int segment=attempt%(points.Count-1);
-     V start=points[segment],end=points[segment+1];
-     V path=end-start;
-     if(path.Length<1.25)continue;
-     double amount=.34+(attempt/((points.Count-1)*2))*.10;
-     V side=path.Unit.Perp*((attempt/(points.Count-1))%2==0?amount:-amount);
-     V candidate=(start+end)*.5+side;
-     if(Math.Abs(candidate.X)>4.15||Math.Abs(candidate.Y)>4.15)continue;
-     var trial=new List<V>(points);trial.Insert(segment+1,candidate);
-     V incoming=(candidate-start).Unit,outgoing=(end-candidate).Unit;
-     double turn=Math.Abs(Math.Atan2(V.Cross(incoming,outgoing),V.Dot(incoming,outgoing))*180/Math.PI);
-     if(turn<18||turn>155)continue;
-     var mirrors=new Piece[trial.Count-2];var stock=new Kind[mirrors.Length];
-     for(int i=0;i<mirrors.Length;i++){
-      mirrors[i]=new Piece(Kind.Mirror,trial[i+1],MirrorLineAngle(trial[i+1]-trial[i],trial[i+2]-trial[i+1]));
-      stock[i]=Kind.Mirror;
+ // Room constraints are authored before sources, receivers and optics. Each gate
+ // spans the board, so the opening (rather than a decorative bar) governs routes.
+ static void AuthorMasteryRooms(List<Level> levels){
+  for(int index=80;index<100;index++){
+   var legacy=levels[index];int variant=index-80;bool final=index>=90;
+   double top=2.25+(variant%5)*.12,bottom=-2.5-(variant%4)*.10;
+   V[] turns={new V(-2.8,-2.8),new V(-1.3,top),new V(.2,bottom),new V(1.4,2.7)};
+   // Alternating gate heights establish the zig-zag channel before the route is instantiated.
+   var walls=new List<Wall>();
+   AddGate(walls,-2.05,(-2.8+top)*.5,1.5,1);
+   AddGate(walls,-.55,(top+bottom)*.5,1.5,2);
+   AddGate(walls,.8,(bottom+2.7)*.5,1.85,3);
+   if(final)AddGate(walls,3.15,2.7,.72,4);
+   var authored=new Level{
+    Source=new V(-4.2,-2.8),Direction=new V(1,0),Width=.4,
+    Walls=walls.ToArray(),
+    WaterZones=new[]{new WaterZone(new V(-4,-3.2),new V(-3.6,-2.4))},
+    Goals=new[]{new Goal(new V(variant%2==0?4.4:3.35,2.7),variant%3==0?6:3){Radius=.09,Threshold=.55},
+     new Goal(turns[3]+(turns[3]-turns[2]).Unit*1.0,variant%3==0?3:6){Radius=.3,Threshold=.5}},
+    Stock=new[]{Kind.Mirror,Kind.Mirror,Kind.Mirror,variant%3==0?Kind.Red:Kind.Green,variant%2==0?Kind.Lens:Kind.Sphere},
+    Solution=new[]{new Piece(Kind.Mirror,turns[0],MirrorLineAngle(new V(1,0),turns[1]-turns[0])),
+     new Piece(Kind.Mirror,turns[1],MirrorLineAngle(turns[1]-turns[0],turns[2]-turns[1])),
+     new Piece(Kind.Mirror,turns[2],MirrorLineAngle(turns[2]-turns[1],turns[3]-turns[2])),
+     new Piece(variant%3==0?Kind.Red:Kind.Green,turns[3],MirrorLineAngle(turns[3]-turns[2],new V(1,0))),
+     new Piece(variant%2==0?Kind.Lens:Kind.Sphere,new V(2.4,2.7),90)},
+    RequireAllPiecesActive=true,
+    Lesson="Kapıları sırayla geç; odağı ve renk ayrımını aynı rotada birleştir.",
+    Hint="Üç aynayla dönüşümlü kapıları geç. Renk seçici ışığı iki hedefe ayırır; lens veya cam küre son ışını küçük hedefte toplar."
+   };
+   if(variant%5==4){
+    // Spectral chamber: a red branch is removed before the gate route; the
+    // remaining spectrum must pass four reflections and disperse at the exit.
+    authored.Source=new V(-4.4,-2.8);authored.Width=.08;
+    authored.WaterZones=new[]{new WaterZone(new V(-4.2,-3.2),new V(-3.9,-2.4))};
+    authored.Solution[3].Kind=Kind.Mirror;
+    authored.Solution[4]=new Piece(Kind.Prism,new V(2.4,2.7),90);
+    var pieces=new List<Piece>{new Piece(Kind.Red,new V(-3.6,-2.8),45)};pieces.AddRange(authored.Solution);
+    authored.Solution=pieces.ToArray();authored.Stock=new Kind[pieces.Count];for(int k=0;k<pieces.Count;k++)authored.Stock[k]=pieces[k].Kind;
+    if(final){walls.RemoveRange(6,2);AddGate(walls,3.15,2.2,.85,4);authored.Walls=walls.ToArray();}
+    authored.Goals=Array.Empty<Goal>();
+    var traced=Optics.Solve(authored,authored.Solution);
+    var targets=new List<Goal>{new Goal(new V(-3.6,-1.4),6){Radius=.28,Threshold=.5}};
+    foreach(int band in new[]{0,4}){
+     V position=new V();bool found=false;double closest=double.PositiveInfinity;
+     foreach(var beam in traced.Beams){
+      V dir=(beam.B-beam.A).Unit;if(beam.Band!=band||beam.A.X<2.4||beam.A.X>3||dir.X<=0||beam.B.X<4.2)continue;
+      double deviation=Math.Abs(beam.A.Y-2.4);if(deviation>=closest)continue;
+      closest=deviation;position=beam.A+dir*((4.2-beam.A.X)/dir.X);found=true;
      }
-     var previousSolution=level.Solution;var previousStock=level.Stock;var previousDirection=level.Direction;
-     level.Solution=mirrors;level.Stock=stock;level.Direction=(trial[1]-trial[0]).Unit;
-     var session=new Session(level);bool placeable=true;
-     foreach(var piece in mirrors){
-      if(!session.Place(Kind.Mirror,piece.Position)){placeable=false;break;}
-      session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
-     }
-     bool solved=placeable&&session.IsComplete(Optics.Solve(level,session.Pieces));
-     if(solved){points=trial;accepted=true;}
-     else{level.Solution=previousSolution;level.Stock=previousStock;level.Direction=previousDirection;}
+     if(!found)throw new InvalidOperationException("Spectral chamber exit missing: "+legacy.Id);
+     targets.Add(new Goal(position,band){Radius=.055,Threshold=.2});
     }
-    if(!accepted)throw new InvalidOperationException("Could not increase mastery chain: "+level.Id);
+    authored.Goals=targets.ToArray();
+    authored.Lesson="Kırmızıyı girişte ayır; kapılardan geçen spektrumu prizmayla iki hedefe dağıt.";
+    authored.Hint="Kırmızı seçici ilk hedefi besler. Dört yansımadan sonra prizma mor ve sarıyı ayrı alıcılara yollar.";
    }
-   level.Par=target;
+   var transformed=Transform(authored,variant%8,new V(),legacy.Id,legacy.Name,authored.Hint);
+   transformed.Chapter=legacy.Chapter;transformed.Difficulty=legacy.Difficulty;transformed.Par=authored.Solution.Length;
+   levels[index]=transformed;
   }
  }
-
- static void AddObstacleWalls(List<Level> levels){
-  for(int index=1;index<levels.Count;index++){
+ static void AddGate(List<Wall> walls,double x,double y,double halfOpening,int cluster){
+  walls.Add(new Wall(new V(x,-4.9),new V(x,y-halfOpening),Wall.DefaultThickness,"gate",cluster));
+  walls.Add(new Wall(new V(x,y+halfOpening),new V(x,4.9),Wall.DefaultThickness,"gate",cluster));
+ }
+ static void AddSpatialConstraints(List<Level> levels){
+  for(int index=0;index<levels.Count;index++){
    var level=levels[index];
-   int target=index<20?1:index<50?2:index<80?3:index<90?4:5;
-   var walls=new List<Wall>(level.Walls);
-   var beams=Optics.Solve(level,level.Solution).Beams;
-   while(walls.Count<target){
-    Wall best=new Wall();double bestScore=double.PositiveInfinity;
-    for(int row=0;row<9;row++)for(int column=0;column<9;column++)for(int orientation=0;orientation<2;orientation++){
-     double x=-3.6+column*.9,y=-3.6+row*.9;
-     V center=new V(x,y);
-     V direction=orientation==0?new V(1,0):new V(0,1);
-     var candidate=new Wall(center-direction*.58,center+direction*.58);
-     if((center-level.Source).Length<1.0)continue;
-     bool clear=true;
-     foreach(var goal in level.Goals)
-      if(PointSegmentDistance(goal.Position,candidate)<goal.Radius+.53){clear=false;break;}
-     if(!clear)continue;
-     foreach(var piece in level.Solution)
-      if(PointSegmentDistance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.24){clear=false;break;}
-     if(!clear)continue;
-     foreach(var wall in walls)
-      if(SegmentDistance(candidate,wall)<.55){clear=false;break;}
-     if(!clear)continue;
-     double nearest=double.PositiveInfinity;
-     foreach(var beam in beams){
-      double distance=SegmentDistance(candidate,new Wall(beam.A,beam.B));
-      if(distance<nearest)nearest=distance;
-      if(nearest<.35)break;
+   if(index<80){
+    // Retain purposeful seed baffles and replace all post-solution filler with
+    // occluders which physically cut a source/receiver or optic/receiver shortcut.
+    var walls=new List<Wall>();
+    foreach(var wall in level.Walls){var tagged=wall;tagged.Purpose="baffle";tagged.Cluster=walls.Count+1;walls.Add(tagged);}
+    level.Walls=walls.ToArray();
+    int target=index==0?0:index<10?1:index<30?2:index<50?3:index<70?4:5;
+    var probes=new List<V>{level.Source};foreach(var piece in level.Solution)probes.Add(piece.Position);
+    for(int probe=0;probe<probes.Count&&walls.Count<target;probe++)foreach(var goal in level.Goals){
+     V a=probes[probe],b=goal.Position;V direction=(b-a).Unit;
+     bool alreadyBlocked=false;foreach(var wall in walls)if(WallGeometry.Blocks(wall,a,b))alreadyBlocked=true;
+     if(alreadyBlocked)continue;
+     for(int step=2;step<=8&&walls.Count<target;step++){
+      V center=a+(b-a)*(step/10.0);
+      for(double length=3.2;length>=1.6;length-=.4){
+       var candidate=new Wall(center-direction.Perp*(length*.5),center+direction.Perp*(length*.5),Wall.DefaultThickness,"shortcut occluder",walls.Count+1);
+       bool clear=true;
+       if(WallGeometry.Distance(level.Source,candidate)<.5)clear=false;
+       if(!WallGeometry.Blocks(candidate,a,b))clear=false;
+       foreach(var receiver in level.Goals)if(WallGeometry.Distance(receiver.Position,candidate)<receiver.Radius+.15)clear=false;
+       foreach(var piece in level.Solution)if(WallGeometry.Distance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.10)clear=false;
+       foreach(var wall in walls)if(SegmentDistance(candidate,wall)<.4)clear=false;
+       if(!clear)continue;
+       walls.Add(candidate);level.Walls=walls.ToArray();
+       var solved=Optics.Solve(level,level.Solution);
+       if(!solved.Complete||solved.Truncated){walls.RemoveAt(walls.Count-1);level.Walls=walls.ToArray();continue;}
+       break;
+      }
      }
-     if(nearest<.35||nearest>2.0)continue;
-     // Keep obstacles near plausible optical paths; vary their placement by level.
-     double score=Math.Abs(nearest-(.60+((index+walls.Count)%4)*.13))
-      +((row*17+column*11+orientation*7+index*13)%19)*.008;
-     if(score<bestScore){bestScore=score;best=candidate;}
     }
-    if(double.IsPositiveInfinity(bestScore))throw new InvalidOperationException("Could not place obstacle walls: "+level.Id);
-    walls.Add(best);
+    level.Walls=walls.ToArray();
+    for(int w=level.Walls.Length-1;w>=0;w--){
+     V from,to;if(SpatialValidation.TryWitness(level,w,out from,out to))continue;
+     walls.RemoveAt(w);level.Walls=walls.ToArray();
+    }
    }
-   level.Walls=walls.ToArray();
-   var session=new Session(level);
-   foreach(var piece in level.Solution){
-    if(!session.Place(piece.Kind,piece.Position))throw new InvalidOperationException("Obstacle blocks known piece: "+level.Id);
-    session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
-   }
-   if(!session.IsComplete(Optics.Solve(level,session.Pieces)))throw new InvalidOperationException("Obstacle blocks known solution: "+level.Id);
+   ValidateKnownSolution(level);
   }
  }
-
+ static void ValidateKnownSolution(Level level){
+  var session=new Session(level);
+  foreach(var piece in level.Solution){
+   if(!session.Place(piece.Kind,piece.Position))throw new InvalidOperationException("Spatial geometry blocks placement: "+level.Id);
+   session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
+  }
+  var solved=Optics.Solve(level,session.Pieces);
+  if(solved.Truncated||!session.IsComplete(solved))throw new InvalidOperationException("Spatial geometry blocks solution: "+level.Id+" active="+solved.ActivePieceCount+" energies="+string.Join(",",solved.Energy));
+ }
  static double PointSegmentDistance(V point,Wall wall){
-  V edge=wall.B-wall.A;
-  double lengthSquared=V.Dot(edge,edge);
-  double t=lengthSquared<1e-12?0:Math.Max(0,Math.Min(1,V.Dot(point-wall.A,edge)/lengthSquared));
+  V edge=wall.B-wall.A;double squared=V.Dot(edge,edge);
+  double t=squared<1e-12?0:Math.Max(0,Math.Min(1,V.Dot(point-wall.A,edge)/squared));
   return (point-(wall.A+edge*t)).Length;
  }
-
  static double SegmentDistance(Wall a,Wall b){
-  V da=a.B-a.A,db=b.B-b.A;
-  double denominator=V.Cross(da,db);
-  if(Math.Abs(denominator)>1e-10){
-   double t=V.Cross(b.A-a.A,db)/denominator;
-   double u=V.Cross(b.A-a.A,da)/denominator;
-   if(t>=0&&t<=1&&u>=0&&u<=1)return 0;
-  }
-  return Math.Min(Math.Min(PointSegmentDistance(a.A,b),PointSegmentDistance(a.B,b)),
-   Math.Min(PointSegmentDistance(b.A,a),PointSegmentDistance(b.B,a)));
+  V da=a.B-a.A,db=b.B-b.A;double denominator=V.Cross(da,db);
+  if(Math.Abs(denominator)>1e-10){double t=V.Cross(b.A-a.A,db)/denominator,u=V.Cross(b.A-a.A,da)/denominator;if(t>=0&&t<=1&&u>=0&&u<=1)return 0;}
+  return Math.Min(Math.Min(PointSegmentDistance(a.A,b),PointSegmentDistance(a.B,b)),Math.Min(PointSegmentDistance(b.A,a),PointSegmentDistance(b.B,a)));
  }
-
- static void DistinguishMasteryGeometry(List<Level> levels){
-  var signatures=new HashSet<string>(StringComparer.Ordinal);
-  for(int index=80;index<levels.Count;index++){
-   var level=levels[index];
-   var original=new Piece[level.Solution.Length];
-   for(int j=0;j<original.Length;j++)original[j]=level.Solution[j].Copy();
-   V originalDirection=level.Direction;
-   bool accepted=false;
-   for(int attempt=1;attempt<=96;attempt++){
-    double amount=.12+((attempt-1)%6)*.055;
-    for(int j=0;j<original.Length;j++){
-     var origin=original[j];
-     double phase=(index-79)*1.83+j*2.71+attempt*1.37;
-     V displacement=new V(Math.Sin(phase)*amount,Math.Cos(phase*1.31)*amount);
-     level.Solution[j]=new Piece(Kind.Mirror,origin.Position+displacement);
-    }
-    var points=new V[level.Solution.Length+2];
-    points[0]=level.Source;
-    for(int j=0;j<level.Solution.Length;j++)points[j+1]=level.Solution[j].Position;
-    points[points.Length-1]=level.Goals[0].Position;
-    level.Direction=(points[1]-points[0]).Unit;
-    for(int j=0;j<level.Solution.Length;j++)
-     level.Solution[j].Angle=MirrorLineAngle(points[j+1]-points[j],points[j+2]-points[j+1]);
-    string signature=TurnSignature(points);
-    if(signatures.Contains(signature))continue;
-    var session=new Session(level);
-    bool valid=true;
-    for(int j=0;j<level.Solution.Length;j++)
-     if(!session.Place(Kind.Mirror,level.Solution[j].Position)){valid=false;break;}
-    if(!valid)continue;
-    for(int j=0;j<level.Solution.Length;j++)session.Pieces[j].Angle=level.Solution[j].Angle;
-    if(Optics.Solve(level,level.Initial).Complete)continue;
-    var solved=Optics.Solve(level,session.Pieces);
-    if(solved.Truncated||!session.IsComplete(solved))continue;
-    signatures.Add(signature);
-    accepted=true;
-    break;
-   }
-   if(!accepted)throw new InvalidOperationException("Could not author distinct playable mastery geometry: "+level.Id);
-   level.Hint="Geliş ve çıkış ışınlarını birer doğru olarak çiz. Her aynanın açısını bu iki yönün açıortayından türet; tüm aynalar ışık yolunda aktif olmalı.";
-  }
- }
-
- static string TurnSignature(V[] points){
-  var turns=new string[points.Length-2];
-  for(int j=1;j<points.Length-1;j++){
-   V incoming=(points[j]-points[j-1]).Unit;
-   V outgoing=(points[j+1]-points[j]).Unit;
-   double angle=Math.Atan2(V.Cross(incoming,outgoing),V.Dot(incoming,outgoing))*180/Math.PI;
-   turns[j-1]=Math.Round(Math.Abs(angle)/5).ToString();
-  }
-  return string.Join("-",turns);
- }
-
  static Level[] BaseSeeds()=>new[]{
   new Level {
    Id="reflection-01",Name="İlk yansıma",Lesson="Işığa yeni bir yön ver.",
@@ -394,7 +353,7 @@ public static class Levels {
  static Wall[] TransformWalls(Wall[] source,int symmetry,V offset){
   if(source==null||source.Length==0)return Array.Empty<Wall>();
   var result=new Wall[source.Length];
-  for(int i=0;i<source.Length;i++)result[i]=new Wall(T(source[i].A,symmetry)+offset,T(source[i].B,symmetry)+offset);
+  for(int i=0;i<source.Length;i++)result[i]=new Wall(T(source[i].A,symmetry)+offset,T(source[i].B,symmetry)+offset,WallGeometry.Thickness(source[i]),source[i].Purpose,source[i].Cluster);
   return result;
  }
 

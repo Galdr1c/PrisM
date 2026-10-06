@@ -24,7 +24,8 @@ public sealed class PrismPresentation : MonoBehaviour {
  Rect lastSafe;int lastWidth,lastHeight;
  TextMeshProUGUI levelTitle,goalStatus,tutorial,feedback;
  RectTransform selectedTools,tutorialFinger;
- RectTransform removeControl;
+ RectTransform removeControl,trayRoot;
+ readonly Dictionary<Kind,Image> trayHalos=new Dictionary<Kind,Image>();
  readonly List<GameObject> precisionControls=new List<GameObject>();
  readonly Dictionary<Kind,TextMeshProUGUI> counts=new Dictionary<Kind,TextMeshProUGUI>();
  readonly Dictionary<Kind,Button> stockButtons=new Dictionary<Kind,Button>();
@@ -33,6 +34,8 @@ public sealed class PrismPresentation : MonoBehaviour {
  float feedbackUntil;
  public bool BlocksBoardInput=>view!=ScreenView.Gameplay||sheet.Length>0||completionWaiting||draggingTray;
  public bool IsGameplay=>view==ScreenView.Gameplay;
+ public bool HasModal=>sheet.Length>0;
+ public void CancelTrayGesture(){draggingTray=false;}
 
  public void Initialize(PrismGame controller){
   game=controller;
@@ -51,7 +54,14 @@ public sealed class PrismPresentation : MonoBehaviour {
   if(view!=ScreenView.Gameplay)return;
   if(Pointer.current!=null&&Pointer.current.press.wasPressedThisFrame){interactionSeen=true;lastInteraction=Time.unscaledTime;}
   if(levelTitle)levelTitle.text=(game.CurrentIndex+1).ToString("00")+" · "+game.CurrentLevel.Name;
-  foreach(var entry in counts){int n=game.Remaining(entry.Key);entry.Value.text="×"+Mathf.Max(0,n);stockButtons[entry.Key].interactable=n>0;}
+  foreach(var entry in counts){
+   int n=game.Remaining(entry.Key);bool active=game.ArmedKind==entry.Key;
+   entry.Value.text="×"+Mathf.Max(0,n);entry.Value.color=Alpha(PrismTheme.Muted,n<=0?.25f:active?.45f:.85f);
+   var button=stockButtons[entry.Key];button.interactable=n>0;
+   var icon=button.GetComponentInChildren<PrismIcon>();if(icon){icon.color=Alpha(active?PrismTheme.Ivory:PrismTheme.Muted,n<=0?.25f:1);icon.rectTransform.anchoredPosition=new Vector2(0,active?6:0);}
+   if(trayHalos.TryGetValue(entry.Key,out var halo))halo.color=Alpha(PrismTheme.Accent,active?.15f:0);
+  }
+  if(trayRoot){var target=new Vector2(0,draggingTray?61:73);trayRoot.anchoredPosition=VisualEnvironment.ReducedMotion?target:Vector2.Lerp(trayRoot.anchoredPosition,target,1-Mathf.Exp(-Time.unscaledDeltaTime*20));}
   var result=game.CurrentResult;int lit=0;
   for(int i=0;i<goalDots.Count;i++){bool on=result!=null&&i<result.Energy.Length&&result.Energy[i]>=game.CurrentLevel.Goals[i].Threshold;goalDots[i].color=on?PrismTheme.Success:Alpha(PrismTheme.Ivory,.22f);if(on)lit++;}
   if(goalStatus)goalStatus.text=lit+" / "+goalDots.Count;
@@ -73,13 +83,12 @@ public sealed class PrismPresentation : MonoBehaviour {
  void ChangeScreen(ScreenView next){
   draggingTray=false;game.CancelInteraction();
   if(reveal!=null){StopCoroutine(reveal);reveal=null;}if(screen){var existingGroup=screen.GetComponent<CanvasGroup>();if(existingGroup)existingGroup.alpha=1;}
-  if(completion!=null){StopCoroutine(completion);completion=null;}completionWaiting=false;ClearSheet();Clear(screen);view=next;counts.Clear();stockButtons.Clear();goalDots.Clear();selectedTools=null;tutorial=null;tutorialFinger=null;levelTitle=null;goalStatus=null;
+  if(completion!=null){StopCoroutine(completion);completion=null;}completionWaiting=false;ClearSheet();Clear(screen);view=next;counts.Clear();stockButtons.Clear();trayHalos.Clear();trayRoot=null;goalDots.Clear();selectedTools=null;tutorial=null;tutorialFinger=null;levelTitle=null;goalStatus=null;
  }
  public void ShowHome(){
   tutorialReplay=false;
   ChangeScreen(ScreenView.Home);Backdrop(screen);
-  var symbol=Icon(screen,"prism",new Vector2(0,100),144,PrismTheme.Ivory);symbol.rectTransform.anchorMin=symbol.rectTransform.anchorMax=new Vector2(.5f,.65f);
-  if(PrismTheme.Glyph){var glyph=Image(screen,"Optical mark",PrismTheme.Ivory);glyph.sprite=PrismTheme.Glyph;glyph.preserveAspect=true;At(glyph.rectTransform,.5f,.65f,0,100,152,152);symbol.gameObject.SetActive(false);}
+  Brand(screen,new Vector2(0,100),164,new Vector2(.5f,.65f));
   Label(screen,"PRISM",32,PrismTheme.Ivory,new Vector2(0,-55),new Vector2(310,48),new Vector2(.5f,.52f),true);
   Label(screen,"Işığın yolunu bul.",16,PrismTheme.Muted,new Vector2(0,-100),new Vector2(310,30),new Vector2(.5f,.52f));
   Primary(screen,game.CompletedCount==0&&game.CurrentIndex==0?"Başla":"Devam et",new Vector2(0,180),()=>game.ContinueGame());
@@ -94,18 +103,19 @@ public sealed class PrismPresentation : MonoBehaviour {
   interactionSeen=false;lastInteraction=Time.unscaledTime;
   IconButton(screen,"map",new Vector2(30,-31),new Vector2(0,1),ShowMap,"Bölümler");
   IconButton(screen,"pause",new Vector2(-30,-31),new Vector2(1,1),ShowPause,"Duraklat");
-  levelTitle=Label(screen,"",15,PrismTheme.Ivory,new Vector2(0,-30),new Vector2(234,40),new Vector2(.5f,1),true);levelTitle.enableAutoSizing=true;levelTitle.fontSizeMin=11;levelTitle.fontSizeMax=15;
+  levelTitle=Label(screen,"",15,PrismTheme.Ivory,new Vector2(0,-30),new Vector2(234,40),new Vector2(.5f,1),true);levelTitle.enableAutoSizing=true;levelTitle.fontSizeMin=12;levelTitle.fontSizeMax=15;
   int goals=game.CurrentLevel.Goals.Length;float total=goals*13;
   for(int i=0;i<goals;i++){var dot=Image(screen,"Hedef "+(i+1),Alpha(PrismTheme.Ivory,.25f));dot.sprite=Circle();At(dot.rectTransform,.5f,1,-total*.5f+i*13+6,-61,5,5);goalDots.Add(dot);}
   goalStatus=Label(screen,"",9,PrismTheme.Muted,new Vector2(0,-78),new Vector2(180,16),new Vector2(.5f,1));
-  var tray=Image(screen,"Parça tepsisi",Alpha(PrismTheme.Surface,.92f));tray.sprite=Rounded();tray.type=UnityEngine.UI.Image.Type.Sliced;At(tray.rectTransform,.5f,0,0,73,Mathf.Min(316,CountKinds()*50+20),68);tray.raycastTarget=true;
+  var tray=Image(screen,"Parça tepsisi",Alpha(PrismTheme.Surface,.92f));tray.sprite=Rounded();tray.type=UnityEngine.UI.Image.Type.Sliced;At(tray.rectTransform,.5f,0,0,73,Mathf.Min(316,CountKinds()*50+20),68);tray.raycastTarget=true;trayRoot=tray.rectTransform;
   var kinds=new List<Kind>();foreach(var k in game.CurrentLevel.Stock)if(!kinds.Contains(k))kinds.Add(k);
   for(int i=0;i<kinds.Count;i++){
    Kind kind=kinds[i];float x=(i-(kinds.Count-1)*.5f)*50;
    var button=IconButton(tray.transform,Glyph(kind),new Vector2(x,0),new Vector2(.5f,.5f),()=>game.ArmPiece(kind),PieceInfo.Name(kind));button.GetComponent<RectTransform>().sizeDelta=new Vector2(48,62);
+   var halo=Image(button.transform,"Seçili optik ışık",Color.clear);halo.sprite=Circle();At(halo.rectTransform,.5f,.5f,0,6,43,43);halo.transform.SetAsFirstSibling();trayHalos[kind]=halo;
    var count=Label(button.transform,"",10,PrismTheme.Muted,new Vector2(13,-19),new Vector2(25,16),new Vector2(.5f,.5f));counts[kind]=count;stockButtons[kind]=button;
    var trigger=button.gameObject.AddComponent<EventTrigger>();
-   AddEvent(trigger,EventTriggerType.BeginDrag,e=>{if(game.Remaining(kind)<=0)return;draggingTray=true;game.StartTrayDrag(kind,((PointerEventData)e).position);});
+   AddEvent(trigger,EventTriggerType.BeginDrag,e=>{if(game.HasWon||game.InteractionBusy||game.Remaining(kind)<=0)return;draggingTray=true;game.StartTrayDrag(kind,((PointerEventData)e).position);});
    AddEvent(trigger,EventTriggerType.Drag,e=>{if(draggingTray)game.UpdateTrayDrag(((PointerEventData)e).position);});
    AddEvent(trigger,EventTriggerType.EndDrag,e=>{if(!draggingTray)return;game.EndTrayDrag(((PointerEventData)e).position);draggingTray=false;});
   }
@@ -114,8 +124,8 @@ public sealed class PrismPresentation : MonoBehaviour {
   IconButton(screen,"reset",new Vector2(-32,25),new Vector2(1,0),ShowRestart,"Yeniden başlat");
   selectedTools=Rect("Seçili parça",screen);At(selectedTools,.5f,0,0,151,214,42);
   precisionControls.Clear();
-  precisionControls.Add(TextButton(selectedTools,"−1°",new Vector2(-72,0),new Vector2(62,44),()=>game.RotateSelected(-1),new Vector2(.5f,.5f)).gameObject);
-  precisionControls.Add(TextButton(selectedTools,"+1°",new Vector2(0,0),new Vector2(62,44),()=>game.RotateSelected(1),new Vector2(.5f,.5f)).gameObject);
+  precisionControls.Add(TextButton(selectedTools,"−1°",new Vector2(-72,0),new Vector2(62,48),()=>game.RotateSelected(-1),new Vector2(.5f,.5f)).gameObject);
+  precisionControls.Add(TextButton(selectedTools,"+1°",new Vector2(0,0),new Vector2(62,48),()=>game.RotateSelected(1),new Vector2(.5f,.5f)).gameObject);
   removeControl=IconButton(selectedTools,"trash",new Vector2(72,0),new Vector2(.5f,.5f),()=>game.RemoveSelected(),"Parçayı kaldır").GetComponent<RectTransform>();
   tutorial=Label(screen,"",12,PrismTheme.Muted,new Vector2(0,121),new Vector2(322,30),new Vector2(.5f,0));
   tutorialFinger=Rect("Hayalet dokunuş",screen);At(tutorialFinger,.5f,0,-90,130,25,25);tutorialFinger.gameObject.AddComponent<CanvasGroup>();var finger=Image(tutorialFinger,"Dokunuş",Alpha(PrismTheme.Ivory,.55f));finger.sprite=Circle();Stretch(finger.rectTransform);
@@ -130,7 +140,7 @@ public sealed class PrismPresentation : MonoBehaviour {
   Clear(screen);Backdrop(screen);IconButton(screen,"back",new Vector2(30,-31),new Vector2(0,1),ShowHome,"Ana menü");Label(screen,"Işık yolları",20,PrismTheme.Ivory,new Vector2(0,-31),new Vector2(250,44),new Vector2(.5f,1),true);
   Label(screen,game.CompletedCount+" / "+game.CampaignLevels.Length+" keşfedildi",11,PrismTheme.Muted,new Vector2(0,-67),new Vector2(260,24),new Vector2(.5f,1));
   var scroll=Scroll(screen,"Chapter takımyıldızı",new Vector2(16,30),new Vector2(-16,-104),false);var content=scroll.content;content.sizeDelta=new Vector2(0,1180);
-  string[] roman={"I","II","III","IV","V","VI","VII","VIII","IX","X"};string[] glyphs={"mirror","prism","green","lens","prism","mirror","sphere","prism","mirror","prism"};
+  string[] roman={"I","II","III","IV","V","VI","VII","VIII","IX","X"};string[] glyphs={"mirror","spectrum","green","lens","split","gate","sphere","wave","interference","orbit"};
   for(int c=0;c<10;c++){
    int selected=c,index=c*10;float x=c%2==0?-65:65,y=-68-c*112;bool open=game.IsLevelUnlocked(index);int done=0;for(int n=0;n<10;n++)if(game.IsLevelComplete(index+n))done++;
    if(c<9){Vector2 delta=new Vector2(-x*2,-112);var link=Image(content,"Chapter ışık yolu",Alpha(done==10?PrismTheme.Accent:PrismTheme.Muted,done==10? .38f: .12f));At(link.rectTransform,.5f,1,x+delta.x*.5f,y+delta.y*.5f,delta.magnitude,1);link.rectTransform.localRotation=Quaternion.Euler(0,0,Mathf.Atan2(delta.y,delta.x)*Mathf.Rad2Deg);}
@@ -174,12 +184,13 @@ public sealed class PrismPresentation : MonoBehaviour {
  }
  void DrawHint(){
   var body=Sheet("hint","Bir ışık izi",290);
-  string[] help={game.CurrentLevel.Hint,"Doğru bölgeyi görmek için ışığın izini takip et.","Hayalet yerleşim yönü, sonraki adımı gösterir."};
+  string[] help={game.CurrentLevel.Hint,"Bölge işaretlendi. Şimdi parçanın yönünü keşfet.","Hayalet parçanın yönünü incele. Yerleşimini kendin deneyebilirsin."};
   var text=Label(body,help[Mathf.Clamp(hintStage,0,2)],14,PrismTheme.Ivory,new Vector2(0,179),new Vector2(298,66),new Vector2(.5f,0));text.textWrappingMode=TextWrappingModes.Normal;
   Label(body,(hintStage+1)+" / 3 · Kendi ritminde keşfet",11,PrismTheme.Muted,new Vector2(0,126),new Vector2(300,24),new Vector2(.5f,0));
-  Primary(body,hintStage==0?"Bölgeyi göster":hintStage==1?"Yönü göster":"Işık izini izle",new Vector2(0,77),()=>{hintStage=Mathf.Min(2,hintStage+1);game.RequestHint(hintStage+1);ClearSheet();});
+  Primary(body,hintStage==0?"Bölgeyi göster":hintStage==1?"Yönü göster":"Yönü yeniden göster",new Vector2(0,77),RevealNextHint);
   TextButton(body,"Oyuna dön",new Vector2(0,24),new Vector2(290,44),ClearSheet);
  }
+ public void RevealNextHint(){game.RequestHint(hintStage==0?1:3);hintStage=Mathf.Min(2,hintStage+1);ClearSheet();}
  public void ShowSettings(){
   var body=Sheet("settings","Ayarlar",Mathf.Min(650,SafeHeight()-45));
   var scroll=Scroll(body,"Ayar satırları",new Vector2(18,15),new Vector2(-18,-76),false);var content=scroll.content;content.sizeDelta=new Vector2(0,898);float y=-15;
@@ -187,17 +198,16 @@ public sealed class PrismPresentation : MonoBehaviour {
   ToggleRow(content,"Müzik",game.Feedback.MusicEnabled,game.Feedback.SetMusic,ref y);
   ToggleRow(content,"Ses efektleri",game.Feedback.AudioEnabled,game.Feedback.SetAudio,ref y);
   ToggleRow(content,"Titreşim",game.Feedback.HapticsEnabled,game.Feedback.SetHaptics,ref y);
+  Group(content,"GÖRÜNTÜ",ref y);
+  Row(content,"Kalite",ShowQuality,ref y,new[]{"Otomatik","Düşük","Orta","Yüksek"}[(int)VisualEnvironment.Requested]);
+  Group(content,"ERİŞİLEBİLİRLİK",ref y);
+  ToggleRow(content,"Hareketi azalt",VisualEnvironment.ReducedMotion,game.SetReducedMotion,ref y);
+  ToggleRow(content,"Renk desteği",VisualEnvironment.ColorSymbols,game.SetColorSymbols,ref y);
+  ToggleRow(content,"Yüksek kontrast",VisualEnvironment.HighContrast,game.SetHighContrast,ref y);
+  Row(content,"Gelişmiş görüntü",ShowAdvanced,ref y,"Aç");
   Group(content,"OYUN",ref y);
   ToggleRow(content,"Hassas dönüş",VisualEnvironment.PrecisionMode,game.SetPrecisionMode,ref y);
   Row(content,"Öğreticiyi tekrar izle",()=>{ClearSheet();tutorialReplay=true;game.OpenLevel(0);},ref y,"Göster");
-  Group(content,"GÖRÜNTÜ",ref y);
-  Row(content,"Kalite",()=>{VisualEnvironment.NextQuality();ShowSettings();},ref y,VisualEnvironment.QualityLabel);
-  SliderRow(content,"Işın yoğunluğu",VisualEnvironment.BeamScale,.5f,1.5f,game.SetBeamIntensity,ref y);
-  SliderRow(content,"Parlama",VisualEnvironment.BloomScale,0,1.5f,game.SetBloomIntensity,ref y);
-  Group(content,"ERİŞİLEBİLİRLİK",ref y);
-  ToggleRow(content,"Renk destek sembolleri",VisualEnvironment.ColorSymbols,game.SetColorSymbols,ref y);
-  ToggleRow(content,"Azaltılmış hareket",VisualEnvironment.ReducedMotion,game.SetReducedMotion,ref y);
-  ToggleRow(content,"Yüksek kontrast",VisualEnvironment.HighContrast,game.SetHighContrast,ref y);
   Group(content,"HAKKINDA",ref y);Row(content,"PRISM · "+Application.version,ShowAbout,ref y,"Bilgi");
   content.sizeDelta=new Vector2(0,-y+25);
  }
@@ -227,7 +237,7 @@ public sealed class PrismPresentation : MonoBehaviour {
  }
  void ShowFinal(){
   ChangeScreen(ScreenView.Final);Backdrop(screen);
-  if(PrismTheme.Glyph){var glyph=Image(screen,"Son ışık",PrismTheme.Ivory);glyph.sprite=PrismTheme.Glyph;glyph.preserveAspect=true;At(glyph.rectTransform,.5f,.65f,0,50,144,144);}else Icon(screen,"prism",new Vector2(0,130),144,PrismTheme.Ivory);
+  Brand(screen,new Vector2(0,50),164,new Vector2(.5f,.65f));
   Label(screen,"100 ışık yolu."+Environment.NewLine+"Tek bir başlangıç.",27,PrismTheme.Ivory,new Vector2(0,-65),new Vector2(320,100),new Vector2(.5f,.5f),true);
   Label(screen,"PRISM",18,PrismTheme.Muted,new Vector2(0,-157),new Vector2(290,40),new Vector2(.5f,.5f));
   Primary(screen,"Bölümlere dön",new Vector2(0,136),ShowMap);TextButton(screen,"Emeği geçenler",new Vector2(0,73),new Vector2(280,48),ShowAbout);reveal=StartCoroutine(BrandReveal(true));
@@ -235,8 +245,7 @@ public sealed class PrismPresentation : MonoBehaviour {
  IEnumerator BrandReveal(bool final){
   var cover=Image(overlay,final?"Son ışık sekansı":"İlk ışık",PrismTheme.Background);Stretch(cover.rectTransform);cover.raycastTarget=true;
   var beam=Image(cover.transform,"Gelen ışık",PrismTheme.Ivory);At(beam.rectTransform,.5f,.55f,-150,40,0,2);
-  var mark=Image(cover.transform,"Kırılma",PrismTheme.Ivory);mark.sprite=PrismTheme.Glyph;mark.preserveAspect=true;At(mark.rectTransform,.5f,.55f,0,40,132,132);var markGroup=mark.gameObject.AddComponent<CanvasGroup>();markGroup.alpha=0;
-  if(!mark.sprite){mark.color=Color.clear;Icon(mark.transform,"prism",Vector2.zero,120,PrismTheme.Ivory);}
+  var mark=Brand(cover.transform,new Vector2(0,40),152,new Vector2(.5f,.55f));var markGroup=mark.gameObject.AddComponent<CanvasGroup>();markGroup.alpha=0;
   var words=Label(cover.transform,"PRISM",29,PrismTheme.Ivory,new Vector2(0,-70),new Vector2(300,48),new Vector2(.5f,.55f),true);var wordGroup=words.gameObject.AddComponent<CanvasGroup>();wordGroup.alpha=0;
   var spectral=Rect("Spektrum çıkışı",cover.transform);At(spectral,.5f,.55f,107,51,160,30);var spectralGroup=spectral.gameObject.AddComponent<CanvasGroup>();spectralGroup.alpha=0;
   Color[] bands={new Color(.59f,.43f,1),new Color(.38f,.58f,1),new Color(.43f,.84f,.9f),new Color(.47f,.87f,.64f),new Color(.95f,.88f,.55f),new Color(1,.65f,.45f),new Color(.94f,.43f,.53f)};
@@ -254,7 +263,7 @@ public sealed class PrismPresentation : MonoBehaviour {
   string note;switch(kind){case Kind.Prism:note="Prizma · Beyaz ışık, yedi renk.";break;case Kind.Lens:note="Lens · Dağılan ışığı bir araya getir.";break;case Kind.Sphere:note="Cam küre · Işığa yeni bir yol aç.";break;case Kind.Red:case Kind.Green:note=PieceInfo.Name(kind)+" · Bir rengi geçir.";break;default:note="Ayna · Işığın yönünü değiştir.";break;}
   var discovery=Label(screen,note,12,PrismTheme.Ivory,new Vector2(0,-113),new Vector2(316,44),new Vector2(.5f,1));FadeIn(discovery.rectTransform);yield return new WaitForSecondsRealtime(1.7f);if(discovery)Destroy(discovery.gameObject);
  }
- public void HandleBack(){if(completionWaiting)return;if(sheet.Length>0){ClearSheet();return;}switch(view){case ScreenView.Gameplay:ShowPause();break;case ScreenView.Map:if(mapLevels)DrawChapterMap();else ShowHome();break;case ScreenView.Final:ShowHome();break;case ScreenView.Home:ShowSettings();break;}}
+ public void HandleBack(){if(completionWaiting)return;if(sheet=="advanced"||sheet=="quality"||sheet=="about"){ShowSettings();return;}if(sheet.Length>0){ClearSheet();return;}switch(view){case ScreenView.Gameplay:ShowPause();break;case ScreenView.Map:if(mapLevels)DrawChapterMap();else ShowHome();break;case ScreenView.Final:ShowHome();break;case ScreenView.Home:ShowSettings();break;}}
  public void ShowFeedback(string message){if(feedback){feedback.text=message;feedbackUntil=Time.unscaledTime+2.4f;}}
  RectTransform Sheet(string id,string title,float height){
    game.CancelInteraction();draggingTray=false;ClearSheet();sheet=id;VisualEnvironment.SetPaused(true);
@@ -274,18 +283,36 @@ public sealed class PrismPresentation : MonoBehaviour {
   float rowY=y;var row=TextButton(parent,"",new Vector2(0,rowY),new Vector2(296,48),()=>{},new Vector2(.5f,1));Label(row.transform,label,13,PrismTheme.Ivory,new Vector2(-25,0),new Vector2(230,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Left);
   var track=Image(row.transform,"Anahtar",value?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f));track.sprite=Rounded();track.type=UnityEngine.UI.Image.Type.Sliced;At(track.rectTransform,1,.5f,-24,0,36,20);
   var dot=Image(track.transform,"Durum",PrismTheme.Ivory);dot.sprite=Circle();At(dot.rectTransform,.5f,.5f,value?8:-8,0,14,14);
-  bool current=value;row.onClick.RemoveAllListeners();row.onClick.AddListener(()=>{current=!current;set(current);track.color=current?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f);dot.rectTransform.anchoredPosition=new Vector2(current?8:-8,0);Click();});y-=49;
+  bool current=value;row.onClick.RemoveAllListeners();row.onClick.AddListener(()=>{current=!current;set(current);track.color=current?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f);StartCoroutine(ToggleMotion(dot.rectTransform,current?8:-8));Click();});y-=49;
  }
  void Row(Transform parent,string label,Action action,ref float y,string value){var row=TextButton(parent,"",new Vector2(0,y),new Vector2(296,48),action,new Vector2(.5f,1));Label(row.transform,label,13,PrismTheme.Ivory,new Vector2(-45,0),new Vector2(190,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Left);Label(row.transform,value,11,PrismTheme.Muted,new Vector2(90,0),new Vector2(104,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Right);y-=49;}
- void SliderRow(Transform parent,string label,float value,float min,float max,Action<float> set,ref float y){
-  Label(parent,label,13,PrismTheme.Ivory,new Vector2(0,y),new Vector2(286,28),new Vector2(.5f,1),false,TextAlignmentOptions.Left);y-=30;
-  var rt=Rect(label,parent);At(rt,.5f,1,0,y,286,32);var slider=rt.gameObject.AddComponent<Slider>();slider.minValue=min;slider.maxValue=max;
-  var hit=Image(rt,"Touch",Color.clear);Stretch(hit.rectTransform);hit.raycastTarget=true;
-  var track=Image(rt,"Piste",Alpha(PrismTheme.Muted,.25f));At(track.rectTransform,.5f,.5f,0,0,286,3);
-  var fillArea=Rect("Progression",rt);Stretch(fillArea);fillArea.offsetMin=new Vector2(7,0);fillArea.offsetMax=new Vector2(-7,0);
-  var fill=Image(fillArea,"Intensité",PrismTheme.Accent);Stretch(fill.rectTransform);fill.rectTransform.offsetMin=new Vector2(0,14);fill.rectTransform.offsetMax=new Vector2(0,-14);slider.fillRect=fill.rectTransform;
-   var handleArea=Rect("Curseur",rt);handleArea.anchorMin=new Vector2(0,.5f);handleArea.anchorMax=new Vector2(1,.5f);handleArea.offsetMin=new Vector2(7,0);handleArea.offsetMax=new Vector2(-7,0);
-  var handle=Image(handleArea,"Point",PrismTheme.Ivory);handle.sprite=Circle();At(handle.rectTransform,.5f,.5f,0,0,16,16);slider.handleRect=handle.rectTransform;slider.targetGraphic=handle;slider.value=value;slider.onValueChanged.AddListener(v=>set(v));y-=36;
+ public void ShowQuality(){
+  var body=Sheet("quality","Görüntü kalitesi",370);float y=-94;
+  string[] labels={"Otomatik","Düşük","Orta","Yüksek"};
+  for(int i=0;i<labels.Length;i++){
+   var tier=(VisualQualityTier)i;bool chosen=VisualEnvironment.Requested==tier;
+   var row=TextButton(body,labels[i],new Vector2(0,y),new Vector2(296,48),()=>{VisualEnvironment.SetQuality(tier);ShowQuality();},new Vector2(.5f,1));
+   if(chosen)Icon(row.transform,"check",new Vector2(119,0),24,PrismTheme.Accent);y-=52;
+  }
+  TextButton(body,"Ayarlara dön",new Vector2(0,34),new Vector2(280,48),ShowSettings);
+ }
+ public void ShowAdvanced(){
+  var body=Sheet("advanced","Gelişmiş görüntü",420);
+  // Sheet child is above the world dimmer: controls never darken this live preview.
+  var previewRect=Rect("Canlı ışık önizlemesi",body);At(previewRect,.5f,1,0,-117,286,62);
+  previewRect.gameObject.AddComponent<PrismBeamPreview>().raycastTarget=false;
+  Label(body,"Işık önizlemesi",12,PrismTheme.Muted,new Vector2(0,-161),new Vector2(286,26),new Vector2(.5f,1));
+  DiscreteRow(body,"Işın",new[]{"Yumuşak","Dengeli","Parlak"},new[]{.65f,1f,1.4f},VisualEnvironment.BeamScale,game.SetBeamIntensity,-203);
+  DiscreteRow(body,"Parlama",new[]{"Kapalı","Dengeli","Güçlü"},new[]{0f,1f,1.5f},VisualEnvironment.BloomScale,game.SetBloomIntensity,-297);
+  TextButton(body,"Ayarlara dön",new Vector2(0,34),new Vector2(280,48),ShowSettings);
+ }
+ void DiscreteRow(Transform parent,string label,string[] labels,float[] values,float current,Action<float> set,float y){
+  Label(parent,label,14,PrismTheme.Ivory,new Vector2(0,y),new Vector2(286,26),new Vector2(.5f,1),false,TextAlignmentOptions.Left);
+  var buttons=new List<Button>();int nearest=0;for(int i=1;i<values.Length;i++)if(Mathf.Abs(current-values[i])<Mathf.Abs(current-values[nearest]))nearest=i;
+  for(int i=0;i<labels.Length;i++){
+   int choice=i;var b=TextButton(parent,labels[i],new Vector2((i-1)*98,y-38),new Vector2(94,48),()=>{set(values[choice]);for(int n=0;n<buttons.Count;n++)buttons[n].GetComponent<Image>().color=Alpha(PrismTheme.Accent,n==choice?.25f:.05f);},new Vector2(.5f,1));
+   b.GetComponent<Image>().sprite=Rounded();b.GetComponent<Image>().type=UnityEngine.UI.Image.Type.Sliced;b.GetComponent<Image>().color=Alpha(PrismTheme.Accent,i==nearest?.25f:.05f);buttons.Add(b);
+  }
  }
  ScrollRect Scroll(Transform parent,string name,Vector2 bottomLeft,Vector2 topRight,bool horizontal){
   var rt=Rect(name,parent);Stretch(rt);rt.offsetMin=bottomLeft;rt.offsetMax=topRight;
@@ -294,16 +321,22 @@ public sealed class PrismPresentation : MonoBehaviour {
   var content=Rect("Content",viewport);content.anchorMin=horizontal?new Vector2(0,0):new Vector2(0,1);content.anchorMax=horizontal?new Vector2(0,1):new Vector2(1,1);content.pivot=horizontal?new Vector2(0,.5f):new Vector2(.5f,1);content.anchoredPosition=Vector2.zero;
   var scroll=rt.gameObject.AddComponent<ScrollRect>();scroll.viewport=viewport;scroll.content=content;scroll.horizontal=horizontal;scroll.vertical=!horizontal;scroll.movementType=ScrollRect.MovementType.Clamped;scroll.decelerationRate=.08f;scroll.scrollSensitivity=28;return scroll;
  }
- void Backdrop(Transform parent){var bg=Image(parent,"Gece",PrismTheme.Background);Stretch(bg.rectTransform);bg.raycastTarget=true;for(int i=0;i<18;i++){var star=Image(parent,"Yıldız",Alpha(PrismTheme.Muted,.1f+i%3*.035f));star.sprite=Circle();At(star.rectTransform,(i*37%97)/100f,(i*53%89)/100f,0,0,2,2);}var beam=Image(parent,"Beyaz ışık",Alpha(PrismTheme.Ivory,.16f));At(beam.rectTransform,.5f,.65f,-105,100,140,1);beam.rectTransform.localRotation=Quaternion.Euler(0,0,-10);}
+ IEnumerator ToggleMotion(RectTransform dot,float destination){
+  float origin=dot.anchoredPosition.x,start=Time.unscaledTime;
+  while(dot&&!VisualEnvironment.ReducedMotion&&Time.unscaledTime-start<.12f){dot.anchoredPosition=new Vector2(Mathf.Lerp(origin,destination,Mathf.SmoothStep(0,1,(Time.unscaledTime-start)/.12f)),0);yield return null;}
+  if(dot)dot.anchoredPosition=new Vector2(destination,0);
+ }
+ PrismOpticalMark Brand(Transform parent,Vector2 position,float size,Vector2 anchor){var rt=Rect("Optik prizma motifi",parent);At(rt,anchor.x,anchor.y,position.x,position.y,size,size);var graphic=rt.gameObject.AddComponent<PrismOpticalMark>();graphic.raycastTarget=false;return graphic;}
+ void Backdrop(Transform parent){var bg=Image(parent,"Gece",PrismTheme.Background);Stretch(bg.rectTransform);bg.raycastTarget=true;var ambient=Rect("Sessiz optik alan",parent);Stretch(ambient);ambient.gameObject.AddComponent<PrismOpticalAmbience>().raycastTarget=false;for(int i=0;i<18;i++){var star=Image(parent,"Yıldız",Alpha(PrismTheme.Muted,.1f+i%3*.035f));star.sprite=Circle();At(star.rectTransform,(i*37%97)/100f,(i*53%89)/100f,0,0,2,2);}var beam=Image(parent,"Beyaz ışık",Alpha(PrismTheme.Ivory,.16f));At(beam.rectTransform,.5f,.65f,-105,100,140,1);beam.rectTransform.localRotation=Quaternion.Euler(0,0,-10);}
  int CountKinds(){var set=new HashSet<Kind>(game.CurrentLevel.Stock);return set.Count;}
  static string Glyph(Kind kind)=>kind.ToString().ToLowerInvariant();
  void Click(){if(game.Feedback)game.Feedback.Click();}
  Button Primary(Transform parent,string text,Vector2 pos,Action action){var button=TextButton(parent,text,pos,new Vector2(292,56),action);var img=button.GetComponent<Image>();img.color=PrismTheme.Ivory;img.sprite=Rounded();img.type=UnityEngine.UI.Image.Type.Sliced;var label=button.GetComponentInChildren<TextMeshProUGUI>();label.color=PrismTheme.Background;label.font=PrismTheme.Font(true);label.fontSize=17;return button;}
- Button TextButton(Transform parent,string text,Vector2 pos,Vector2 size,Action action,Vector2? anchor=null){var image=Image(parent,text.Length==0?"Control":text,new Color(1,1,1,.001f));At(image.rectTransform,anchor?.x?? .5f,anchor?.y??0,pos.x,pos.y,size.x,size.y);image.raycastTarget=true;var b=image.gameObject.AddComponent<Button>();b.targetGraphic=image;var colors=b.colors;colors.highlightedColor=new Color(.84f,.8f,1,1);colors.pressedColor=new Color(.6f,.55f,.8f,1);colors.disabledColor=new Color(1,1,1,.32f);b.colors=colors;b.onClick.AddListener(()=>{Click();action();});Label(b.transform,text,14,PrismTheme.Ivory,Vector2.zero,size,new Vector2(.5f,.5f));b.gameObject.AddComponent<PrismPressMotion>();return b;}
+ Button TextButton(Transform parent,string text,Vector2 pos,Vector2 size,Action action,Vector2? anchor=null){var image=Image(parent,text.Length==0?"Control":text,new Color(1,1,1,.001f));At(image.rectTransform,anchor?.x?? .5f,anchor?.y??0,pos.x,pos.y,Mathf.Max(48,size.x),Mathf.Max(48,size.y));image.raycastTarget=true;var b=image.gameObject.AddComponent<Button>();b.targetGraphic=image;var colors=b.colors;colors.highlightedColor=new Color(.84f,.8f,1,1);colors.pressedColor=new Color(.6f,.55f,.8f,1);colors.disabledColor=new Color(1,1,1,.32f);b.colors=colors;b.onClick.AddListener(()=>{Click();action();});Label(b.transform,text,14,PrismTheme.Ivory,Vector2.zero,size,new Vector2(.5f,.5f));b.gameObject.AddComponent<PrismPressMotion>();return b;}
  Button IconButton(Transform parent,string symbol,Vector2 pos,Vector2 anchor,Action action,string accessible){var b=TextButton(parent,"",pos,new Vector2(48,48),action,anchor);b.name=accessible;Icon(b.transform,symbol,Vector2.zero,30,PrismTheme.Muted);return b;}
  Button CircleButton(Transform parent,string symbol,Vector2 pos,float size,Action action){var b=TextButton(parent,"",pos,new Vector2(size,size),action,new Vector2(.5f,1));b.GetComponent<Image>().sprite=Circle();if(symbol.Length>0)Icon(b.transform,symbol,Vector2.zero,32,PrismTheme.Success);return b;}
  PrismIcon Icon(Transform parent,string symbol,Vector2 pos,float size,Color color){var rt=Rect(symbol,parent);At(rt,.5f,.5f,pos.x,pos.y,size,size);var icon=rt.gameObject.AddComponent<PrismIcon>();icon.Symbol=symbol;icon.color=color;icon.raycastTarget=false;return icon;}
- TextMeshProUGUI Label(Transform parent,string value,float size,Color color,Vector2 pos,Vector2 bounds,Vector2 anchor,bool bold=false,TextAlignmentOptions alignment=TextAlignmentOptions.Center){var rt=Rect("Text",parent);At(rt,anchor.x,anchor.y,pos.x,pos.y,bounds.x,bounds.y);var text=rt.gameObject.AddComponent<TextMeshProUGUI>();text.font=PrismTheme.Font(bold);text.text=value;text.fontSize=size;text.color=color;text.alignment=alignment;text.raycastTarget=false;text.overflowMode=TextOverflowModes.Ellipsis;text.textWrappingMode=TextWrappingModes.NoWrap;return text;}
+ TextMeshProUGUI Label(Transform parent,string value,float size,Color color,Vector2 pos,Vector2 bounds,Vector2 anchor,bool bold=false,TextAlignmentOptions alignment=TextAlignmentOptions.Center){var rt=Rect("Text",parent);At(rt,anchor.x,anchor.y,pos.x,pos.y,bounds.x,bounds.y);var text=rt.gameObject.AddComponent<TextMeshProUGUI>();text.font=PrismTheme.Font(bold);text.text=value;text.fontSize=Mathf.Max(12,size);text.color=color;text.alignment=alignment;text.raycastTarget=false;text.overflowMode=TextOverflowModes.Ellipsis;text.textWrappingMode=TextWrappingModes.NoWrap;return text;}
  static RectTransform Rect(string name,Transform parent){var obj=new GameObject(name,typeof(RectTransform));obj.transform.SetParent(parent,false);return obj.GetComponent<RectTransform>();}
  static Image Image(Transform parent,string name,Color color){var rt=Rect(name,parent);var img=rt.gameObject.AddComponent<Image>();img.color=color;img.raycastTarget=false;return img;}
  static void At(RectTransform rt,float ax,float ay,float x,float y,float w,float h){rt.anchorMin=rt.anchorMax=new Vector2(ax,ay);rt.pivot=new Vector2(.5f,.5f);rt.anchoredPosition=new Vector2(x,y);rt.sizeDelta=new Vector2(w,h);}
@@ -323,7 +356,7 @@ public sealed class PrismPressMotion : MonoBehaviour,IPointerDownHandler,IPointe
  public void OnPointerDown(PointerEventData data){target=VisualEnvironment.ReducedMotion?Vector3.one:Vector3.one*.96f;}
  public void OnPointerUp(PointerEventData data){target=Vector3.one;}
  public void OnPointerExit(PointerEventData data){target=Vector3.one;}
- void Update(){transform.localScale=Vector3.Lerp(transform.localScale,target,1-Mathf.Exp(-Time.unscaledDeltaTime*24));}
+ void Update(){if(VisualEnvironment.ReducedMotion){transform.localScale=Vector3.one;target=Vector3.one;return;}transform.localScale=Vector3.Lerp(transform.localScale,target,1-Mathf.Exp(-Time.unscaledDeltaTime*24));}
 }
 
 public sealed class PrismNodePulse : MonoBehaviour {

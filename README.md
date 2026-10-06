@@ -6,12 +6,13 @@ Unity 6000.6.0f1 + URP ile geliştirilen, mobil odaklı optik bulmaca oyunu.
 - Son yerel teslim ve gerçek doğrulama sınırları: `docs/release-handoff.md` ve `docs/verification.md`.
 - Üç özgün laboratuvar/caustic/ustalık arka planı, fiziksel optik obje detayları, 48 saniyelik ambient BGM ve altı olay SFX'i. Müzik ve efektler bağımsız açılıp kapatılır.
 - **100 bölüm / 10 ünite**: yansıma, spektrum, seçici renk, odak, birleşik optik, kırılma, su/cam, senfoni, geometri ve ustalık.
-- Onaylanan marka/UI planı uygulandı: Canvas + TextMeshPro/Sora, sade gece moru HUD, doğrudan sürüklenen parça tepsisi, takımyıldız bölüm haritası, alt ayar/ipucu/sonuç sheet'leri ve optik katlama glyph'i.
-- Duvarlar yeni plandaki mat obsidiyen segmentler olarak sunulur; son 20 bölümde 5–6 aktif aynalı farklı geometriler vardır. Işık ve cam objelerin ön/arka katmanları ayrılır.
+- Canvas + TextMeshPro/Sora, sade gece moru HUD, doğrudan sürüklenen parça tepsisi, takımyıldız haritası ve bağımsız optik prizma motifi. Kullanıcının `artifacts/logo.png` görseli yalnız uygulama/mağaza ikonunda kullanılır.
+- Duvar çizimi, ışın çarpışması ve placement aynı kalınlıklı dikdörtgen geometrisini kullanır. Graphite yüzey, bevel ve sınırlı ışık teması görünürlüğü artırır; her duvar/grup için kestirme engelleme tanığı doğrulanır.
+- Son 20 bölümde 6–8 segmentli odalar, dönüşümlü kapılar, renk seçiciler, lens/küre odağı, su ve çoklu hedefler birlikte çalışır. Dört spektrum odası kırmızı ayrımı, dört yansıma ve prizmayı birleştirir. Bilinen çözümler ve parça gerekliliği solver ile doğrulanır.
 - İlk sekiz özgün mekanik seed'in stabil ID'leri korunur; mevcut ilerleme kayıtları bozulmadan 100 bölümlük kampanyaya geçebilir.
 - Ustalık bölümleri stoktaki bütün parçaların gerçekten ışık yolunda aktif olmasını zorunlu kılar.
 - Çekirdek optik: ayna, prizma, renk seçici yüzeyler, ince lens, cam küre, su, duvarlar, renk hedefleri; 7 spektral bant ve kaynak genişliği örneklemesi.
-- Safe-area uyumlu dikey layout, 10×10 bölüm haritası, kademeli ipucu, undo/reset, hassas dönüş, azaltılmış hareket, yüksek kontrast, yedi renk sembolü, beam/bloom ayarları ve Android geri davranışı.
+- Safe-area uyumlu dikey layout, üç aşamalı ipucu, ışınlarla senkron undo/reset, 26 px sürükleme boşluğu, açık kalite seçimi ve canlı önizlemeli gelişmiş görüntü seçenekleri. Azaltılmış hareket, yüksek kontrast ve yedi renk sembolü korunur.
 - Katmanlı URP renderer: prosedürel board, additive HDR ışın, Bloom + ACES, cam ve su shader'ları.
 - Auto / Düşük / Orta / Yüksek cihaz kalite profilleri. Grafik kalitesi optik çözümü değiştirmez.
 - Yerel, versioned JSON ilerleme kaydı; eski PlayerPrefs completion verisi otomatik migrate edilir.
@@ -42,7 +43,7 @@ Unity yolu farklıysa `PRISM_UNITY_EDITOR` ile belirtilebilir.
 ## Android / Google Play
 Release build sözleşmesi:
 - package: `com.prismstudio.lightworkshop`
-- sürüm: `0.9.0`, versionCode `90` (environment variable ile override edilebilir)
+- sürüm: `0.9.1`, versionCode `91` (environment variable ile override edilebilir)
 - signed `.aab`
 - target API 36, min API 26
 - ARM64

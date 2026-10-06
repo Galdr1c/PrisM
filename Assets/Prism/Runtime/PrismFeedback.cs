@@ -112,9 +112,19 @@ public sealed class PrismFeedback : MonoBehaviour {
 #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
   if(!HapticsEnabled||appPaused||!appFocused||Time.unscaledTime-lastHapticTime<.18f)return;
   lastHapticTime=Time.unscaledTime;
-  // Handheld.Vibrate is intentionally used here instead of a platform JNI bridge;
-  // it keeps the release player portable while preserving a short tactile cue.
+#if UNITY_ANDROID
+  try{
+   using(var player=new AndroidJavaClass("com.unity3d.player.UnityPlayer"))
+   using(var activity=player.GetStatic<AndroidJavaObject>("currentActivity"))
+   using(var vibrator=activity.Call<AndroidJavaObject>("getSystemService","vibrator")){
+    if(!vibrator.Call<bool>("hasVibrator"))return;
+    using(var effects=new AndroidJavaClass("android.os.VibrationEffect"))
+    using(var effect=effects.CallStatic<AndroidJavaObject>("createWaveform",timings,amplitudes,-1))vibrator.Call("vibrate",effect);
+   }
+  }catch(System.Exception){/* Unsupported hardware preserves its audio and visual feedback. */}
+#else
   Handheld.Vibrate();
+#endif
 #endif
  }
 

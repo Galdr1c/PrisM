@@ -60,8 +60,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
+    - a: {x: 1.8745731, y: -2.1067836}
+      b: {x: 0.12542693, y: -4.293216}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v03
     displayName: "\u0130lk yans\u0131ma \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -86,8 +89,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0, y: 3.02}
-      b: {x: 0, y: 4.18}
+    - a: {x: 2.1067836, y: 1.8745731}
+      b: {x: 4.293216, y: 0.12542693}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v04
     displayName: "\u0130lk yans\u0131ma \xB7 G\xFCney rotas\u0131"
@@ -112,8 +118,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
+    - a: {x: -1.8745731, y: 2.1067836}
+      b: {x: -0.12542693, y: 4.293216}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v05
     displayName: "\u0130lk yans\u0131ma \xB7 Sessiz y\xFCzey"
@@ -138,8 +147,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.38, y: 2.7}
-      b: {x: -1.22, y: 2.7}
+    - a: {x: -4.293216, y: 0.12542693}
+      b: {x: -2.1067836, y: 1.8745731}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v06
     displayName: "\u0130lk yans\u0131ma \xB7 Ters ufuk"
@@ -164,8 +176,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.9, y: 0.32}
-      b: {x: -0.9, y: 1.48}
+    - a: {x: 4.293216, y: -0.12542693}
+      b: {x: 2.1067836, y: -1.8745731}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v07
     displayName: "\u0130lk yans\u0131ma \xB7 \xC7apraz yol"
@@ -190,8 +205,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -4.18, y: -2.7}
-      b: {x: -3.02, y: -2.7}
+    - a: {x: -0.12542693, y: -4.293216}
+      b: {x: -1.8745731, y: -2.1067836}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v08
     displayName: "\u0130lk yans\u0131ma \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -216,8 +234,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.9, y: 3.02}
-      b: {x: 0.9, y: 4.18}
+    - a: {x: 0.12542693, y: 4.293216}
+      b: {x: 1.8745731, y: 2.1067836}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v09
     displayName: "\u0130lk yans\u0131ma \xB7 \u0130nce ayar"
@@ -242,8 +263,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.9, y: 1.22}
-      b: {x: 0.9, y: 2.38}
+    - a: {x: -1.9667836, y: -1.694573}
+      b: {x: -4.1532164, y: 0.054573067}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: reflection-01-v10
     displayName: "\u0130lk yans\u0131ma \xB7 Son prova"
@@ -268,8 +292,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.7, y: -4.18}
-      b: {x: -2.7, y: -3.02}
+    - a: {x: -2.2467837, y: -2.054573}
+      b: {x: -4.433216, y: -0.30542693}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01
     displayName: "Beyaz\u0131n i\xE7indeki"
@@ -294,8 +321,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
+    - a: {x: -1.4197769, y: -1.5692191}
+      b: {x: -0.9802231, y: -0.030780843}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v02
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 Kuzey rotas\u0131"
@@ -320,8 +350,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 2.12, y: 0.9}
-      b: {x: 3.28, y: 0.9}
+    - a: {x: 1.5692191, y: -1.4197769}
+      b: {x: 0.030780843, y: -0.9802231}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v03
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -346,8 +379,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.9, y: -1.48}
-      b: {x: -0.9, y: -0.32}
+    - a: {x: 1.4197769, y: 1.5692191}
+      b: {x: 0.9802231, y: 0.030780843}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v04
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 G\xFCney rotas\u0131"
@@ -372,8 +408,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.9, y: 2.12}
-      b: {x: -0.9, y: 3.28}
+    - a: {x: -1.5692191, y: 1.4197769}
+      b: {x: -0.030780843, y: 0.9802231}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v05
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 Sessiz y\xFCzey"
@@ -398,8 +437,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.32, y: -0.9}
-      b: {x: 1.48, y: -0.9}
+    - a: {x: -0.9802231, y: 0.030780843}
+      b: {x: -1.4197769, y: 1.5692191}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v06
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 Ters ufuk"
@@ -424,8 +466,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 3.6, y: -2.38}
-      b: {x: 3.6, y: -1.22}
+    - a: {x: 0.9802231, y: -0.030780843}
+      b: {x: 1.4197769, y: -1.5692191}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v07
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 \xC7apraz yol"
@@ -450,8 +495,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.32, y: 3.6}
-      b: {x: 1.48, y: 3.6}
+    - a: {x: -0.030780843, y: -0.9802231}
+      b: {x: -1.5692191, y: -1.4197769}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v08
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -476,8 +524,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.9, y: 2.12}
-      b: {x: -0.9, y: 3.28}
+    - a: {x: 0.030780843, y: 0.9802231}
+      b: {x: 1.5692191, y: 1.4197769}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v09
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 \u0130nce ayar"
@@ -502,8 +553,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -3.6, y: 1.22}
-      b: {x: -3.6, y: 2.38}
+    - a: {x: -1.2797769, y: -1.3892192}
+      b: {x: -0.8402231, y: 0.14921916}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: dispersion-01-v10
     displayName: "Beyaz\u0131n i\xE7indeki \xB7 Son prova"
@@ -528,8 +582,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -3.28, y: 0.9}
-      b: {x: -2.12, y: 0.9}
+    - a: {x: -1.5597769, y: -1.7492192}
+      b: {x: -1.120223, y: -0.21078084}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01
     displayName: "Bir \u0131\u015F\u0131k, iki yol"
@@ -558,10 +615,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -1.8, y: 1.22}
-      b: {x: -1.8, y: 2.38}
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
+    - a: {x: -2.2514718, y: 0.051471863}
+      b: {x: -3.948528, y: 1.7485281}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v02
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Kuzey rotas\u0131"
@@ -590,10 +648,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.9, y: 1.22}
-      b: {x: 0.9, y: 2.38}
-    - a: {x: -2.38, y: 0}
-      b: {x: -1.22, y: 0}
+    - a: {x: -0.051471863, y: -2.2514718}
+      b: {x: -1.7485281, y: -3.948528}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v03
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -622,10 +681,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0, y: -2.38}
-      b: {x: 0, y: -1.22}
-    - a: {x: 2.12, y: -2.7}
-      b: {x: 3.28, y: -2.7}
+    - a: {x: 2.2514718, y: -0.051471863}
+      b: {x: 3.948528, y: -1.7485281}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v04
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 G\xFCney rotas\u0131"
@@ -654,10 +714,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 1.22, y: -1.8}
-      b: {x: 2.38, y: -1.8}
-    - a: {x: 1.22, y: 1.8}
-      b: {x: 2.38, y: 1.8}
+    - a: {x: 0.051471863, y: 2.2514718}
+      b: {x: 1.7485281, y: 3.948528}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v05
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Sessiz y\xFCzey"
@@ -686,10 +747,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.32, y: -0.9}
-      b: {x: 1.48, y: -0.9}
-    - a: {x: -2.38, y: 0.9}
-      b: {x: -1.22, y: 0.9}
+    - a: {x: -3.948528, y: -1.7485281}
+      b: {x: -2.2514718, y: -0.051471863}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v06
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Ters ufuk"
@@ -718,10 +780,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.58, y: -0.9}
-      b: {x: 0.58, y: -0.9}
-    - a: {x: 0, y: 2.12}
-      b: {x: 0, y: 3.28}
+    - a: {x: 3.948528, y: 1.7485281}
+      b: {x: 2.2514718, y: 0.051471863}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v07
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 \xC7apraz yol"
@@ -750,10 +813,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 3.02, y: 0}
-      b: {x: 4.18, y: 0}
-    - a: {x: 2.7, y: -3.28}
-      b: {x: 2.7, y: -2.12}
+    - a: {x: 1.7485281, y: -3.948528}
+      b: {x: 0.051471863, y: -2.2514718}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v08
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -782,10 +846,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -4.18, y: 0}
-      b: {x: -3.02, y: 0}
-    - a: {x: -2.38, y: 1.8}
-      b: {x: -1.22, y: 1.8}
+    - a: {x: -1.7485281, y: 3.948528}
+      b: {x: -0.051471863, y: 2.2514718}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v09
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 \u0130nce ayar"
@@ -814,10 +879,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 1.22, y: 0.9}
-      b: {x: 2.38, y: 0.9}
-    - a: {x: -1.8, y: 1.22}
-      b: {x: -1.8, y: 2.38}
+    - a: {x: -2.111472, y: 0.23147187}
+      b: {x: -3.8085282, y: 1.9285282}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-green-01-v10
     displayName: "Bir \u0131\u015F\u0131k, iki yol \xB7 Son prova"
@@ -846,10 +912,11 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -3.6, y: -2.38}
-      b: {x: -3.6, y: -1.22}
-    - a: {x: -1.8, y: -2.38}
-      b: {x: -1.8, y: -1.22}
+    - a: {x: -2.3914719, y: -0.12852813}
+      b: {x: -4.088528, y: 1.5685282}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: focus-01
     displayName: "Odak noktas\u0131"
@@ -873,11 +940,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 2.12, y: 0.9}
-      b: {x: 3.28, y: 0.9}
-    - a: {x: 1.8, y: -2.38}
-      b: {x: 1.8, y: -1.22}
+    walls: []
     waterZones: []
   - id: focus-01-v02
     displayName: "Odak noktas\u0131 \xB7 Kuzey rotas\u0131"
@@ -901,11 +964,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 1.22, y: 1.8}
-      b: {x: 2.38, y: 1.8}
-    - a: {x: -2.38, y: -0.9}
-      b: {x: -1.22, y: -0.9}
+    walls: []
     waterZones: []
   - id: focus-01-v03
     displayName: "Odak noktas\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -929,11 +988,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 2.7, y: -2.38}
-      b: {x: 2.7, y: -1.22}
-    - a: {x: -3.28, y: -0.9}
-      b: {x: -2.12, y: -0.9}
+    walls: []
     waterZones: []
   - id: focus-01-v04
     displayName: "Odak noktas\u0131 \xB7 G\xFCney rotas\u0131"
@@ -957,11 +1012,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: -2.38, y: 2.7}
-      b: {x: -1.22, y: 2.7}
-    - a: {x: -2.38, y: -0.9}
-      b: {x: -1.22, y: -0.9}
+    walls: []
     waterZones: []
   - id: focus-01-v05
     displayName: "Odak noktas\u0131 \xB7 Sessiz y\xFCzey"
@@ -985,11 +1036,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 2.12, y: -0.9}
-      b: {x: 3.28, y: -0.9}
-    - a: {x: 1.8, y: 1.22}
-      b: {x: 1.8, y: 2.38}
+    walls: []
     waterZones: []
   - id: focus-01-v06
     displayName: "Odak noktas\u0131 \xB7 Ters ufuk"
@@ -1013,11 +1060,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: -1.8, y: -2.38}
-      b: {x: -1.8, y: -1.22}
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
+    walls: []
     waterZones: []
   - id: focus-01-v07
     displayName: "Odak noktas\u0131 \xB7 \xC7apraz yol"
@@ -1041,11 +1084,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 1.22, y: -2.7}
-      b: {x: 2.38, y: -2.7}
-    - a: {x: -0.9, y: 2.12}
-      b: {x: -0.9, y: 3.28}
+    walls: []
     waterZones: []
   - id: focus-01-v08
     displayName: "Odak noktas\u0131 \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -1069,11 +1108,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: -2.38, y: -0.9}
-      b: {x: -1.22, y: -0.9}
-    - a: {x: -0.9, y: -3.28}
-      b: {x: -0.9, y: -2.12}
+    walls: []
     waterZones: []
   - id: focus-01-v09
     displayName: "Odak noktas\u0131 \xB7 \u0130nce ayar"
@@ -1097,11 +1132,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: 1.8, y: 1.22}
-      b: {x: 1.8, y: 2.38}
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
+    walls: []
     waterZones: []
   - id: focus-01-v10
     displayName: "Odak noktas\u0131 \xB7 Son prova"
@@ -1125,11 +1156,7 @@ MonoBehaviour:
       band: -1
       radius: 0.17
       threshold: 0.8
-    walls:
-    - a: {x: -3.28, y: -1.8}
-      b: {x: -2.12, y: -1.8}
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
+    walls: []
     waterZones: []
   - id: selective-red-01
     displayName: "K\u0131z\u0131l yank\u0131"
@@ -1161,10 +1188,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -1.8, y: 1.22}
-      b: {x: -1.8, y: 2.38}
-    - a: {x: -2.38, y: -0.9}
-      b: {x: -1.22, y: -0.9}
+    - a: {x: -2.3928933, y: 0.19289322}
+      b: {x: -3.8071067, y: 1.6071068}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v02
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 Kuzey rotas\u0131"
@@ -1196,10 +1224,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 0.9, y: -1.48}
-      b: {x: 0.9, y: -0.32}
-    - a: {x: 3.6, y: 2.12}
-      b: {x: 3.6, y: 3.28}
+    - a: {x: -0.19289322, y: -2.3928933}
+      b: {x: -1.6071068, y: -3.8071067}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v03
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -1231,10 +1260,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 0, y: -2.38}
-      b: {x: 0, y: -1.22}
-    - a: {x: -2.38, y: 2.7}
-      b: {x: -1.22, y: 2.7}
+    - a: {x: 2.3928933, y: -0.19289322}
+      b: {x: 3.8071067, y: -1.6071068}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v04
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 G\xFCney rotas\u0131"
@@ -1266,10 +1296,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 2.7, y: 2.12}
-      b: {x: 2.7, y: 3.28}
-    - a: {x: 0.32, y: -2.7}
-      b: {x: 1.48, y: -2.7}
+    - a: {x: 0.19289322, y: 2.3928933}
+      b: {x: 1.6071068, y: 3.8071067}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v05
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 Sessiz y\xFCzey"
@@ -1301,10 +1332,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 2.7, y: -1.48}
-      b: {x: 2.7, y: -0.32}
-    - a: {x: -3.28, y: 0.9}
-      b: {x: -2.12, y: 0.9}
+    - a: {x: -3.8071067, y: -1.6071068}
+      b: {x: -2.3928933, y: -0.19289322}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v06
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 Ters ufuk"
@@ -1336,10 +1368,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -1.48, y: 0.9}
-      b: {x: -0.32, y: 0.9}
-    - a: {x: -3.28, y: -3.6}
-      b: {x: -2.12, y: -3.6}
+    - a: {x: 3.8071067, y: 1.6071068}
+      b: {x: 2.3928933, y: 0.19289322}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v07
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 \xC7apraz yol"
@@ -1371,10 +1404,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -3.6, y: 2.12}
-      b: {x: -3.6, y: 3.28}
-    - a: {x: -2.38, y: 0.9}
-      b: {x: -1.22, y: 0.9}
+    - a: {x: 1.6071068, y: -3.8071067}
+      b: {x: 0.19289322, y: -2.3928933}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v08
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -1406,10 +1440,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 2.12, y: -1.8}
-      b: {x: 3.28, y: -1.8}
-    - a: {x: 0.9, y: -0.58}
-      b: {x: 0.9, y: 0.58}
+    - a: {x: -1.6071068, y: 3.8071067}
+      b: {x: -0.19289322, y: 2.3928933}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v09
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 \u0130nce ayar"
@@ -1441,10 +1476,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 1.22, y: -1.8}
-      b: {x: 2.38, y: -1.8}
-    - a: {x: 0.32, y: -0.9}
-      b: {x: 1.48, y: -0.9}
+    - a: {x: -2.2528932, y: 0.3728932}
+      b: {x: -3.6671069, y: 1.7871068}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: selective-red-01-v10
     displayName: "K\u0131z\u0131l yank\u0131 \xB7 Son prova"
@@ -1476,10 +1512,11 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 3.6, y: 0.32}
-      b: {x: 3.6, y: 1.48}
-    - a: {x: 0, y: -2.38}
-      b: {x: 0, y: -1.22}
+    - a: {x: -2.5328932, y: 0.012893219}
+      b: {x: -3.9471068, y: 1.4271067}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 1
     waterZones: []
   - id: water-01
     displayName: "Suyun haf\u0131zas\u0131"
@@ -1507,12 +1544,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0, y: 0.5}
-      b: {x: 0, y: 3.5}
-    - a: {x: -0.9, y: -2.38}
-      b: {x: -0.9, y: -1.22}
-    - a: {x: -3.28, y: 0.9}
-      b: {x: -2.12, y: 0.9}
+    - a: {x: -2.415922, y: -0.5078072}
+      b: {x: -1.184078, y: 1.0678072}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.5, y: -3}
       max: {x: 3, y: 0.5}
@@ -1543,12 +1579,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -0.5, y: 0}
-      b: {x: -3.5, y: 0}
-    - a: {x: -0.58, y: -1.8}
-      b: {x: 0.58, y: -1.8}
-    - a: {x: -3.28, y: -0.9}
-      b: {x: -2.12, y: -0.9}
+    - a: {x: 0.5078072, y: -2.415922}
+      b: {x: -1.0678072, y: -1.184078}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -0.5, y: -1.5}
       max: {x: 3, y: 3}
@@ -1579,12 +1614,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0, y: -0.5}
-      b: {x: 0, y: -3.5}
-    - a: {x: 1.8, y: -0.58}
-      b: {x: 1.8, y: 0.58}
-    - a: {x: 2.7, y: -4.18}
-      b: {x: 2.7, y: -3.02}
+    - a: {x: 2.415922, y: 0.5078072}
+      b: {x: 1.184078, y: -1.0678072}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3, y: -0.5}
       max: {x: 1.5, y: 3}
@@ -1615,12 +1649,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0.5, y: 0}
-      b: {x: 3.5, y: 0}
-    - a: {x: 3.02, y: 3.6}
-      b: {x: 4.18, y: 3.6}
-    - a: {x: 3.02, y: 1.8}
-      b: {x: 4.18, y: 1.8}
+    - a: {x: -0.5078072, y: 2.415922}
+      b: {x: 1.0678072, y: 1.184078}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3, y: -3}
       max: {x: 0.5, y: 1.5}
@@ -1651,12 +1684,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0, y: -0.5}
-      b: {x: 0, y: -3.5}
-    - a: {x: 1.22, y: 0}
-      b: {x: 2.38, y: 0}
-    - a: {x: -1.8, y: -0.58}
-      b: {x: -1.8, y: 0.58}
+    - a: {x: -1.184078, y: -1.0678072}
+      b: {x: -2.415922, y: 0.5078072}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.5, y: -0.5}
       max: {x: 3, y: 3}
@@ -1687,12 +1719,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0, y: 0.5}
-      b: {x: 0, y: 3.5}
-    - a: {x: 1.8, y: -0.58}
-      b: {x: 1.8, y: 0.58}
-    - a: {x: 0.9, y: 2.12}
-      b: {x: 0.9, y: 3.28}
+    - a: {x: 1.184078, y: 1.0678072}
+      b: {x: 2.415922, y: -0.5078072}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3, y: -3}
       max: {x: 1.5, y: 0.5}
@@ -1723,12 +1754,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0.5, y: 0}
-      b: {x: 3.5, y: 0}
-    - a: {x: 2.12, y: -0.9}
-      b: {x: 3.28, y: -0.9}
-    - a: {x: -1.8, y: -1.48}
-      b: {x: -1.8, y: -0.32}
+    - a: {x: 1.0678072, y: -1.184078}
+      b: {x: -0.5078072, y: -2.415922}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3, y: -1.5}
       max: {x: 0.5, y: 3}
@@ -1759,12 +1789,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -0.5, y: 0}
-      b: {x: -3.5, y: 0}
-    - a: {x: -4.18, y: 3.6}
-      b: {x: -3.02, y: 3.6}
-    - a: {x: 2.7, y: -0.58}
-      b: {x: 2.7, y: 0.58}
+    - a: {x: -1.0678072, y: 1.184078}
+      b: {x: 0.5078072, y: 2.415922}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -0.5, y: -3}
       max: {x: 3, y: 1.5}
@@ -1795,12 +1824,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0.14, y: 0.68}
-      b: {x: 0.14, y: 3.68}
-    - a: {x: 0, y: -3.28}
-      b: {x: 0, y: -2.12}
-    - a: {x: -1.48, y: -0.9}
-      b: {x: -0.32, y: -0.9}
+    - a: {x: -2.275922, y: -0.32780716}
+      b: {x: -1.044078, y: 1.2478071}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.36, y: -2.82}
       max: {x: 3.14, y: 0.68}
@@ -1831,12 +1859,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -0.14, y: 0.32}
-      b: {x: -0.14, y: 3.32}
-    - a: {x: 0.9, y: -0.58}
-      b: {x: 0.9, y: 0.58}
-    - a: {x: -3.28, y: 2.7}
-      b: {x: -2.12, y: 2.7}
+    - a: {x: -2.555922, y: -0.68780714}
+      b: {x: -1.3240781, y: 0.8878072}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.64, y: -3.18}
       max: {x: 2.86, y: 0.32}
@@ -1876,10 +1903,14 @@ MonoBehaviour:
     walls:
     - a: {x: -0.5, y: -4}
       b: {x: -0.5, y: -1}
-    - a: {x: -4.18, y: 1.8}
-      b: {x: -3.02, y: 1.8}
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -2.454624, y: -2.07793}
+      b: {x: -4.745376, y: -1.36207}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v02
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kuzey rotas\u0131"
@@ -1916,10 +1947,14 @@ MonoBehaviour:
     walls:
     - a: {x: 4, y: -0.5}
       b: {x: 1, y: -0.5}
-    - a: {x: -0.9, y: 3.02}
-      b: {x: -0.9, y: 4.18}
-    - a: {x: -3.6, y: -4.18}
-      b: {x: -3.6, y: -3.02}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: 2.07793, y: -2.454624}
+      b: {x: 1.36207, y: -4.745376}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v03
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -1956,10 +1991,14 @@ MonoBehaviour:
     walls:
     - a: {x: 0.5, y: 4}
       b: {x: 0.5, y: 1}
-    - a: {x: 3.02, y: -3.6}
-      b: {x: 4.18, y: -3.6}
-    - a: {x: 3.02, y: 1.8}
-      b: {x: 4.18, y: 1.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: 2.454624, y: 2.07793}
+      b: {x: 4.745376, y: 1.36207}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v04
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 G\xFCney rotas\u0131"
@@ -1996,10 +2035,14 @@ MonoBehaviour:
     walls:
     - a: {x: -4, y: 0.5}
       b: {x: -1, y: 0.5}
-    - a: {x: 0.9, y: -1.48}
-      b: {x: 0.9, y: -0.32}
-    - a: {x: 1.22, y: 0.9}
-      b: {x: 2.38, y: 0.9}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -2.07793, y: 2.454624}
+      b: {x: -1.36207, y: 4.745376}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v05
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Sessiz y\xFCzey"
@@ -2036,10 +2079,14 @@ MonoBehaviour:
     walls:
     - a: {x: -0.5, y: 4}
       b: {x: -0.5, y: 1}
-    - a: {x: -4.18, y: 1.8}
-      b: {x: -3.02, y: 1.8}
-    - a: {x: 1.8, y: 1.22}
-      b: {x: 1.8, y: 2.38}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -4.745376, y: 1.36207}
+      b: {x: -2.454624, y: 2.07793}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v06
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Ters ufuk"
@@ -2076,10 +2123,14 @@ MonoBehaviour:
     walls:
     - a: {x: 0.5, y: -4}
       b: {x: 0.5, y: -1}
-    - a: {x: 0.9, y: 2.12}
-      b: {x: 0.9, y: 3.28}
-    - a: {x: -2.7, y: -2.38}
-      b: {x: -2.7, y: -1.22}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: 4.745376, y: -1.36207}
+      b: {x: 2.454624, y: -2.07793}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v07
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 \xC7apraz yol"
@@ -2116,10 +2167,14 @@ MonoBehaviour:
     walls:
     - a: {x: -4, y: -0.5}
       b: {x: -1, y: -0.5}
-    - a: {x: 3.6, y: -4.18}
-      b: {x: 3.6, y: -3.02}
-    - a: {x: 0.9, y: -0.58}
-      b: {x: 0.9, y: 0.58}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -1.36207, y: -4.745376}
+      b: {x: -2.07793, y: -2.454624}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v08
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -2156,10 +2211,14 @@ MonoBehaviour:
     walls:
     - a: {x: 4, y: 0.5}
       b: {x: 1, y: 0.5}
-    - a: {x: -0.9, y: 3.02}
-      b: {x: -0.9, y: 4.18}
-    - a: {x: -2.38, y: 0.9}
-      b: {x: -1.22, y: 0.9}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: 1.36207, y: 4.745376}
+      b: {x: 2.07793, y: 2.454624}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v09
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 \u0130nce ayar"
@@ -2196,10 +2255,14 @@ MonoBehaviour:
     walls:
     - a: {x: -0.36, y: -3.82}
       b: {x: -0.36, y: -0.82}
-    - a: {x: 0.32, y: -0.9}
-      b: {x: 1.48, y: -0.9}
-    - a: {x: -4.18, y: 0.9}
-      b: {x: -3.02, y: 0.9}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -2.314624, y: -1.89793}
+      b: {x: -4.605376, y: -1.18207}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: garden-01-v10
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Son prova"
@@ -2236,10 +2299,14 @@ MonoBehaviour:
     walls:
     - a: {x: -0.64, y: -4.18}
       b: {x: -0.64, y: -1.18}
-    - a: {x: -1.48, y: 3.6}
-      b: {x: -0.32, y: 3.6}
-    - a: {x: 0, y: 1.22}
-      b: {x: 0, y: 2.38}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
+    - a: {x: -2.594624, y: -2.25793}
+      b: {x: -4.885376, y: -1.54207}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 2
     waterZones: []
   - id: symphony-01
     displayName: Optik senfoni
@@ -2283,10 +2350,19 @@ MonoBehaviour:
     walls:
     - a: {x: -0.5, y: -4}
       b: {x: -0.5, y: -0.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.5, y: 0.5}
       b: {x: 0.5, y: 3.5}
-    - a: {x: -0.9, y: 0.32}
-      b: {x: -0.9, y: 1.48}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -2.2336314, y: -1.8663268}
+      b: {x: -5.366369, y: -1.2136732}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: 0, y: -1.5}
       max: {x: 3.5, y: 0.5}
@@ -2333,10 +2409,19 @@ MonoBehaviour:
     walls:
     - a: {x: 4, y: -0.5}
       b: {x: 0.8, y: -0.5}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: -0.5, y: 0.5}
       b: {x: -3.5, y: 0.5}
-    - a: {x: -1.48, y: -0.9}
-      b: {x: -0.32, y: -0.9}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: 1.8663268, y: -2.2336314}
+      b: {x: 1.2136732, y: -5.366369}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -0.5, y: 0}
       max: {x: 1.5, y: 3.5}
@@ -2383,10 +2468,19 @@ MonoBehaviour:
     walls:
     - a: {x: 0.5, y: 4}
       b: {x: 0.5, y: 0.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: -0.5, y: -0.5}
       b: {x: -0.5, y: -3.5}
-    - a: {x: 3.02, y: 3.6}
-      b: {x: 4.18, y: 3.6}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: 2.2336314, y: 1.8663268}
+      b: {x: 5.366369, y: 1.2136732}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3.5, y: -0.5}
       max: {x: 0, y: 1.5}
@@ -2433,10 +2527,19 @@ MonoBehaviour:
     walls:
     - a: {x: -4, y: 0.5}
       b: {x: -0.8, y: 0.5}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.5, y: -0.5}
       b: {x: 3.5, y: -0.5}
-    - a: {x: 0.32, y: 3.6}
-      b: {x: 1.48, y: 3.6}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -1.8663268, y: 2.2336314}
+      b: {x: -1.2136732, y: 5.366369}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.5, y: -3.5}
       max: {x: 0.5, y: 0}
@@ -2483,10 +2586,19 @@ MonoBehaviour:
     walls:
     - a: {x: -0.5, y: 4}
       b: {x: -0.5, y: 0.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.5, y: -0.5}
       b: {x: 0.5, y: -3.5}
-    - a: {x: -0.9, y: -1.48}
-      b: {x: -0.9, y: -0.32}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -5.366369, y: 1.2136732}
+      b: {x: -2.2336314, y: 1.8663268}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: 0, y: -0.5}
       max: {x: 3.5, y: 1.5}
@@ -2533,10 +2645,19 @@ MonoBehaviour:
     walls:
     - a: {x: 0.5, y: -4}
       b: {x: 0.5, y: -0.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: -0.5, y: 0.5}
       b: {x: -0.5, y: 3.5}
-    - a: {x: -1.8, y: 0.32}
-      b: {x: -1.8, y: 1.48}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: 5.366369, y: -1.2136732}
+      b: {x: 2.2336314, y: -1.8663268}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -3.5, y: -1.5}
       max: {x: 0, y: 0.5}
@@ -2583,10 +2704,19 @@ MonoBehaviour:
     walls:
     - a: {x: -4, y: -0.5}
       b: {x: -0.8, y: -0.5}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.5, y: 0.5}
       b: {x: 3.5, y: 0.5}
-    - a: {x: -0.9, y: -4.18}
-      b: {x: -0.9, y: -3.02}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -1.2136732, y: -5.366369}
+      b: {x: -1.8663268, y: -2.2336314}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -1.5, y: 0}
       max: {x: 0.5, y: 3.5}
@@ -2633,10 +2763,19 @@ MonoBehaviour:
     walls:
     - a: {x: 4, y: 0.5}
       b: {x: 0.8, y: 0.5}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: -0.5, y: -0.5}
       b: {x: -3.5, y: -0.5}
-    - a: {x: -4.18, y: 1.8}
-      b: {x: -3.02, y: 1.8}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: 1.2136732, y: 5.366369}
+      b: {x: 1.8663268, y: 2.2336314}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -0.5, y: -3.5}
       max: {x: 1.5, y: 0}
@@ -2683,10 +2822,19 @@ MonoBehaviour:
     walls:
     - a: {x: -0.36, y: -3.82}
       b: {x: -0.36, y: -0.62}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.64, y: 0.68}
       b: {x: 0.64, y: 3.68}
-    - a: {x: -2.7, y: -1.48}
-      b: {x: -2.7, y: -0.32}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -2.0936313, y: -1.6863269}
+      b: {x: -5.226369, y: -1.0336732}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: 0.14, y: -1.32}
       max: {x: 3.64, y: 0.68}
@@ -2733,942 +2881,1609 @@ MonoBehaviour:
     walls:
     - a: {x: -0.64, y: -4.18}
       b: {x: -0.64, y: -0.98}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 1
     - a: {x: 0.36, y: 0.32}
       b: {x: 0.36, y: 3.32}
-    - a: {x: -4.18, y: -3.6}
-      b: {x: -3.02, y: -3.6}
+      thickness: 0.36
+      purpose: baffle
+      cluster: 2
+    - a: {x: -2.3736312, y: -2.0463269}
+      b: {x: -5.5063686, y: -1.3936732}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones:
     - min: {x: -0.14, y: -1.68}
       max: {x: 3.36, y: 0.32}
       refractiveIndex: 1.333
   - id: geometry-3
     displayName: "\xDC\xE7 a\xE7\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: -4, y: -3.15}
-    direction: {x: 0.65249646, y: 0.7577918}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: -4.2, y: -2.8}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -3.5291336, y: -2.6031482}
-      angle: 27.22031
+      position: {x: -2.8, y: -2.8}
+      angle: 36.728508
     - kind: 0
-      position: {x: -2.79375, y: -2.5366023}
-      angle: 33.97234
+      position: {x: -1.3, y: 2.25}
+      angle: 0.49129248
     - kind: 0
-      position: {x: -2.0869386, y: -1.1628317}
-      angle: 52.446045
-    - kind: 0
-      position: {x: -1.1633519, y: -0.32777622}
-      angle: 12.145139
-    - kind: 0
-      position: {x: 1.369434, y: -1.1423227}
-      angle: 20.235287
+      position: {x: 0.2, y: -2.5}
+      angle: 2.2654757
+    - kind: 3
+      position: {x: 1.4, y: 2.7}
+      angle: 38.502693
+    - kind: 4
+      position: {x: 2.4, y: 2.7}
+      angle: 90
     goals:
-    - position: {x: 3.65, y: 2.55}
-      band: -1
-      radius: 0.34
+    - position: {x: 4.4, y: 2.7}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 1.6248595, y: 3.6743913}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 1.22, y: -1.8}
-      b: {x: 2.38, y: -1.8}
-    - a: {x: -0.9, y: -2.38}
-      b: {x: -0.9, y: -1.22}
-    - a: {x: -2.7, y: -0.58}
-      b: {x: -2.7, y: 0.58}
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
-    waterZones: []
+    - a: {x: -2.05, y: -4.9}
+      b: {x: -2.05, y: -1.775}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -2.05, y: 1.225}
+      b: {x: -2.05, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -0.55, y: -4.9}
+      b: {x: -0.55, y: -1.625}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.55, y: 1.375}
+      b: {x: -0.55, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.8, y: -4.9}
+      b: {x: 0.8, y: -1.75}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 0.8, y: 1.95}
+      b: {x: 0.8, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: -4, y: -3.2}
+      max: {x: -3.6, y: -2.4}
+      refractiveIndex: 1.333
   - id: geometry-3-v02
     displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Kuzey rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: 3.15, y: -4}
-    direction: {x: -0.83386403, y: 0.55196995}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: 2.8, y: -4.2}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 2.2427838, y: -3.399475}
-      angle: 99.35488
+      position: {x: 2.8, y: -2.8}
+      angle: 126.91034
     - kind: 0
-      position: {x: 2.7567444, y: -2.7365937}
-      angle: 108.96447
+      position: {x: -2.37, y: -1.3}
+      angle: 90.30753
     - kind: 0
-      position: {x: 1.1230333, y: -2.3206797}
-      angle: 143.71284
-    - kind: 0
-      position: {x: 0.17927131, y: -0.7931215}
-      angle: 87.581024
-    - kind: 0
-      position: {x: 1.4533596, y: 0.9257773}
-      angle: 99.609314
+      position: {x: 2.6, y: 0.2}
+      angle: 92.018425
+    - kind: 2
+      position: {x: -2.7, y: 1.4}
+      angle: 128.62123
+    - kind: 5
+      position: {x: -2.7, y: 2.4}
+      angle: 180
     goals:
-    - position: {x: -2.55, y: 3.65}
-      band: -1
-      radius: 0.34
+    - position: {x: -2.7, y: 3.35}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -3.6753132, y: 1.6208256}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 2.12, y: -1.8}
-      b: {x: 3.28, y: -1.8}
-    - a: {x: -0.9, y: 0.32}
-      b: {x: -0.9, y: 1.48}
-    - a: {x: 2.12, y: 0}
-      b: {x: 3.28, y: 0}
-    - a: {x: -1.8, y: 1.22}
-      b: {x: -1.8, y: 2.38}
-    waterZones: []
+    - a: {x: 4.9, y: -2.05}
+      b: {x: 1.715, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -1.285, y: -2.05}
+      b: {x: -4.9, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 4.9, y: -0.55}
+      b: {x: 1.615, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -1.385, y: -0.55}
+      b: {x: -4.9, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 4.9, y: 0.8}
+      b: {x: 1.8, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -1.9, y: 0.8}
+      b: {x: -4.9, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: 2.4, y: -4}
+      max: {x: 3.2, y: -3.6}
+      refractiveIndex: 1.333
   - id: geometry-3-v03
     displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: 4, y: 3.15}
-    direction: {x: -0.49956268, y: -0.86627775}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: 4.2, y: 2.8}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 3.5875714, y: 2.434819}
-      angle: 202.3257
+      position: {x: 2.8, y: 2.8}
+      angle: 217.08455
     - kind: 0
-      position: {x: 2.7326345, y: 2.6699471}
-      angle: 207.04453
+      position: {x: 1.3, y: -2.49}
+      angle: 180.14465
     - kind: 0
-      position: {x: 2.1395233, y: 1.0864155}
-      angle: 233.05528
-    - kind: 0
-      position: {x: 1.1289423, y: 0.33468753}
-      angle: 188.67279
-    - kind: 0
-      position: {x: -1.35951, y: 1.2060535}
-      angle: 199.6631
+      position: {x: -0.2, y: 2.7}
+      angle: 181.7957
+    - kind: 2
+      position: {x: -1.4, y: -2.7}
+      angle: 218.7356
+    - kind: 4
+      position: {x: -2.4, y: -2.7}
+      angle: 270
     goals:
-    - position: {x: -3.65, y: -2.55}
-      band: -1
-      radius: 0.34
+    - position: {x: -4.4, y: -2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -1.6169305, y: -3.676187}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 3.02, y: 0.9}
-      b: {x: 4.18, y: 0.9}
-    - a: {x: 1.8, y: 3.02}
-      b: {x: 1.8, y: 4.18}
-    - a: {x: -2.38, y: -1.8}
-      b: {x: -1.22, y: -1.8}
-    - a: {x: 0.9, y: -1.48}
-      b: {x: 0.9, y: -0.32}
-    waterZones: []
+    - a: {x: 2.05, y: 4.9}
+      b: {x: 2.05, y: 1.655}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 2.05, y: -1.345}
+      b: {x: 2.05, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 0.55, y: 4.9}
+      b: {x: 0.55, y: 1.605}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.55, y: -1.395}
+      b: {x: 0.55, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.8, y: 4.9}
+      b: {x: -0.8, y: 1.85}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -0.8, y: -1.85}
+      b: {x: -0.8, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: 3.6, y: 2.4}
+      max: {x: 4, y: 3.2}
+      refractiveIndex: 1.333
   - id: geometry-3-v04
     displayName: "\xDC\xE7 a\xE7\u0131 \xB7 G\xFCney rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: -3.15, y: 4}
-    direction: {x: 0.8462889, y: -0.53272414}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: -2.8, y: 4.2}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -2.4630315, y: 3.5675652}
-      angle: 292.7455
+      position: {x: -2.8, y: 2.8}
+      angle: 307.2516
     - kind: 0
-      position: {x: -2.6603193, y: 2.6641824}
-      angle: 302.111
+      position: {x: 2.61, y: 1.3}
+      angle: 270
     - kind: 0
-      position: {x: -1.0779513, y: 2.2854953}
-      angle: 322.2655
-    - kind: 0
-      position: {x: -0.35759228, y: 0.93011117}
-      angle: 273.23682
-    - kind: 0
-      position: {x: -1.1745034, y: -1.1420279}
-      angle: 287.26434
+      position: {x: -2.8, y: -0.2}
+      angle: 271.5944
+    - kind: 3
+      position: {x: 2.7, y: -1.4}
+      angle: 308.84598
+    - kind: 5
+      position: {x: 2.7, y: -2.4}
+      angle: 0
     goals:
-    - position: {x: 2.55, y: -3.65}
-      band: -1
-      radius: 0.34
+    - position: {x: 2.7, y: -3.35}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 3.6770158, y: -1.613167}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 0.32, y: 1.8}
-      b: {x: 1.48, y: 1.8}
-    - a: {x: -1.8, y: -1.48}
-      b: {x: -1.8, y: -0.32}
-    - a: {x: -0.9, y: 3.02}
-      b: {x: -0.9, y: 4.18}
-    - a: {x: -4.18, y: 1.8}
-      b: {x: -3.02, y: 1.8}
-    waterZones: []
+    - a: {x: -4.9, y: 2.05}
+      b: {x: -1.595, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 1.405, y: 2.05}
+      b: {x: 4.9, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -4.9, y: 0.55}
+      b: {x: -1.595, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 1.405, y: 0.55}
+      b: {x: 4.9, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -4.9, y: -0.8}
+      b: {x: -1.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 1.8, y: -0.8}
+      b: {x: 4.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: -3.2, y: 3.6}
+      max: {x: -2.4, y: 4}
+      refractiveIndex: 1.333
   - id: geometry-3-v05
     displayName: "\xDC\xE7 a\xE7\u0131 \xB7 Sessiz y\xFCzey"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "K\u0131rm\u0131z\u0131y\u0131 giri\u015Fte ay\u0131r; kap\u0131lardan ge\xE7en spektrumu prizmayla iki hedefe da\u011F\u0131t."
+    hint: "K\u0131rm\u0131z\u0131 se\xE7ici ilk hedefi besler. D\xF6rt yans\u0131madan sonra prizma mor ve sar\u0131y\u0131 ayr\u0131 al\u0131c\u0131lara yollar."
     chapter: Geometri
     difficulty: 9
-    par: 5
+    par: 6
     requireAllPiecesActive: 1
-    source: {x: -4, y: 3.15}
-    direction: {x: 0.99954915, y: 0.030025842}
+    source: {x: -4.4, y: 2.8}
+    direction: {x: 1, y: -0}
     sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    stock: 030000000000000000000000000000000000000001000000i
     initial: []
     solution:
+    - kind: 3
+      position: {x: -3.6, y: 2.8}
+      angle: 315
     - kind: 0
-      position: {x: -3.080825, y: 3.1776114}
-      angle: 325.9511
+      position: {x: -2.8, y: 2.8}
+      angle: 322.5881
     - kind: 0
-      position: {x: -2.809581, y: 2.439662}
-      angle: 310.1746
+      position: {x: -1.3, y: -2.73}
+      angle: 359.58646
     - kind: 0
-      position: {x: -1.6653913, y: 1.7835171}
-      angle: 311.58414
+      position: {x: 0.2, y: 2.5}
+      angle: 358.49567
     - kind: 0
-      position: {x: -0.9199143, y: 0.027346855}
-      angle: 344.6599
-    - kind: 0
-      position: {x: 1.0524974, y: 1.4772401}
-      angle: 349.57022
+      position: {x: 1.4, y: -2.7}
+      angle: 321.4973
+    - kind: 1
+      position: {x: 2.4, y: -2.7}
+      angle: 270
     goals:
-    - position: {x: 3.65, y: -2.55}
-      band: -1
-      radius: 0.34
-      threshold: 0.55
+    - position: {x: -3.6, y: 1.4}
+      band: 6
+      radius: 0.28
+      threshold: 0.5
+    - position: {x: 4.2, y: -1.0010124}
+      band: 0
+      radius: 0.055
+      threshold: 0.2
+    - position: {x: 4.2, y: -1.3234056}
+      band: 4
+      radius: 0.055
+      threshold: 0.2
     walls:
-    - a: {x: 0.9, y: 2.12}
-      b: {x: 0.9, y: 3.28}
-    - a: {x: -3.6, y: 1.22}
-      b: {x: -3.6, y: 2.38}
-    - a: {x: 0.32, y: -0.9}
-      b: {x: 1.48, y: -0.9}
-    - a: {x: 3.6, y: -0.58}
-      b: {x: 3.6, y: 0.58}
-    waterZones: []
+    - a: {x: -2.05, y: 4.9}
+      b: {x: -2.05, y: 1.535}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -2.05, y: -1.465}
+      b: {x: -2.05, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -0.55, y: 4.9}
+      b: {x: -0.55, y: 1.385}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.55, y: -1.615}
+      b: {x: -0.55, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.8, y: 4.9}
+      b: {x: 0.8, y: 1.75}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 0.8, y: -1.95}
+      b: {x: 0.8, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: -4.2, y: 2.4}
+      max: {x: -3.9, y: 3.2}
+      refractiveIndex: 1.333
   - id: geometry-4
     displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: -4, y: 2.95}
-    direction: {x: 0.9624891, y: -0.27132016}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: 4.2, y: -2.8}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -3.217484, y: 2.7294133}
-      angle: 330.64587
+      position: {x: 2.8, y: -2.8}
+      angle: 143.27148
     - kind: 0
-      position: {x: -2.6775723, y: 2.2265465}
-      angle: 310.05334
+      position: {x: 1.3, y: 2.25}
+      angle: 179.67863
     - kind: 0
-      position: {x: -1.2058098, y: -0.033536725}
-      angle: 344.8777
-    - kind: 0
-      position: {x: 1.0197866, y: 1.0850078}
-      angle: 339.95123
-    - kind: 0
-      position: {x: 2.0382054, y: -1.2889462}
-      angle: 304.52814
+      position: {x: -0.2, y: -2.6}
+      angle: 177.78592
+    - kind: 2
+      position: {x: -1.4, y: 2.7}
+      angle: 141.37877
+    - kind: 5
+      position: {x: -2.4, y: 2.7}
+      angle: 90
     goals:
-    - position: {x: 3.8, y: -3}
-      band: -1
-      radius: 0.34
+    - position: {x: -3.35, y: 2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -1.6208256, y: 3.6753132}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 1.22, y: 1.8}
-      b: {x: 2.38, y: 1.8}
-    - a: {x: -2.38, y: -0.9}
-      b: {x: -1.22, y: -0.9}
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
-    - a: {x: 0, y: 1.22}
-      b: {x: 0, y: 2.38}
-    waterZones: []
+    - a: {x: 2.05, y: -4.9}
+      b: {x: 2.05, y: -1.775}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 2.05, y: 1.225}
+      b: {x: 2.05, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 0.55, y: -4.9}
+      b: {x: 0.55, y: -1.675}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.55, y: 1.325}
+      b: {x: 0.55, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.8, y: -4.9}
+      b: {x: -0.8, y: -1.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -0.8, y: 1.9}
+      b: {x: -0.8, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: 3.6, y: -3.2}
+      max: {x: 4, y: -2.4}
+      refractiveIndex: 1.333
   - id: geometry-4-v02
     displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Kuzey rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: -2.95, y: -4}
-    direction: {x: 0.170252, y: 0.98540056}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: -2.8, y: -4.2}
+    direction: {x: 0, y: 1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -2.8088436, y: -3.1830013}
-      angle: 60.780396
+      position: {x: -2.8, y: -2.8}
+      angle: 53.089657
     - kind: 0
-      position: {x: -2.2472985, y: -2.6885724}
-      angle: 36.41872
+      position: {x: 2.37, y: -1.3}
+      angle: 89.84902
     - kind: 0
-      position: {x: 0.149224, y: -1.2214667}
-      angle: 76.70494
-    - kind: 0
-      position: {x: -1.2737819, y: 1.0615159}
-      angle: 70.031815
-    - kind: 0
-      position: {x: 1.5164685, y: 1.9750156}
-      angle: 34.510117
+      position: {x: -2.7, y: 0.2}
+      angle: 88.023766
+    - kind: 3
+      position: {x: 2.7, y: 1.4}
+      angle: 51.264404
+    - kind: 4
+      position: {x: 2.7, y: 2.4}
+      angle: 0
     goals:
-    - position: {x: 3, y: 3.8}
-      band: -1
-      radius: 0.34
+    - position: {x: 2.7, y: 4.4}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 3.676187, y: 1.6169305}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: -0.58, y: -2.7}
-      b: {x: 0.58, y: -2.7}
-    - a: {x: 1.22, y: -0.9}
-      b: {x: 2.38, y: -0.9}
-    - a: {x: 0.32, y: 0.9}
-      b: {x: 1.48, y: 0.9}
-    - a: {x: -3.6, y: -3.28}
-      b: {x: -3.6, y: -2.12}
-    waterZones: []
+    - a: {x: -4.9, y: -2.05}
+      b: {x: -1.715, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 1.285, y: -2.05}
+      b: {x: 4.9, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -4.9, y: -0.55}
+      b: {x: -1.665, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 1.335, y: -0.55}
+      b: {x: 4.9, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -4.9, y: 0.8}
+      b: {x: -1.85, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 1.85, y: 0.8}
+      b: {x: 4.9, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: -3.2, y: -4}
+      max: {x: -2.4, y: -3.6}
+      refractiveIndex: 1.333
   - id: geometry-4-v03
     displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Kar\u015F\u0131 k\u0131y\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: 4, y: -2.95}
-    direction: {x: -0.99820584, y: 0.059875727}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: 2.8, y: 4.2}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 3.156026, y: -2.8993757}
-      angle: 146.5025
+      position: {x: 2.8, y: 2.8}
+      angle: 232.91545
     - kind: 0
-      position: {x: 2.7344968, y: -2.0516107}
-      angle: 122.75899
+      position: {x: -2.49, y: 1.3}
+      angle: 270
     - kind: 0
-      position: {x: 1.1638591, y: -0.117583275}
-      angle: 165.43224
-    - kind: 0
-      position: {x: -1.0005032, y: -0.98257345}
-      angle: 158.27347
-    - kind: 0
-      position: {x: -2.0312848, y: 1.2520552}
-      angle: 125.05058
+      position: {x: 2.8, y: -0.2}
+      angle: 268.23856
+    - kind: 2
+      position: {x: -2.7, y: -1.4}
+      angle: 231.154
+    - kind: 5
+      position: {x: -2.7, y: -2.4}
+      angle: 180
     goals:
-    - position: {x: -3.8, y: 3}
-      band: -1
-      radius: 0.34
+    - position: {x: -2.7, y: -3.35}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -3.6770158, y: -1.613167}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: -0.9, y: 1.22}
-      b: {x: -0.9, y: 2.38}
-    - a: {x: 0, y: -2.38}
-      b: {x: 0, y: -1.22}
-    - a: {x: 1.8, y: -3.28}
-      b: {x: 1.8, y: -2.12}
-    - a: {x: -2.7, y: -0.58}
-      b: {x: -2.7, y: 0.58}
-    waterZones: []
+    - a: {x: 4.9, y: 2.05}
+      b: {x: 1.655, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -1.345, y: 2.05}
+      b: {x: -4.9, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 4.9, y: 0.55}
+      b: {x: 1.655, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -1.345, y: 0.55}
+      b: {x: -4.9, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 4.9, y: -0.8}
+      b: {x: 1.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -1.8, y: -0.8}
+      b: {x: -4.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: 2.4, y: 3.6}
+      max: {x: 3.2, y: 4}
+      refractiveIndex: 1.333
   - id: geometry-4-v04
     displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 G\xFCney rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: Geometri
     difficulty: 9
     par: 5
     requireAllPiecesActive: 1
-    source: {x: 2.95, y: 4}
-    direction: {x: 0.12980701, y: -0.9915393}
-    sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    source: {x: -4.2, y: -2.8}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 3.0634475, y: 3.1334243}
-      angle: 234.73627
+      position: {x: -2.8, y: -2.8}
+      angle: 37.251602
     - kind: 0
-      position: {x: 1.9284524, y: 2.891882}
-      angle: 210.34656
+      position: {x: -1.3, y: 2.61}
+      angle: 0.43119365
     - kind: 0
-      position: {x: 0.17538844, y: 0.89788306}
-      angle: 263.24548
-    - kind: 0
-      position: {x: 1.0029367, y: -0.67091054}
-      angle: 256.81503
-    - kind: 0
-      position: {x: -1.3490632, y: -2.3683605}
-      angle: 218.37448
+      position: {x: 0.2, y: -2.5}
+      angle: 1.6822833
+    - kind: 2
+      position: {x: 1.4, y: 2.7}
+      angle: 38.502693
+    - kind: 4
+      position: {x: 2.4, y: 2.7}
+      angle: 90
     goals:
-    - position: {x: -3, y: -3.8}
-      band: -1
-      radius: 0.34
+    - position: {x: 4.4, y: 2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 1.6248595, y: 3.6743913}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 2.7, y: 1.22}
-      b: {x: 2.7, y: 2.38}
-    - a: {x: -0.9, y: -4.18}
-      b: {x: -0.9, y: -3.02}
-    - a: {x: 0.32, y: 3.6}
-      b: {x: 1.48, y: 3.6}
-    - a: {x: 1.22, y: -1.8}
-      b: {x: 2.38, y: -1.8}
-    waterZones: []
+    - a: {x: -2.05, y: -4.9}
+      b: {x: -2.05, y: -1.595}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -2.05, y: 1.405}
+      b: {x: -2.05, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -0.55, y: -4.9}
+      b: {x: -0.55, y: -1.445}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.55, y: 1.555}
+      b: {x: -0.55, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.8, y: -4.9}
+      b: {x: 0.8, y: -1.75}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 0.8, y: 1.95}
+      b: {x: 0.8, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: -4, y: -3.2}
+      max: {x: -3.6, y: -2.4}
+      refractiveIndex: 1.333
   - id: geometry-4-v05
     displayName: "D\xF6rt k\u0131r\u0131lma de\u011Fil, d\xF6rt yans\u0131ma \xB7 Sessiz y\xFCzey"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "K\u0131rm\u0131z\u0131y\u0131 giri\u015Fte ay\u0131r; kap\u0131lardan ge\xE7en spektrumu prizmayla iki hedefe da\u011F\u0131t."
+    hint: "K\u0131rm\u0131z\u0131 se\xE7ici ilk hedefi besler. D\xF6rt yans\u0131madan sonra prizma mor ve sar\u0131y\u0131 ayr\u0131 al\u0131c\u0131lara yollar."
     chapter: Geometri
     difficulty: 9
-    par: 5
+    par: 6
     requireAllPiecesActive: 1
-    source: {x: -4, y: -2.95}
-    direction: {x: 0.16761288, y: 0.9858529}
+    source: {x: 2.8, y: -4.4}
+    direction: {x: -0, y: 1}
     sourceWidth: 0.08
-    stock: 0000000000000000000000000000000000000000i
+    stock: 030000000000000000000000000000000000000001000000i
     initial: []
     solution:
+    - kind: 3
+      position: {x: 2.8, y: -3.6}
+      angle: 135
     - kind: 0
-      position: {x: -3.8365295, y: -1.9885113}
-      angle: 31.175669
+      position: {x: 2.8, y: -2.8}
+      angle: 127.4119
     - kind: 0
-      position: {x: -2.4714732, y: -2.4320347}
-      angle: 24.423473
+      position: {x: -2.73, y: -1.3}
+      angle: 90.2709
     - kind: 0
-      position: {x: -1.3277211, y: 0.24253824}
-      angle: 17.170263
+      position: {x: 2.6, y: 0.2}
+      angle: 91.480225
     - kind: 0
-      position: {x: 1.0351516, y: -1.2631272}
-      angle: 17.578556
-    - kind: 0
-      position: {x: 2.1322045, y: 1.4068702}
-      angle: 55.67573
+      position: {x: -2.7, y: 1.4}
+      angle: 128.62123
+    - kind: 1
+      position: {x: -2.7, y: 2.4}
+      angle: 180
     goals:
-    - position: {x: 3.8, y: 3}
-      band: -1
-      radius: 0.34
-      threshold: 0.55
+    - position: {x: 1.4, y: -3.6}
+      band: 6
+      radius: 0.28
+      threshold: 0.5
+    - position: {x: -1.0010124, y: 4.2}
+      band: 0
+      radius: 0.055
+      threshold: 0.2
+    - position: {x: -1.3234056, y: 4.2}
+      band: 4
+      radius: 0.055
+      threshold: 0.2
     walls:
-    - a: {x: 0, y: 0.32}
-      b: {x: 0, y: 1.48}
-    - a: {x: 0.9, y: -3.28}
-      b: {x: 0.9, y: -2.12}
-    - a: {x: 3.02, y: 0.9}
-      b: {x: 4.18, y: 0.9}
-    - a: {x: -3.28, y: 0}
-      b: {x: -2.12, y: 0}
-    waterZones: []
+    - a: {x: 4.9, y: -2.05}
+      b: {x: 1.535, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -1.465, y: -2.05}
+      b: {x: -4.9, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 4.9, y: -0.55}
+      b: {x: 1.435, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -1.565, y: -0.55}
+      b: {x: -4.9, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 4.9, y: 0.8}
+      b: {x: 1.8, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -1.9, y: 0.8}
+      b: {x: -4.9, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    waterZones:
+    - min: {x: 2.4, y: -4.2}
+      max: {x: 3.2, y: -3.9}
+      refractiveIndex: 1.333
   - id: mastery-5a
     displayName: "A\xE7\u0131ortay laboratuvar\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: -4, y: -3.05}
-    direction: {x: 0.59568757, y: 0.8032162}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: 4.2, y: 2.8}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -3.5704963, y: -2.4708636}
-      angle: 42.556995
+      position: {x: 2.8, y: 2.8}
+      angle: 216.72852
     - kind: 0
-      position: {x: -2.945671, y: -2.0853302}
-      angle: 42.9854
+      position: {x: 1.3, y: -2.25}
+      angle: 180.15771
     - kind: 0
-      position: {x: -1.3328004, y: 0.15881541}
-      angle: 4.177558
-    - kind: 0
-      position: {x: -0.117233835, y: -1.0973067}
-      angle: 7.0680037
-    - kind: 0
-      position: {x: 1.3457675, y: 1.4444698}
-      angle: 2.552645
-    - kind: 0
-      position: {x: 2.4932623, y: -0.19254306}
-      angle: 7.551392
+      position: {x: -0.2, y: 2.7}
+      angle: 182.1648
+    - kind: 2
+      position: {x: -1.4, y: -2.7}
+      angle: 218.7356
+    - kind: 4
+      position: {x: -2.4, y: -2.7}
+      angle: 270
     goals:
-    - position: {x: 3.85, y: 3.55}
-      band: -1
-      radius: 0.34
+    - position: {x: -4.4, y: -2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -1.6169305, y: -3.676187}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 2.7, y: 3.02}
-      b: {x: 2.7, y: 4.18}
-    - a: {x: 0, y: -3.28}
-      b: {x: 0, y: -2.12}
-    - a: {x: 1.8, y: -1.48}
-      b: {x: 1.8, y: -0.32}
-    - a: {x: 3.6, y: -0.58}
-      b: {x: 3.6, y: 0.58}
-    - a: {x: -3.28, y: -3.6}
-      b: {x: -2.12, y: -3.6}
-    waterZones: []
+    - a: {x: 2.05, y: 4.9}
+      b: {x: 2.05, y: 1.775}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 2.05, y: -1.225}
+      b: {x: 2.05, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 0.55, y: 4.9}
+      b: {x: 0.55, y: 1.725}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.55, y: -1.275}
+      b: {x: 0.55, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.8, y: 4.9}
+      b: {x: -0.8, y: 1.85}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -0.8, y: -1.85}
+      b: {x: -0.8, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -3.15, y: 4.9}
+      b: {x: -3.15, y: -1.98}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: -3.15, y: -3.42}
+      b: {x: -3.15, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: 3.6, y: 2.4}
+      max: {x: 4, y: 3.2}
+      refractiveIndex: 1.333
   - id: mastery-5a-v02
     displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 Kuzey rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: 3.05, y: -4}
-    direction: {x: -0.9698771, y: 0.24359462}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: -2.8, y: 4.2}
+    direction: {x: 0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 1.9785211, y: -3.7308872}
-      angle: 113.652954
+      position: {x: -2.8, y: 2.8}
+      angle: 306.91034
     - kind: 0
-      position: {x: 2.5931537, y: -2.6033509}
-      angle: 113.61346
+      position: {x: 2.37, y: 1.3}
+      angle: 270
     - kind: 0
-      position: {x: -0.5911447, y: -1.798913}
-      angle: 106.95861
-    - kind: 0
-      position: {x: 1.3765701, y: 0.3937561}
-      angle: 109.32009
-    - kind: 0
-      position: {x: -1.5204428, y: 0.8762014}
-      angle: 110.9521
-    - kind: 0
-      position: {x: 0.05139653, y: 2.842325}
-      angle: 107.86367
+      position: {x: -2.8, y: -0.2}
+      angle: 271.93564
+    - kind: 2
+      position: {x: 2.7, y: -1.4}
+      angle: 308.84598
+    - kind: 5
+      position: {x: 2.7, y: -2.4}
+      angle: 0
     goals:
-    - position: {x: -3.55, y: 3.85}
-      band: -1
-      radius: 0.34
+    - position: {x: 2.7, y: -3.35}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 3.6770158, y: -1.613167}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 3.6, y: -2.38}
-      b: {x: 3.6, y: -1.22}
-    - a: {x: -2.38, y: -1.8}
-      b: {x: -1.22, y: -1.8}
-    - a: {x: -2.38, y: 0}
-      b: {x: -1.22, y: 0}
-    - a: {x: 0.9, y: 3.02}
-      b: {x: 0.9, y: 4.18}
-    - a: {x: -3.28, y: 1.8}
-      b: {x: -2.12, y: 1.8}
-    waterZones: []
+    - a: {x: -4.9, y: 2.05}
+      b: {x: -1.715, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 1.285, y: 2.05}
+      b: {x: 4.9, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -4.9, y: 0.55}
+      b: {x: -1.715, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 1.285, y: 0.55}
+      b: {x: 4.9, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -4.9, y: -0.8}
+      b: {x: -1.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 1.8, y: -0.8}
+      b: {x: 4.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -4.9, y: -3.15}
+      b: {x: 1.98, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: 3.42, y: -3.15}
+      b: {x: 4.9, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: -3.2, y: 3.6}
+      max: {x: -2.4, y: 4}
+      refractiveIndex: 1.333
   - id: mastery-5a-v03
     displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 Kar\u015F\u0131 k\u0131y\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: 4, y: 3.05}
-    direction: {x: -0.46948177, y: -0.88294214}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: -4.2, y: 2.8}
+    direction: {x: 1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 3.6303637, y: 2.3548346}
-      angle: 215.27257
+      position: {x: -2.8, y: 2.8}
+      angle: 322.91544
     - kind: 0
-      position: {x: 2.8972087, y: 2.2446647}
-      angle: 213.88673
+      position: {x: -1.3, y: -2.49}
+      angle: 359.55002
     - kind: 0
-      position: {x: 1.3609698, y: -0.33523324}
-      angle: 183.59966
-    - kind: 0
-      position: {x: 0.114523545, y: 1.2617749}
-      angle: 185.1607
-    - kind: 0
-      position: {x: -1.3690134, y: -1.5699217}
-      angle: 181.45262
-    - kind: 0
-      position: {x: -2.4483235, y: 0.25833303}
-      angle: 185.17455
+      position: {x: 0.2, y: 2.5}
+      angle: 358.1319
+    - kind: 3
+      position: {x: 1.4, y: -2.7}
+      angle: 321.4973
+    - kind: 4
+      position: {x: 2.4, y: -2.7}
+      angle: 270
     goals:
-    - position: {x: -3.85, y: -3.55}
-      band: -1
-      radius: 0.34
+    - position: {x: 4.4, y: -2.7}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 1.6248595, y: -3.6743913}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: -3.28, y: 0.9}
-      b: {x: -2.12, y: 0.9}
-    - a: {x: 3.02, y: 0.9}
-      b: {x: 4.18, y: 0.9}
-    - a: {x: 1.8, y: 2.12}
-      b: {x: 1.8, y: 3.28}
-    - a: {x: 0.9, y: -2.38}
-      b: {x: 0.9, y: -1.22}
-    - a: {x: 0, y: -1.48}
-      b: {x: 0, y: -0.32}
-    waterZones: []
+    - a: {x: -2.05, y: 4.9}
+      b: {x: -2.05, y: 1.655}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -2.05, y: -1.345}
+      b: {x: -2.05, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -0.55, y: 4.9}
+      b: {x: -0.55, y: 1.505}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.55, y: -1.495}
+      b: {x: -0.55, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.8, y: 4.9}
+      b: {x: 0.8, y: 1.75}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 0.8, y: -1.95}
+      b: {x: 0.8, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 3.15, y: 4.9}
+      b: {x: 3.15, y: -1.98}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: 3.15, y: -3.42}
+      b: {x: 3.15, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: -4, y: 2.4}
+      max: {x: -3.6, y: 3.2}
+      refractiveIndex: 1.333
   - id: mastery-5a-v04
     displayName: "A\xE7\u0131ortay laboratuvar\u0131 \xB7 G\xFCney rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: -3.05, y: 4}
-    direction: {x: 0.9504733, y: -0.31080624}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: 4.2, y: -2.8}
+    direction: {x: -1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -2.3665533, y: 3.776512}
-      angle: 308.73004
+      position: {x: 2.8, y: -2.8}
+      angle: 142.7484
     - kind: 0
-      position: {x: -2.259337, y: 2.676688}
-      angle: 306.8348
+      position: {x: 1.3, y: 2.61}
+      angle: 179.71764
     - kind: 0
-      position: {x: 0.3727649, y: 1.6186831}
-      angle: 282.1213
-    - kind: 0
-      position: {x: -1.3136779, y: -0.13629392}
-      angle: 283.39203
-    - kind: 0
-      position: {x: 1.6245725, y: -1.1685252}
-      angle: 278.26248
-    - kind: 0
-      position: {x: -0.30345085, y: -2.5632472}
-      angle: 278.70825
+      position: {x: -0.2, y: -2.6}
+      angle: 178.348
+    - kind: 2
+      position: {x: -1.4, y: 2.7}
+      angle: 141.37877
+    - kind: 5
+      position: {x: -2.4, y: 2.7}
+      angle: 90
     goals:
-    - position: {x: 3.55, y: -3.85}
-      band: -1
-      radius: 0.34
+    - position: {x: -3.35, y: 2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -1.6208256, y: 3.6753132}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 0.9, y: 2.12}
-      b: {x: 0.9, y: 3.28}
-    - a: {x: 3.02, y: -2.7}
-      b: {x: 4.18, y: -2.7}
-    - a: {x: -1.48, y: -3.6}
-      b: {x: -0.32, y: -3.6}
-    - a: {x: 1.8, y: -0.58}
-      b: {x: 1.8, y: 0.58}
-    - a: {x: -3.28, y: 1.8}
-      b: {x: -2.12, y: 1.8}
-    waterZones: []
+    - a: {x: 2.05, y: -4.9}
+      b: {x: 2.05, y: -1.595}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 2.05, y: 1.405}
+      b: {x: 2.05, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 0.55, y: -4.9}
+      b: {x: 0.55, y: -1.495}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.55, y: 1.505}
+      b: {x: 0.55, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.8, y: -4.9}
+      b: {x: -0.8, y: -1.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -0.8, y: 1.9}
+      b: {x: -0.8, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -3.15, y: -4.9}
+      b: {x: -3.15, y: 1.98}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: -3.15, y: 3.42}
+      b: {x: -3.15, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: 3.6, y: -3.2}
+      max: {x: 4, y: -2.4}
+      refractiveIndex: 1.333
   - id: mastery-5b
     displayName: Ters geometri
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "K\u0131rm\u0131z\u0131y\u0131 giri\u015Fte ay\u0131r; kap\u0131lardan ge\xE7en spektrumu prizmayla iki hedefe da\u011F\u0131t."
+    hint: "K\u0131rm\u0131z\u0131 se\xE7ici ilk hedefi besler. D\xF6rt yans\u0131madan sonra prizma mor ve sar\u0131y\u0131 ayr\u0131 al\u0131c\u0131lara yollar."
     chapter: "Ustal\u0131k"
     difficulty: 10
     par: 6
     requireAllPiecesActive: 1
-    source: {x: -3.9, y: 3.15}
-    direction: {x: 0.82557327, y: -0.56429493}
+    source: {x: -2.8, y: -4.4}
+    direction: {x: 0, y: 1}
     sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    stock: 030000000000000000000000000000000000000001000000i
     initial: []
     solution:
+    - kind: 3
+      position: {x: -2.8, y: -3.6}
+      angle: 45
     - kind: 0
-      position: {x: -2.6122785, y: 2.269818}
-      angle: 317.07294
+      position: {x: -2.8, y: -2.8}
+      angle: 52.588093
     - kind: 0
-      position: {x: -1.4891274, y: 0.8577845}
-      angle: 299.10284
+      position: {x: 2.73, y: -1.3}
+      angle: 89.86687
     - kind: 0
-      position: {x: -1.0125347, y: -0.47281384}
-      angle: 349.35352
+      position: {x: -2.7, y: 0.2}
+      angle: 88.54318
     - kind: 0
-      position: {x: 0.36828136, y: 1.1156644}
-      angle: 353.23068
-    - kind: 0
-      position: {x: 1.7609849, y: -1.5641655}
-      angle: 0.060915947
-    - kind: 0
-      position: {x: 2.7301033, y: 0.31033534}
-      angle: 354.3671
+      position: {x: 2.7, y: 1.4}
+      angle: 51.264404
+    - kind: 1
+      position: {x: 2.7, y: 2.4}
+      angle: 0
     goals:
-    - position: {x: 3.9, y: -3.75}
-      band: -1
-      radius: 0.34
-      threshold: 0.55
+    - position: {x: -1.4, y: -3.6}
+      band: 6
+      radius: 0.28
+      threshold: 0.5
+    - position: {x: 1.0010124, y: 4.2}
+      band: 0
+      radius: 0.055
+      threshold: 0.2
+    - position: {x: 1.3234056, y: 4.2}
+      band: 4
+      radius: 0.055
+      threshold: 0.2
     walls:
-    - a: {x: 2.7, y: 1.22}
-      b: {x: 2.7, y: 2.38}
-    - a: {x: 0.9, y: -3.28}
-      b: {x: 0.9, y: -2.12}
-    - a: {x: -0.58, y: -0.9}
-      b: {x: 0.58, y: -0.9}
-    - a: {x: -0.58, y: 1.8}
-      b: {x: 0.58, y: 1.8}
-    - a: {x: -3.28, y: 0}
-      b: {x: -2.12, y: 0}
-    waterZones: []
+    - a: {x: -4.9, y: -2.05}
+      b: {x: -1.535, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 1.465, y: -2.05}
+      b: {x: 4.9, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -4.9, y: -0.55}
+      b: {x: -1.485, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 1.515, y: -0.55}
+      b: {x: 4.9, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -4.9, y: 0.8}
+      b: {x: -1.85, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 1.85, y: 0.8}
+      b: {x: 4.9, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -4.9, y: 3.15}
+      b: {x: 1.35, y: 3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: 3.05, y: 3.15}
+      b: {x: 4.9, y: 3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: -3.2, y: -4.2}
+      max: {x: -2.4, y: -3.9}
+      refractiveIndex: 1.333
   - id: mastery-5b-v02
     displayName: "Ters geometri \xB7 Kuzey rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: -3.15, y: -3.9}
-    direction: {x: 0.589159, y: 0.80801713}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: 2.8, y: 4.2}
+    direction: {x: -0, y: -1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -2.2331846, y: -2.6426103}
-      angle: 48.09682
+      position: {x: 2.8, y: 2.8}
+      angle: 233.27148
     - kind: 0
-      position: {x: -0.8533821, y: -1.387483}
-      angle: 25.974989
+      position: {x: -2.25, y: 1.3}
+      angle: 270
     - kind: 0
-      position: {x: 0.43020397, y: -1.1690212}
-      angle: 70.11259
-    - kind: 0
-      position: {x: -1.0441148, y: 0.55315155}
-      angle: 76.358864
-    - kind: 0
-      position: {x: 1.477445, y: 1.5796938}
-      angle: 82.42597
-    - kind: 0
-      position: {x: -0.22408153, y: 2.8758905}
-      angle: 78.575485
+      position: {x: 2.8, y: -0.2}
+      angle: 267.8825
+    - kind: 3
+      position: {x: -2.7, y: -1.4}
+      angle: 231.154
+    - kind: 5
+      position: {x: -2.7, y: -2.4}
+      angle: 180
     goals:
-    - position: {x: 3.75, y: 3.9}
-      band: -1
-      radius: 0.34
+    - position: {x: -2.7, y: -3.35}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -3.6770158, y: -1.613167}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 1.22, y: -1.8}
-      b: {x: 2.38, y: -1.8}
-    - a: {x: -1.8, y: -1.48}
-      b: {x: -1.8, y: -0.32}
-    - a: {x: -1.8, y: 0.32}
-      b: {x: -1.8, y: 1.48}
-    - a: {x: 1.22, y: -0.9}
-      b: {x: 2.38, y: -0.9}
-    - a: {x: -2.38, y: 2.7}
-      b: {x: -1.22, y: 2.7}
-    waterZones: []
+    - a: {x: 4.9, y: 2.05}
+      b: {x: 1.775, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -1.225, y: 2.05}
+      b: {x: -4.9, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 4.9, y: 0.55}
+      b: {x: 1.775, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -1.225, y: 0.55}
+      b: {x: -4.9, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 4.9, y: -0.8}
+      b: {x: 1.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -1.8, y: -0.8}
+      b: {x: -4.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 4.9, y: -3.15}
+      b: {x: -1.98, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: -3.42, y: -3.15}
+      b: {x: -4.9, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: 2.4, y: 3.6}
+      max: {x: 3.2, y: 4}
+      refractiveIndex: 1.333
   - id: mastery-6
     displayName: Son teorem
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: -4, y: -3.3}
-    direction: {x: 0.6574254, y: 0.7535196}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: -4.2, y: -2.8}
+    direction: {x: 1, y: 0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: -2.8950791, y: -2.0335758}
-      angle: 59.002808
+      position: {x: -2.8, y: -2.8}
+      angle: 36.910343
     - kind: 0
-      position: {x: -1.9709377, y: 0.38770708}
-      angle: 13.470888
+      position: {x: -1.3, y: 2.37}
+      angle: 0.46997377
     - kind: 0
-      position: {x: -0.32605523, y: -1.1020899}
-      angle: 10.980136
-    - kind: 0
-      position: {x: 0.92743963, y: 1.4825859}
-      angle: 2.0744183
-    - kind: 0
-      position: {x: 1.9762084, y: -0.3324047}
-      angle: 358.2648
-    - kind: 0
-      position: {x: 3.1566103, y: 1.4515762}
-      angle: 59.721546
+      position: {x: 0.2, y: -2.5}
+      angle: 2.0623226
+    - kind: 2
+      position: {x: 1.4, y: 2.7}
+      angle: 38.502693
+    - kind: 4
+      position: {x: 2.4, y: 2.7}
+      angle: 90
     goals:
-    - position: {x: 4.05, y: 3.2}
-      band: -1
-      radius: 0.34
+    - position: {x: 4.4, y: 2.7}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: 1.6248595, y: 3.6743913}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: -2.7, y: 0.32}
-      b: {x: -2.7, y: 1.48}
-    - a: {x: -1.8, y: -2.38}
-      b: {x: -1.8, y: -1.22}
-    - a: {x: 1.8, y: -2.38}
-      b: {x: 1.8, y: -1.22}
-    - a: {x: 0, y: -3.28}
-      b: {x: 0, y: -2.12}
-    - a: {x: -0.9, y: 0.32}
-      b: {x: -0.9, y: 1.48}
-    waterZones: []
+    - a: {x: -2.05, y: -4.9}
+      b: {x: -2.05, y: -1.715}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -2.05, y: 1.285}
+      b: {x: -2.05, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -0.55, y: -4.9}
+      b: {x: -0.55, y: -1.565}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.55, y: 1.435}
+      b: {x: -0.55, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.8, y: -4.9}
+      b: {x: 0.8, y: -1.75}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 0.8, y: 1.95}
+      b: {x: 0.8, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 3.15, y: -4.9}
+      b: {x: 3.15, y: 1.98}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: 3.15, y: 3.42}
+      b: {x: 3.15, y: 4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: -4, y: -3.2}
+      max: {x: -3.6, y: -2.4}
+      refractiveIndex: 1.333
   - id: mastery-6-v02
     displayName: "Son teorem \xB7 Kuzey rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: 3.3, y: -4}
-    direction: {x: -0.7524474, y: 0.6586523}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: 2.8, y: -4.2}
+    direction: {x: -0, y: 1}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000200000005000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 2.0793998, y: -2.931552}
-      angle: 148.8247
+      position: {x: 2.8, y: -2.8}
+      angle: 127.08456
     - kind: 0
-      position: {x: -0.52537227, y: -1.9236623}
-      angle: 99.52081
+      position: {x: -2.49, y: -1.3}
+      angle: 90.294556
     - kind: 0
-      position: {x: 1.3075215, y: -0.37501767}
-      angle: 98.12376
-    - kind: 0
-      position: {x: -1.7199513, y: 0.9695804}
-      angle: 89.6302
-    - kind: 0
-      position: {x: 0.56038225, y: 1.9473077}
-      angle: 87.03274
-    - kind: 0
-      position: {x: -1.6305692, y: 3.168904}
-      angle: 150.77359
+      position: {x: 2.6, y: 0.2}
+      angle: 91.83124
+    - kind: 2
+      position: {x: -2.7, y: 1.4}
+      angle: 128.62123
+    - kind: 5
+      position: {x: -2.7, y: 2.4}
+      angle: 180
     goals:
-    - position: {x: -3.2, y: 4.05}
-      band: -1
-      radius: 0.34
+    - position: {x: -2.7, y: 3.35}
+      band: 3
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -3.6753132, y: 1.6208256}
+      band: 6
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: 3.6, y: -3.28}
-      b: {x: 3.6, y: -2.12}
-    - a: {x: 2.12, y: 0}
-      b: {x: 3.28, y: 0}
-    - a: {x: 1.22, y: 2.7}
-      b: {x: 2.38, y: 2.7}
-    - a: {x: -1.48, y: -2.7}
-      b: {x: -0.32, y: -2.7}
-    - a: {x: -2.38, y: -1.8}
-      b: {x: -1.22, y: -1.8}
-    waterZones: []
+    - a: {x: 4.9, y: -2.05}
+      b: {x: 1.655, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -1.345, y: -2.05}
+      b: {x: -4.9, y: -2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 4.9, y: -0.55}
+      b: {x: 1.555, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -1.445, y: -0.55}
+      b: {x: -4.9, y: -0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 4.9, y: 0.8}
+      b: {x: 1.8, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -1.9, y: 0.8}
+      b: {x: -4.9, y: 0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 4.9, y: 3.15}
+      b: {x: -1.98, y: 3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: -3.42, y: 3.15}
+      b: {x: -4.9, y: 3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: 2.4, y: -4}
+      max: {x: 3.2, y: -3.6}
+      refractiveIndex: 1.333
   - id: mastery-6-v03
     displayName: "Son teorem \xB7 Kar\u015F\u0131 k\u0131y\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "Kap\u0131lar\u0131 s\u0131rayla ge\xE7; oda\u011F\u0131 ve renk ayr\u0131m\u0131n\u0131 ayn\u0131 rotada birle\u015Ftir."
+    hint: "\xDC\xE7 aynayla d\xF6n\xFC\u015F\xFCml\xFC kap\u0131lar\u0131 ge\xE7. Renk se\xE7ici \u0131\u015F\u0131\u011F\u0131 iki hedefe ay\u0131r\u0131r; lens veya cam k\xFCre son \u0131\u015F\u0131n\u0131 k\xFC\xE7\xFCk hedefte toplar."
     chapter: "Ustal\u0131k"
     difficulty: 10
-    par: 6
+    par: 5
     requireAllPiecesActive: 1
-    source: {x: 4, y: 3.3}
-    direction: {x: -0.6337253, y: -0.7735582}
-    sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    source: {x: 4.2, y: 2.8}
+    direction: {x: -1, y: -0}
+    sourceWidth: 0.4
+    stock: 0000000000000000000000000300000004000000i
     initial: []
     solution:
     - kind: 0
-      position: {x: 2.8800082, y: 1.9328794}
-      angle: 239.91373
+      position: {x: 2.8, y: 2.8}
+      angle: 217.2516
     - kind: 0
-      position: {x: 2.0095751, y: -0.35289675}
-      angle: 194.2613
+      position: {x: 1.3, y: -2.61}
+      angle: 180.13872
     - kind: 0
-      position: {x: 0.2709374, y: 1.1388943}
-      angle: 193.35739
-    - kind: 0
-      position: {x: -0.86595, y: -1.5849481}
-      angle: 183.38669
-    - kind: 0
-      position: {x: -2.0327928, y: 0.48347893}
-      angle: 181.13417
-    - kind: 0
-      position: {x: -3.1153088, y: -1.6265001}
-      angle: 241.06445
+      position: {x: -0.2, y: 2.7}
+      angle: 181.62271
+    - kind: 3
+      position: {x: -1.4, y: -2.7}
+      angle: 218.7356
+    - kind: 4
+      position: {x: -2.4, y: -2.7}
+      angle: 270
     goals:
-    - position: {x: -4.05, y: -3.2}
-      band: -1
-      radius: 0.34
+    - position: {x: -4.4, y: -2.7}
+      band: 6
+      radius: 0.09
       threshold: 0.55
+    - position: {x: -1.6169305, y: -3.676187}
+      band: 3
+      radius: 0.3
+      threshold: 0.5
     walls:
-    - a: {x: -3.6, y: -0.58}
-      b: {x: -3.6, y: 0.58}
-    - a: {x: -2.7, y: -4.18}
-      b: {x: -2.7, y: -3.02}
-    - a: {x: 2.7, y: -1.48}
-      b: {x: 2.7, y: -0.32}
-    - a: {x: 1.8, y: 1.22}
-      b: {x: 1.8, y: 2.38}
-    - a: {x: -1.48, y: 1.8}
-      b: {x: -0.32, y: 1.8}
-    waterZones: []
+    - a: {x: 2.05, y: 4.9}
+      b: {x: 2.05, y: 1.595}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 2.05, y: -1.405}
+      b: {x: 2.05, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 0.55, y: 4.9}
+      b: {x: 0.55, y: 1.545}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 0.55, y: -1.455}
+      b: {x: 0.55, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -0.8, y: 4.9}
+      b: {x: -0.8, y: 1.85}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -0.8, y: -1.85}
+      b: {x: -0.8, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -3.15, y: 4.9}
+      b: {x: -3.15, y: -1.98}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: -3.15, y: -3.42}
+      b: {x: -3.15, y: -4.9}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: 3.6, y: 2.4}
+      max: {x: 4, y: 3.2}
+      refractiveIndex: 1.333
   - id: mastery-6-v04
     displayName: "Son teorem \xB7 G\xFCney rotas\u0131"
-    lesson: "Geli\u015F ve \xE7\u0131k\u0131\u015F do\u011Frultular\u0131n\u0131n a\xE7\u0131ortay\u0131n\u0131 aynan\u0131n do\u011Frultusu yap."
-    hint: "Geli\u015F ve \xE7\u0131k\u0131\u015F \u0131\u015F\u0131nlar\u0131n\u0131 birer do\u011Fru olarak \xE7iz. Her aynan\u0131n a\xE7\u0131s\u0131n\u0131 bu iki y\xF6n\xFCn a\xE7\u0131ortay\u0131ndan t\xFCret; t\xFCm aynalar \u0131\u015F\u0131k yolunda aktif olmal\u0131."
+    lesson: "K\u0131rm\u0131z\u0131y\u0131 giri\u015Fte ay\u0131r; kap\u0131lardan ge\xE7en spektrumu prizmayla iki hedefe da\u011F\u0131t."
+    hint: "K\u0131rm\u0131z\u0131 se\xE7ici ilk hedefi besler. D\xF6rt yans\u0131madan sonra prizma mor ve sar\u0131y\u0131 ayr\u0131 al\u0131c\u0131lara yollar."
     chapter: "Ustal\u0131k"
     difficulty: 10
     par: 6
     requireAllPiecesActive: 1
-    source: {x: -3.3, y: 4}
-    direction: {x: 0.819631, y: -0.5728919}
+    source: {x: -2.8, y: 4.4}
+    direction: {x: 0, y: -1}
     sourceWidth: 0.08
-    stock: 000000000000000000000000000000000000000000000000i
+    stock: 030000000000000000000000000000000000000001000000i
     initial: []
     solution:
+    - kind: 3
+      position: {x: -2.8, y: 3.6}
+      angle: 315
     - kind: 0
-      position: {x: -2.0178895, y: 3.103852}
-      angle: 328.51825
+      position: {x: -2.8, y: 2.8}
+      angle: 307.4119
     - kind: 0
-      position: {x: 0.46920165, y: 1.7808102}
-      angle: 274.57394
+      position: {x: 2.73, y: 1.3}
+      angle: 270
     - kind: 0
-      position: {x: -1.2669922, y: 0.46491238}
-      angle: 275.51486
+      position: {x: -2.8, y: -0.2}
+      angle: 271.43408
     - kind: 0
-      position: {x: 1.7024965, y: -0.99172384}
-      angle: 268.8658
-    - kind: 0
-      position: {x: -0.569203, y: -1.9965597}
-      angle: 269.2371
-    - kind: 0
-      position: {x: 1.664048, y: -3.0563622}
-      angle: 330.85672
+      position: {x: 2.7, y: -1.4}
+      angle: 308.84598
+    - kind: 1
+      position: {x: 2.7, y: -2.4}
+      angle: 0
     goals:
-    - position: {x: 3.2, y: -4.05}
-      band: -1
-      radius: 0.34
-      threshold: 0.55
+    - position: {x: -1.4, y: 3.6}
+      band: 6
+      radius: 0.28
+      threshold: 0.5
+    - position: {x: 1.0010124, y: -4.2}
+      band: 0
+      radius: 0.055
+      threshold: 0.2
+    - position: {x: 1.3234056, y: -4.2}
+      band: 4
+      radius: 0.055
+      threshold: 0.2
     walls:
-    - a: {x: 3.02, y: -2.7}
-      b: {x: 4.18, y: -2.7}
-    - a: {x: -2.38, y: 1.8}
-      b: {x: -1.22, y: 1.8}
-    - a: {x: -3.6, y: 2.12}
-      b: {x: -3.6, y: 3.28}
-    - a: {x: -1.8, y: -3.28}
-      b: {x: -1.8, y: -2.12}
-    - a: {x: -0.58, y: -3.6}
-      b: {x: 0.58, y: -3.6}
-    waterZones: []
-  campaignRevision: 2026-09-30-brick-obstacles-v1
+    - a: {x: -4.9, y: 2.05}
+      b: {x: -1.535, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: 1.465, y: 2.05}
+      b: {x: 4.9, y: 2.05}
+      thickness: 0.36
+      purpose: gate
+      cluster: 1
+    - a: {x: -4.9, y: 0.55}
+      b: {x: -1.535, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: 1.465, y: 0.55}
+      b: {x: 4.9, y: 0.55}
+      thickness: 0.36
+      purpose: gate
+      cluster: 2
+    - a: {x: -4.9, y: -0.8}
+      b: {x: -1.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: 1.8, y: -0.8}
+      b: {x: 4.9, y: -0.8}
+      thickness: 0.36
+      purpose: gate
+      cluster: 3
+    - a: {x: -4.9, y: -3.15}
+      b: {x: 1.35, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    - a: {x: 3.05, y: -3.15}
+      b: {x: 4.9, y: -3.15}
+      thickness: 0.36
+      purpose: gate
+      cluster: 4
+    waterZones:
+    - min: {x: -3.2, y: 3.9}
+      max: {x: -2.4, y: 4.2}
+      refractiveIndex: 1.333
+  campaignRevision: 2026-10-06-spatial-optics-v2

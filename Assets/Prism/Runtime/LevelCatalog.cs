@@ -195,8 +195,8 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
 
 public static class LevelCatalogLoader {
  const string ResourceName="LevelCatalog";
- // The packaged 2026-10-06 asset is intentionally invalidated until refreshed in Unity.
-  // This makes the improved deterministic wall layouts immediately playable.
+ // Changes to the physical wall curriculum require rebaking LevelCatalog.asset.
+  // Mismatched revisions safely fall back to the deterministic authoring code.
   public const string CampaignRevision="2026-10-10-spatial-optics-v3";
  public static Level[] Load(){
   var catalog=Resources.Load<LevelCatalog>(ResourceName);

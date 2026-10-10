@@ -168,6 +168,31 @@ class Program
         Check("wall blocks all target energy", !Optics.Solve(wallLevel,new Piece[0]).Complete);
         Check("beam stops on physical wall face",Math.Abs(Optics.Solve(wallLevel,new Piece[0]).Beams[0].B.X+.18)<1e-8);
         Check("wall placement includes physical half thickness",!PlacementRules.IsValid(wallLevel,new Piece[0],Kind.Mirror,new V(.45,0)));
+        var orientedWallLevel=new Level {
+            Source=new V(-4,-4), Direction=new V(1,0),
+            Goals=new[]{new Goal(new V(4,4),-1)},
+            Walls=new[]{new Wall(new V(0,-1.2),new V(0,1.2))}
+        };
+        Check("mirror end collides even when center clears wall",
+          !PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Mirror,new V(.72,0),angle:0));
+        Check("mirror may rotate to clear the same wall",
+          PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Mirror,new V(.72,0),angle:90));
+        Check("lens end collides but orthogonal orientation fits",
+          !PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Lens,new V(.8,0),angle:0)&&
+          PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Lens,new V(.8,0),angle:90));
+        Check("prism triangle footprint respects the wall",
+          !PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Prism,new V(.75,0),angle:180)&&
+          PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Prism,new V(.75,0),angle:0));
+        Check("sphere circumference blocks wall penetration",
+          !PlacementRules.IsValid(orientedWallLevel,new Piece[0],Kind.Sphere,new V(.70,0)));
+        Check("placement failure exposes wall reason",
+          PlacementRules.Check(orientedWallLevel,new Piece[0],Kind.Lens,new V(.8,0),angle:0)==PlacementFailure.Wall);
+        bool visualWallsInsideBoard=true;
+        foreach(var level in levels)foreach(var wall in level.Walls)
+          if(wall.Purpose=="shortcut occluder"&&
+             (Math.Abs(wall.A.X)>4.35||Math.Abs(wall.A.Y)>4.35||
+              Math.Abs(wall.B.X)>4.35||Math.Abs(wall.B.Y)>4.35))visualWallsInsideBoard=false;
+        Check("generated shortcut walls fit the readable board",visualWallsInsideBoard);
         double faceDistance;V faceNormal;
         var finite=new Wall(new V(0,-1),new V(0,1));
         Check("finite wall flat end blocks longitudinal ray",WallGeometry.Raycast(new V(0,-3),new V(0,1),finite,out faceDistance,out faceNormal)&&Math.Abs(faceDistance-2)<1e-8);

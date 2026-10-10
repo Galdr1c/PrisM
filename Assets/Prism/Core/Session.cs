@@ -52,7 +52,10 @@ public static class PlacementRules {
   if((position-level.Source).Length<clearance+.35)return PlacementFailure.Source;
   foreach(var goal in level.Goals)if((position-goal.Position).Length<clearance+goal.Radius)return PlacementFailure.Goal;
   foreach(var wall in level.Walls){
-   if(WallGeometry.Distance(position,wall)<clearance||PieceFootprint.OverlapsWall(kind,position,angle,wall))
+   if(WallGeometry.Distance(position,wall)<clearance||
+    // Existing mastery gate corridors were authored for center clearance only.
+    // Keep those solved layouts accessible until their geometry is re-authored.
+    (wall.Purpose!="gate"&&PieceFootprint.OverlapsWall(kind,position,angle,wall)))
     return PlacementFailure.Wall;
   }
   for(int i=0;i<pieces.Count;i++){

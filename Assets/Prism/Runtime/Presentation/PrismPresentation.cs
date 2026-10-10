@@ -104,8 +104,8 @@ public sealed class PrismPresentation : MonoBehaviour {
   IconButton(screen,"map",new Vector2(30,-31),new Vector2(0,1),ShowMap,"Bölümler");
   IconButton(screen,"pause",new Vector2(-30,-31),new Vector2(1,1),ShowPause,"Duraklat");
   levelTitle=Label(screen,"",15,PrismTheme.Ivory,new Vector2(0,-30),new Vector2(234,40),new Vector2(.5f,1),true);levelTitle.enableAutoSizing=true;levelTitle.fontSizeMin=12;levelTitle.fontSizeMax=15;
-  int goals=game.CurrentLevel.Goals.Length;float total=goals*13;
-  for(int i=0;i<goals;i++){var dot=Image(screen,"Hedef "+(i+1),Alpha(PrismTheme.Ivory,.25f));dot.sprite=Circle();At(dot.rectTransform,.5f,1,-total*.5f+i*13+6,-61,5,5);goalDots.Add(dot);}
+  int goals=game.CurrentLevel.Goals.Length;float total=goals*17;
+  for(int i=0;i<goals;i++){var dot=Image(screen,"Hedef "+(i+1),Alpha(PrismTheme.Ivory,.25f));dot.sprite=Circle();At(dot.rectTransform,.5f,1,-total*.5f+i*17+8,-61,8,8);goalDots.Add(dot);}
   goalStatus=Label(screen,"",9,PrismTheme.Muted,new Vector2(0,-78),new Vector2(180,16),new Vector2(.5f,1));
   var tray=Image(screen,"Parça tepsisi",Alpha(PrismTheme.Surface,.92f));tray.sprite=Rounded();tray.type=UnityEngine.UI.Image.Type.Sliced;At(tray.rectTransform,.5f,0,0,73,Mathf.Min(316,CountKinds()*50+20),68);tray.raycastTarget=true;trayRoot=tray.rectTransform;
   var kinds=new List<Kind>();foreach(var k in game.CurrentLevel.Stock)if(!kinds.Contains(k))kinds.Add(k);
@@ -186,11 +186,11 @@ public sealed class PrismPresentation : MonoBehaviour {
   var body=Sheet("hint","Bir ışık izi",290);
   string[] help={game.CurrentLevel.Hint,"Bölge işaretlendi. Şimdi parçanın yönünü keşfet.","Hayalet parçanın yönünü incele. Yerleşimini kendin deneyebilirsin."};
   var text=Label(body,help[Mathf.Clamp(hintStage,0,2)],14,PrismTheme.Ivory,new Vector2(0,179),new Vector2(298,66),new Vector2(.5f,0));text.textWrappingMode=TextWrappingModes.Normal;
-  Label(body,(hintStage+1)+" / 3 · Kendi ritminde keşfet",11,PrismTheme.Muted,new Vector2(0,126),new Vector2(300,24),new Vector2(.5f,0));
-  Primary(body,hintStage==0?"Bölgeyi göster":hintStage==1?"Yönü göster":"Yönü yeniden göster",new Vector2(0,77),RevealNextHint);
+  Label(body,Mathf.Min(3,hintStage+1)+" / 3 · Kendi ritminde keşfet",11,PrismTheme.Muted,new Vector2(0,126),new Vector2(300,24),new Vector2(.5f,0));
+  Primary(body,hintStage==0?"Bölgeyi göster":hintStage==1?"Parçayı göster":hintStage==2?"Tam açıyı göster":"Açıyı yeniden göster",new Vector2(0,77),RevealNextHint);
   TextButton(body,"Oyuna dön",new Vector2(0,24),new Vector2(290,44),ClearSheet);
  }
- public void RevealNextHint(){game.RequestHint(hintStage==0?1:3);hintStage=Mathf.Min(2,hintStage+1);ClearSheet();}
+ public void RevealNextHint(){hintStage=Mathf.Min(3,hintStage+1);game.RequestHint(hintStage);ClearSheet();}
  public void ShowSettings(){
   var body=Sheet("settings","Ayarlar",Mathf.Min(650,SafeHeight()-45));
   var scroll=Scroll(body,"Ayar satırları",new Vector2(18,15),new Vector2(-18,-76),false);var content=scroll.content;content.sizeDelta=new Vector2(0,898);float y=-15;
@@ -291,7 +291,7 @@ public sealed class PrismPresentation : MonoBehaviour {
   string[] labels={"Otomatik","Düşük","Orta","Yüksek"};
   for(int i=0;i<labels.Length;i++){
    var tier=(VisualQualityTier)i;bool chosen=VisualEnvironment.Requested==tier;
-   var row=TextButton(body,labels[i],new Vector2(0,y),new Vector2(296,48),()=>{VisualEnvironment.SetQuality(tier);ShowQuality();},new Vector2(.5f,1));
+   var row=TextButton(body,labels[i],new Vector2(0,y),new Vector2(296,48),()=>{game.SetVisualQuality(tier);ShowQuality();},new Vector2(.5f,1));
    if(chosen)Icon(row.transform,"check",new Vector2(119,0),24,PrismTheme.Accent);y-=52;
   }
   TextButton(body,"Ayarlara dön",new Vector2(0,34),new Vector2(280,48),ShowSettings);
@@ -301,7 +301,7 @@ public sealed class PrismPresentation : MonoBehaviour {
   // Sheet child is above the world dimmer: controls never darken this live preview.
   var previewRect=Rect("Canlı ışık önizlemesi",body);At(previewRect,.5f,1,0,-117,286,62);
   previewRect.gameObject.AddComponent<PrismBeamPreview>().raycastTarget=false;
-  Label(body,"Işık önizlemesi",12,PrismTheme.Muted,new Vector2(0,-161),new Vector2(286,26),new Vector2(.5f,1));
+  Label(body,"Temsili ışık önizlemesi",12,PrismTheme.Muted,new Vector2(0,-161),new Vector2(286,26),new Vector2(.5f,1));
   DiscreteRow(body,"Işın",new[]{"Yumuşak","Dengeli","Parlak"},new[]{.65f,1f,1.4f},VisualEnvironment.BeamScale,game.SetBeamIntensity,-203);
   DiscreteRow(body,"Parlama",new[]{"Kapalı","Dengeli","Güçlü"},new[]{0f,1f,1.5f},VisualEnvironment.BloomScale,game.SetBloomIntensity,-297);
   TextButton(body,"Ayarlara dön",new Vector2(0,34),new Vector2(280,48),ShowSettings);

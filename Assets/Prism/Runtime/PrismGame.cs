@@ -40,9 +40,9 @@ public class PrismGame : MonoBehaviour {
  void OnDisable(){Application.logMessageReceived-=OnAutomatedLog;CancelInteraction();if(backAction!=null){backAction.performed-=OnBackPerformed;backAction.Dispose();backAction=null;}}
  void OnAutomatedLog(string message,string stackTrace,LogType type){if(type==LogType.Exception||type==LogType.Error||type==LogType.Assert)Application.Quit(1);}
  V OffsetPointer(Vector2 screenPosition,float amount=1f)=>ScreenWorld(screenPosition+Vector2.up*(26f*Screen.width/360f*amount));
- void DrawVisual(IList<Piece> pieces,int selection=-1){
-  // Visual snapshots own their optical result; logical completion never reads this solve.
-  CurrentVisualPieces=pieces;CurrentVisualResult=Optics.Solve(session.Level,pieces);
+ void DrawVisual(IList<Piece> pieces,int selection=-1,IList<Piece> opticalPieces=null){
+  // Invalid tray ghosts never alter the simulated beam path.
+  CurrentVisualPieces=pieces;CurrentVisualResult=Optics.Solve(session.Level,opticalPieces??pieces);
   board.SetInteraction(selection,trayGhost!=null,false,0);
   board.Draw(session.Level,pieces,CurrentVisualResult,selection);
  }
@@ -96,10 +96,11 @@ public class PrismGame : MonoBehaviour {
  public void SetVisualQuality(VisualQualityTier tier){VisualEnvironment.SetQuality(tier);dirty=true;}
  public void SetBloomIntensity(float value){VisualEnvironment.SetBloomScale(value);}
 
+ static double DefaultPieceAngle(Kind kind)=>kind==Kind.Lens||kind==Kind.Prism?90:kind==Kind.Sphere?0:45;
  public void StartTrayDrag(Kind kind,Vector2 screenPosition){
   if(session.Remaining(kind)<=0||won||transitionBusy)return;
   trayKind=kind;armed=null;
-  double angle=kind==Kind.Lens||kind==Kind.Prism?90:kind==Kind.Sphere?0:45;
+  double angle=DefaultPieceAngle(kind);
   trayGhost=new Piece(kind,ScreenWorld(screenPosition),angle);
   UpdateTrayDrag(screenPosition);
  }
@@ -110,7 +111,7 @@ public class PrismGame : MonoBehaviour {
   var preview=new List<Piece>(session.Pieces){trayGhost};
   bool allowed=PlacementRules.IsValid(session.Level,session.Pieces,trayGhost.Kind,trayGhost.Position,angle:trayGhost.Angle);
   board.SetPlacementPreview(preview.Count-1,allowed);
-  board.SetPointerAnchor(ScreenWorld(screenPosition));DrawVisual(preview,preview.Count-1);dirty=false;
+  board.SetPointerAnchor(ScreenWorld(screenPosition));DrawVisual(preview,preview.Count-1,allowed?null:session.Pieces);dirty=false;
  }
  public void EndTrayDrag(Vector2 screenPosition){
   if(won||transitionBusy){CancelInteraction();return;}
@@ -412,11 +413,11 @@ public class PrismGame : MonoBehaviour {
 
   if(down&&onBoard&&!won){
    if(armed.HasValue){
-    if(session.Place(armed.Value,w)){
+    if(session.Place(armed.Value,w,DefaultPieceAngle(armed.Value))){
      selected=session.Pieces.Count-1;armed=null;board.SetPlacementPreview(-1,true);dirty=true;feedback?.Place();
     }else{
      feedback?.Invalid();
-     Notify(PlacementMessage(PlacementRules.Check(session.Level,session.Pieces,armed.Value,w)),danger);
+     Notify(PlacementMessage(PlacementRules.Check(session.Level,session.Pieces,armed.Value,w,angle:DefaultPieceAngle(armed.Value))),danger);
     }
     return;
    }

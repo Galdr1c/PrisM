@@ -168,7 +168,8 @@ public static class Levels {
           Math.Max(Math.Abs(candidate.A.Y),Math.Abs(candidate.B.Y))>4.35)clear=false;
        if(!WallGeometry.Blocks(candidate,a,b))clear=false;
        foreach(var receiver in level.Goals)if(WallGeometry.Distance(receiver.Position,candidate)<receiver.Radius+.15)clear=false;
-       foreach(var piece in level.Solution)if(WallGeometry.Distance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.10)clear=false;
+       foreach(var piece in level.Solution)if(WallGeometry.Distance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.10||
+          PieceFootprint.OverlapsWall(piece.Kind,piece.Position,piece.Angle,candidate))clear=false;
        foreach(var wall in walls)if(SegmentDistance(candidate,wall)<.4)clear=false;
        if(!clear)continue;
        walls.Add(candidate);level.Walls=walls.ToArray();
@@ -190,7 +191,7 @@ public static class Levels {
  static void ValidateKnownSolution(Level level){
   var session=new Session(level);
   foreach(var piece in level.Solution){
-   if(!session.Place(piece.Kind,piece.Position,piece.Angle))throw new InvalidOperationException("Spatial geometry blocks placement: "+level.Id);
+   if(!session.Place(piece.Kind,piece.Position,piece.Angle))throw new InvalidOperationException("Spatial geometry blocks placement: "+level.Id+" "+piece.Kind+" at "+piece.Position.X+","+piece.Position.Y+" angle="+piece.Angle+" ("+PlacementRules.Check(level,session.Pieces,piece.Kind,piece.Position,angle:piece.Angle)+")");
    session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
   }
   var solved=Optics.Solve(level,session.Pieces);

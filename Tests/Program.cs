@@ -156,7 +156,7 @@ class Program
         foreach(var level in levels) {
             var placementSession=new Session(level);
             foreach(var piece in level.Solution) {
-                if(!placementSession.Place(piece.Kind,piece.Position)){solutionsRespectPlacement=false;break;}
+                if(!placementSession.Place(piece.Kind,piece.Position,piece.Angle)){solutionsRespectPlacement=false;break;}
                 placementSession.Pieces[placementSession.Pieces.Count-1].Angle=piece.Angle;
             }
             if(!solutionsRespectPlacement)break;

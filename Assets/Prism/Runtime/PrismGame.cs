@@ -46,7 +46,17 @@ public class PrismGame : MonoBehaviour {
   board.SetInteraction(selection,trayGhost!=null,false,0);
   board.Draw(session.Level,pieces,CurrentVisualResult,selection);
  }
- int invalidPlacementCount;
+ PlacementFailure lastDragFailure=PlacementFailure.None;
+ static string PlacementMessage(PlacementFailure failure){
+  switch(failure){
+   case PlacementFailure.OutsideBoard:return "Oyun alanının dışında.";
+   case PlacementFailure.Source:return "Işık kaynağına çok yakın.";
+   case PlacementFailure.Goal:return "Hedefin üzerine yerleştirilemez.";
+   case PlacementFailure.Wall:return "Duvarla çakışıyor. Biraz uzaklaştır.";
+   case PlacementFailure.Piece:return "Başka bir optik parçayla çakışıyor.";
+   default:return "Bu konuma yerleştirilemez.";
+  }
+ }
  readonly List<UnityEngine.EventSystems.RaycastResult> uiHits=new List<UnityEngine.EventSystems.RaycastResult>();
 
  public Level[] CampaignLevels=>levels;
@@ -68,7 +78,7 @@ public class PrismGame : MonoBehaviour {
  public void CancelInteraction(){
   if(transitionBusy&&visualTransition!=null){StopCoroutine(visualTransition);visualTransition=null;transitionBusy=false;}
   if(dragging||rotating)session?.EndEdit();
-  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;board?.SetPointerAnchor(null);presentation?.CancelTrayGesture();dirty=true;
+  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;lastDragFailure=PlacementFailure.None;board?.SetPlacementPreview(-1,true);board?.SetPointerAnchor(null);presentation?.CancelTrayGesture();dirty=true;
  }
 
  public void ContinueGame(){presentation.ShowGameplay();}
@@ -83,6 +93,7 @@ public class PrismGame : MonoBehaviour {
  public void SetColorSymbols(bool value){VisualEnvironment.SetColorSymbols(value);dirty=true;}
  public void SetPrecisionMode(bool value){VisualEnvironment.SetPrecisionMode(value);}
  public void SetBeamIntensity(float value){VisualEnvironment.SetBeamScale(value);dirty=true;}
+ public void SetVisualQuality(VisualQualityTier tier){VisualEnvironment.SetQuality(tier);dirty=true;}
  public void SetBloomIntensity(float value){VisualEnvironment.SetBloomScale(value);}
 
  public void StartTrayDrag(Kind kind,Vector2 screenPosition){
@@ -97,16 +108,21 @@ public class PrismGame : MonoBehaviour {
   if(trayGhost==null)return;
   trayGhost.Position=OffsetPointer(screenPosition);
   var preview=new List<Piece>(session.Pieces){trayGhost};
+  bool allowed=PlacementRules.IsValid(session.Level,session.Pieces,trayGhost.Kind,trayGhost.Position,angle:trayGhost.Angle);
+  board.SetPlacementPreview(preview.Count-1,allowed);
   board.SetPointerAnchor(ScreenWorld(screenPosition));DrawVisual(preview,preview.Count-1);dirty=false;
  }
  public void EndTrayDrag(Vector2 screenPosition){
   if(won||transitionBusy){CancelInteraction();return;}
   if(trayGhost==null)return;
   var ghost=trayGhost;ghost.Position=OffsetPointer(screenPosition);
-  if(session.Place(ghost.Kind,ghost.Position)){
-   selected=session.Pieces.Count-1;session.Pieces[selected].Angle=ghost.Angle;feedback?.Place(ghost.Kind);
-  }else feedback?.Invalid();
-  trayGhost=null;trayKind=null;board.SetPointerAnchor(null);dirty=true;
+  if(session.Place(ghost.Kind,ghost.Position,ghost.Angle)){
+   selected=session.Pieces.Count-1;feedback?.Place(ghost.Kind);
+  }else{
+   feedback?.Invalid();
+   Notify(PlacementMessage(PlacementRules.Check(session.Level,session.Pieces,ghost.Kind,ghost.Position,angle:ghost.Angle)),danger);
+  }
+  trayGhost=null;trayKind=null;board.SetPlacementPreview(-1,true);board.SetPointerAnchor(null);dirty=true;
  }
  public void UndoAction(){if(!transitionBusy&&!won){CancelInteraction();visualTransition=StartCoroutine(AnimateUndo());}}
  public void RestartLevel(){if(!transitionBusy){CancelInteraction();visualTransition=StartCoroutine(AnimateReset());}}
@@ -255,9 +271,13 @@ public class PrismGame : MonoBehaviour {
  void Layout(){
   Rect safe=Screen.safeArea;
   if(safe.width<1||safe.height<1)safe=new Rect(0,0,Screen.width,Screen.height);
-  float boardPixels=Mathf.Min(safe.width*.96f,safe.height*.76f);
+  // Reserve top HUD and bottom tray/rotation controls, including short displays.
+  float uiScale=safe.width/360f;
+  float bottomReserve=195f*uiScale,topReserve=112f*uiScale;
+  float availableHeight=Mathf.Max(125f,safe.height-bottomReserve-topReserve);
+  float boardPixels=Mathf.Min(safe.width*.96f,availableHeight);
   float pixelsPerUnit=boardPixels/10f;
-  Vector2 center=new Vector2(safe.center.x,safe.yMin+safe.height*.53f);
+  Vector2 center=new Vector2(safe.center.x,safe.yMin+bottomReserve+availableHeight*.5f);
   cam.orthographicSize=Screen.height/(pixelsPerUnit*2f);
   if(won&&!VisualEnvironment.ReducedMotion)cam.orthographicSize*=1f+.035f*Mathf.SmoothStep(0,1,(Time.unscaledTime-winShownAt)/.7f);
   cam.transform.position=new Vector3((Screen.width*.5f-center.x)/pixelsPerUnit,(Screen.height*.5f-center.y)/pixelsPerUnit,-10f);
@@ -391,14 +411,16 @@ public class PrismGame : MonoBehaviour {
   if(down&&onBoard&&!won){
    if(armed.HasValue){
     if(session.Place(armed.Value,w)){
-     selected=session.Pieces.Count-1;armed=null;dirty=true;feedback?.Place();
+     selected=session.Pieces.Count-1;armed=null;board.SetPlacementPreview(-1,true);dirty=true;feedback?.Place();
     }else{
-     feedback?.Invalid();if(invalidPlacementCount++<3)Notify("Buraya yerleşemez",danger);
+     feedback?.Invalid();
+     Notify(PlacementMessage(PlacementRules.Check(session.Level,session.Pieces,armed.Value,w)),danger);
     }
     return;
    }
 
-   if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&(w-session.Pieces[selected].Position).Length>.8&&(w-session.Pieces[selected].Position).Length<1.25){
+   if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&
+    (w-(session.Pieces[selected].Position+V.Angle(session.Pieces[selected].Angle)*PieceInfo.SelectionRadius(session.Pieces[selected].Kind))).Length<.29){
     rotating=true;dragging=false;startAngle=session.Pieces[selected].Angle;startDirection=w-session.Pieces[selected].Position;session.BeginEdit();
    }else{
     selected=-1;
@@ -425,14 +447,21 @@ public class PrismGame : MonoBehaviour {
     float clearance=Mathf.Clamp01((Time.unscaledTime-dragStarted-.12f)/.12f);
     V proposed=OffsetPointer(raw,clearance)+new V(dragOffset.x,dragOffset.y);
     proposed=new V(Math.Max(-4.25,Math.Min(4.25,proposed.X)),Math.Max(-4.25,Math.Min(4.25,proposed.Y)));
-    if(PlacementRules.IsValid(session.Level,session.Pieces,piece.Kind,proposed,selected)){piece.Position=proposed;dirty=true;}
+    lastDragFailure=PlacementRules.Check(session.Level,session.Pieces,piece.Kind,proposed,selected,piece.Angle);
+    board.SetPlacementPreview(selected,lastDragFailure==PlacementFailure.None);
+    if(lastDragFailure==PlacementFailure.None)piece.Position=proposed;
    }
    if(rotating&&PieceInfo.CanRotate(piece.Kind)){
     V dir=w-piece.Position;
     double before=piece.Angle;
     double rotation=(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI;
-    piece.Angle=Normalize(startAngle+rotation*(VisualEnvironment.PrecisionMode ? .35 : 1));
-    if((int)(before/15)!=(int)(piece.Angle/15))feedback?.Rotate();
+    double proposed=Normalize(startAngle+rotation*(VisualEnvironment.PrecisionMode ? .35 : 1));
+    lastDragFailure=PlacementRules.Check(session.Level,session.Pieces,piece.Kind,piece.Position,selected,proposed);
+    board.SetPlacementPreview(selected,lastDragFailure==PlacementFailure.None);
+    if(lastDragFailure==PlacementFailure.None){
+     piece.Angle=proposed;
+     if((int)(before/15)!=(int)(piece.Angle/15))feedback?.Rotate();
+    }
     dirty=true;
    }
   }
@@ -442,7 +471,8 @@ public class PrismGame : MonoBehaviour {
    session.EndEdit();
    if(changedAngle)feedback?.Rotate();
    else feedback?.Click();
-   dragging=rotating=false;board.SetPointerAnchor(null);dirty=true;
+   if(lastDragFailure!=PlacementFailure.None)Notify(PlacementMessage(lastDragFailure),danger);
+   lastDragFailure=PlacementFailure.None;dragging=rotating=false;board.SetPlacementPreview(-1,true);board.SetPointerAnchor(null);dirty=true;
   }
  }
 
@@ -474,7 +504,11 @@ public class PrismGame : MonoBehaviour {
 
  void Rotate(double degrees){
   if(selected<0||won||transitionBusy||!PieceInfo.CanRotate(session.Pieces[selected].Kind))return;
-  session.BeginEdit();session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+degrees);session.EndEdit();dirty=true;feedback?.Rotate();
+  var piece=session.Pieces[selected];
+  double proposed=Normalize(piece.Angle+degrees);
+  var failure=PlacementRules.Check(session.Level,session.Pieces,piece.Kind,piece.Position,selected,proposed);
+  if(failure!=PlacementFailure.None){Notify(PlacementMessage(failure),danger);feedback?.Invalid();return;}
+  session.BeginEdit();piece.Angle=proposed;session.EndEdit();dirty=true;feedback?.Rotate();
  }
 
  IEnumerator StoreCapture(){

@@ -166,7 +166,7 @@ public sealed class LevelCatalog : ScriptableObject {
    }
    var placement=new Session(runtime);
    foreach(var piece in runtime.Solution){
-    if(!placement.Place(piece.Kind,piece.Position)){message="Level "+definition.Id+" known solution cannot be placed.";return false;}
+    if(!placement.Place(piece.Kind,piece.Position,piece.Angle)){message="Level "+definition.Id+" known solution cannot be placed.";return false;}
     placement.Pieces[placement.Pieces.Count-1].Angle=piece.Angle;
    }
    var initialResult=Optics.Solve(runtime,runtime.Initial);

@@ -166,7 +166,7 @@ public sealed class LevelCatalog : ScriptableObject {
    }
    var placement=new Session(runtime);
    foreach(var piece in runtime.Solution){
-    if(!placement.Place(piece.Kind,piece.Position)){message="Level "+definition.Id+" known solution cannot be placed.";return false;}
+    if(!placement.Place(piece.Kind,piece.Position,piece.Angle)){message="Level "+definition.Id+" known solution cannot be placed.";return false;}
     placement.Pieces[placement.Pieces.Count-1].Angle=piece.Angle;
    }
    var initialResult=Optics.Solve(runtime,runtime.Initial);
@@ -195,7 +195,9 @@ public sealed class ScriptableObjectLevelProvider : ILevelProvider {
 
 public static class LevelCatalogLoader {
  const string ResourceName="LevelCatalog";
- public const string CampaignRevision="2026-10-06-spatial-optics-v2";
+ // Changes to the physical wall curriculum require rebaking LevelCatalog.asset.
+  // Mismatched revisions safely fall back to the deterministic authoring code.
+  public const string CampaignRevision="2026-10-10-spatial-optics-v3";
  public static Level[] Load(){
   var catalog=Resources.Load<LevelCatalog>(ResourceName);
   return new ScriptableObjectLevelProvider(catalog).Load();

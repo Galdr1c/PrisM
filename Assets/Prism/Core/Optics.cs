@@ -63,6 +63,9 @@ public class Level { public string Id="",Name="",Lesson="",Hint="",Chapter=""; p
 public struct Beam { public V A,B; public int Band; public double Power; public Beam(V a,V b,int band,double p){A=a;B=b;Band=band;Power=p;} }
 public class Result { public List<Beam> Beams=new List<Beam>(512); public double[] Energy=Array.Empty<double>(); public bool Complete,Truncated; public int ActivePieceCount; internal bool[] ActivePieces=Array.Empty<bool>(); }
 public static class Optics {
+ // Integration samples are not independent full-brightness lights.
+ public const int SourceSamples=13;
+ public const int SpectralBands=7;
  public static V Reflect(V d,V n)=>(d-n*(2*V.Dot(d,n))).Unit;
  public static bool Refract(V d,V n,double from,double to,out V r){
   if(V.Dot(d,n)>0)n=-n;
@@ -85,9 +88,8 @@ public static class Optics {
   if(result.Energy==null||result.Energy.Length!=level.Goals.Length)result.Energy=new double[level.Goals.Length];else Array.Clear(result.Energy,0,result.Energy.Length);
   if(result.ActivePieces==null||result.ActivePieces.Length<pieces.Count)result.ActivePieces=new bool[pieces.Count];else Array.Clear(result.ActivePieces,0,result.ActivePieces.Length);
   result.Complete=false;result.Truncated=false;result.ActivePieceCount=0;
-  const int samples=13;
-  for(int band=0;band<7;band++)for(int sample=0;sample<samples;sample++){
-   V d=level.Direction.Unit,o=level.Source+d.Perp*((sample/(double)(samples-1)-0.5)*level.Width);double power=1.0/samples;
+  for(int band=0;band<SpectralBands;band++)for(int sample=0;sample<SourceSamples;sample++){
+   V d=level.Direction.Unit,o=level.Source+d.Perp*((sample/(double)(SourceSamples-1)-0.5)*level.Width);double power=1.0/SourceSamples;
    for(int bounce=0;bounce<24;bounce++){
     double nearest=30; V normal=new V();Piece hit=null;int hitIndex=-1,goal=-1;bool wall=false;WaterZone? hitZone=null;
     foreach(var w in level.Walls){double t;V n;if(WallGeometry.Raycast(o,d,w,out t,out n)&&t<nearest){nearest=t;normal=n;wall=true;hitZone=null;hit=null;hitIndex=-1;}}

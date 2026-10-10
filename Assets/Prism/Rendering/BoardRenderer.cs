@@ -36,6 +36,9 @@ public class BoardRenderer : MonoBehaviour {
  struct WallImpact {public V Position;public Color Color;public float Power;}
  readonly List<WallImpact> wallImpacts=new List<WallImpact>(8);
  V? pointerAnchor;
+ int previewIndex=-1;
+ bool previewAllowed=true;
+ public void SetPlacementPreview(int index,bool allowed){previewIndex=index;previewAllowed=allowed;}
  public void SetPointerAnchor(V? anchor){pointerAnchor=anchor;}
  public void SetInteraction(int selected,bool dragging,bool rotating,float liftWorld){interactionSelected=selected;this.dragging=dragging;this.rotating=rotating;this.liftWorld=Mathf.Clamp(liftWorld,0,.8f);}
  public void ShowHint(int stage,Level level,IList<Piece> pieces){
@@ -80,7 +83,7 @@ public class BoardRenderer : MonoBehaviour {
   if(waterMaterial!=null)waterMaterial.SetColor("_Tint",new Color(.11f,.31f,.44f,.22f));
   if(beamMaterial!=null){
    float brightness=Mathf.Lerp(.8f,1.2f,Mathf.InverseLerp(.5f,1.5f,VisualEnvironment.BeamScale));
-   beamMaterial.SetFloat("_Intensity",(tier==VisualQualityTier.Low?2.1f:tier==VisualQualityTier.High?2.65f:2.4f)*brightness);
+   beamMaterial.SetFloat("_Intensity",(tier==VisualQualityTier.Low?1.25f:tier==VisualQualityTier.High?1.65f:1.5f)*brightness);
    beamMaterial.SetFloat("_Celebration",VisualEnvironment.ReducedMotion?0:celebration);
    var center=selected>=0&&selected<pieces.Count?pieces[selected].Position:new V();
    beamMaterial.SetVector("_SelectedPosition",new Vector4((float)center.X,(float)center.Y,0,selected>=0&&selected<pieces.Count?1:0));
@@ -95,25 +98,45 @@ public class BoardRenderer : MonoBehaviour {
   int visibleBeams=Mathf.CeilToInt(result.Beams.Count*Mathf.Clamp01(SolutionReveal)),beamIndex=0;
   foreach(var beam in result.Beams){
    if(beamIndex++>=visibleBeams)break;
-   Color c=Spectrum[beam.Band];float strength=Mathf.Clamp01((float)beam.Power*13f);
-   double length=(beam.B-beam.A).Length;
-   Color halo=c;halo.a=.045f*strength;beamBuffer.BeamCone(beam.A,beam.B,.14*VisualEnvironment.BeamScale,(.18+System.Math.Min(.20,length*.045))*VisualEnvironment.BeamScale,halo);
-   Color body=c;body.a=.21f*strength;beamBuffer.BeamCone(beam.A,beam.B,.055*VisualEnvironment.BeamScale,(.07+System.Math.Min(.10,length*.018))*VisualEnvironment.BeamScale,body);
-   Color core=c;core.a=.42f*strength;beamBuffer.BeamLine(beam.A,beam.B,.018*VisualEnvironment.BeamScale,core);
-   Color cap=c;cap.a=.065f*strength;beamBuffer.RadialDisc(beam.A,.065,cap,12);beamBuffer.RadialDisc(beam.B,.065,cap,12);
+   // Seven spectral channels and thirteen integration lanes share ONE emitter's energy.
+   // Do not normalize every lane back to full brightness: additive overlap washes out colors.
+   Color c=Spectrum[beam.Band];
+   float strength=Mathf.Clamp01((float)beam.Power*Optics.SourceSamples/Optics.SpectralBands);
+   if((beam.B-beam.A).Length<.0005)continue;
+   float width=VisualEnvironment.BeamScale;
+   Color halo=c;halo.a=.07f*strength;beamBuffer.BeamCone(beam.A,beam.B,.15*width,.15*width,halo);
+   Color body=c;body.a=.28f*strength;beamBuffer.BeamCone(beam.A,beam.B,.06*width,.06*width,body);
+   Color core=c;core.a=.50f*strength;beamBuffer.BeamLine(beam.A,beam.B,.016*width,core);
   }
   foreach(var wall in level.Walls)DrawObsidianWall(wall,result);
   if(pointerAnchor.HasValue&&selected>=0&&selected<pieces.Count){
    foregroundBuffer.Ring(pointerAnchor.Value,.12,.018,new Color(.64f,.57f,.81f,.55f));
    foregroundBuffer.Line(pointerAnchor.Value,pieces[selected].Position,.014,new Color(.64f,.57f,.81f,.30f));
   }
-  Color white=new Color(.91f,.98f,1);V dir=level.Direction.Unit;
-  Color sourceGlow=white;sourceGlow.a=.09f;beamBuffer.RadialDisc(level.Source,.50,sourceGlow);
-  foregroundBuffer.Disc(level.Source+new V(.022,-.028),.34,new Color(.065f,.06f,.10f));
-  foregroundBuffer.Disc(level.Source,.31,new Color(.16f,.15f,.22f));foregroundBuffer.Arc(level.Source,.30,.025,35,220,new Color(.56f,.53f,.66f));
-  foregroundBuffer.Disc(level.Source,.235,new Color(.04f,.04f,.085f));foregroundBuffer.Ring(level.Source,.22,.025,new Color(.45f,.78f,.84f));
-  foregroundBuffer.Disc(level.Source,.15,new Color(.86f,.93f,.94f));foregroundBuffer.Disc(level.Source-dir*.035+new V(-.025,.04),.055,white);
-  foregroundBuffer.Line(level.Source+dir*.17,level.Source+dir*.34,.14,new Color(.33f,.40f,.47f));foregroundBuffer.Line(level.Source+dir*.18,level.Source+dir*.35,.05,white);
+  Color white=new Color(.91f,.98f,1);V dir=level.Direction.Unit,side=dir.Perp;
+  // level.Source is the leading optical aperture, not the center of a circular lamp.
+  // Wide lens lessons require an equally wide slit emitter, never a large beam from a tiny disc.
+  double aperture=System.Math.Max(.08,level.Width);
+  V bodyCenter=level.Source-dir*.37;
+  if(aperture>.54){
+   double half=aperture*.5+.10;
+   V back=bodyCenter-dir*.22;
+   foregroundBuffer.Quad(back-side*half,back+side*half,level.Source+side*half,level.Source-side*half,new Color(.16f,.15f,.22f));
+   foregroundBuffer.Line(back-side*half,back+side*half,.05,new Color(.45f,.45f,.58f));
+   foregroundBuffer.Line(level.Source-side*(aperture*.5),level.Source+side*(aperture*.5),.075,white);
+   foregroundBuffer.Line(level.Source-side*half,level.Source-side*half-dir*.42,.038,new Color(.48f,.58f,.65f));
+   foregroundBuffer.Line(level.Source+side*half,level.Source+side*half-dir*.42,.038,new Color(.48f,.58f,.65f));
+  }else{
+   foregroundBuffer.Disc(bodyCenter+new V(.022,-.028),.34,new Color(.065f,.06f,.10f));
+   foregroundBuffer.Disc(bodyCenter,.31,new Color(.16f,.15f,.22f));
+   foregroundBuffer.Arc(bodyCenter,.30,.025,35,220,new Color(.56f,.53f,.66f));
+   foregroundBuffer.Disc(bodyCenter,.235,new Color(.04f,.04f,.085f));
+   foregroundBuffer.Ring(bodyCenter,.22,.025,new Color(.45f,.78f,.84f));
+   foregroundBuffer.Disc(bodyCenter,.15,new Color(.86f,.93f,.94f));
+   foregroundBuffer.Line(bodyCenter+dir*.18,level.Source,.12,new Color(.33f,.40f,.47f));
+   foregroundBuffer.Line(level.Source-side*(aperture*.5),level.Source+side*(aperture*.5),.065,white);
+  }
+  Color sourceGlow=white;sourceGlow.a=.026f;beamBuffer.RadialDisc(level.Source,.19,sourceGlow);
   for(int i=0;i<level.Goals.Length;i++){var g=level.Goals[i];Color c=g.Band<0?white:Spectrum[g.Band];float energy=Mathf.Clamp01((float)(result.Energy[i]/g.Threshold));Color glow=c;glow.a=.025f+energy*.085f;beamBuffer.RadialDisc(g.Position,g.Radius+.26,glow);if(energy>=.999f){Color achieved=c;achieved.a=.065f;beamBuffer.RadialDisc(g.Position,g.Radius+.50,achieved);}ReceiverBase(g.Position,g.Radius+.09);foregroundBuffer.Disc(g.Position,g.Radius,new Color(.04f,.075f,.10f));Color dim=c;dim.a=.52f;
    float pulse=energy>=.7f&&energy<.999f&&!VisualEnvironment.ReducedMotion?2f:0;
    for(int k=0;k<8;k++){Color segment=dim;segment.a=energy>=1||energy>=.30f&&k<Mathf.CeilToInt(energy*8)? .55f+energy*.35f:.22f;foregroundBuffer.Arc(g.Position,g.Radius,.045,k*45+4,36,segment,pulse);}
@@ -132,6 +155,10 @@ public class BoardRenderer : MonoBehaviour {
    else if(p.Kind==Kind.Sphere){Mount(baseBuffer,p.Position,.62);glassBuffer.GlassDisc(p.Position,.55,new Color(.74f,.91f,1,.9f));foregroundBuffer.Ring(p.Position,.55,.026,white);foregroundBuffer.Arc(p.Position,.43,.026,70,90,new Color(.65f,.86f,1,.6f));foregroundBuffer.Disc(p.Position+new V(-.17,.19),.06,new Color(1,1,1,.65f));}
    else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);V a=p.Position+axis*(t*.9)+side*w,b=p.Position+axis*(t*.9)-side*w,c1=p.Position+axis*(t2*.9)-side*w2,d=p.Position+axis*(t2*.9)+side*w2;Color lens=new Color(.8f,.94f,1,.75f);Vector2 ua=new Vector2((float)(t+1)*.5f,.5f+(float)w/.36f),ub=new Vector2(ua.x,.5f-(float)w/.36f),uc=new Vector2((float)(t2+1)*.5f,.5f-(float)w2/.36f),ud=new Vector2(uc.x,.5f+(float)w2/.36f);glassBuffer.Tri(a,b,c1,lens,ua,ub,uc,0);glassBuffer.Tri(a,c1,d,lens,ua,uc,ud,0);foregroundBuffer.Line(a,d,.022,white);foregroundBuffer.Line(b,c1,.022,white);}for(int end=-1;end<=1;end+=2){V socket=p.Position+axis*(end*.9);foregroundBuffer.Disc(socket,.095,new Color(.17f,.27f,.34f));foregroundBuffer.Ring(socket,.09,.014,new Color(.46f,.59f,.63f));foregroundBuffer.Disc(socket,.025,new Color(.77f,.65f,.43f));}}
    else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;foregroundBuffer.Line(a+side*.025,b+side*.025,.20,new Color(.08f,.14f,.19f));foregroundBuffer.Disc(a,.10,new Color(.18f,.27f,.33f));foregroundBuffer.Disc(b,.10,new Color(.18f,.27f,.33f));foregroundBuffer.Line(a,b,.095,new Color(.29f,.43f,.51f));foregroundBuffer.Line(a+side*.035,b+side*.035,.036,c);foregroundBuffer.Disc(a,.032,new Color(.76f,.65f,.43f));foregroundBuffer.Disc(b,.032,new Color(.76f,.65f,.43f));}
+   if(i==previewIndex&&!previewAllowed){
+    foregroundBuffer.Ring(p.Position,PieceInfo.SelectionRadius(p.Kind),.035,new Color(1f,.37f,.43f,.94f));
+    foregroundBuffer.Line(p.Position+new V(-.14,-.14),p.Position+new V(.14,.14),.027,new Color(1f,.37f,.43f));
+   }
    if(i==selected){double radius=PieceInfo.SelectionRadius(p.Kind);Color selection=new Color(.79f,.68f,1,VisualEnvironment.HighContrast?1:.9f);
     foregroundBuffer.Arc(p.Position,radius,.028,p.Angle-65,130,selection);
     for(int tick=-1;tick<=1;tick++){V tickAxis=V.Angle(p.Angle+tick*45);foregroundBuffer.Line(p.Position+tickAxis*(radius-.04),p.Position+tickAxis*(radius+.05),.018,selection);}

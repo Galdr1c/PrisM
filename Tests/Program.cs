@@ -6,8 +6,19 @@ class Program
 {
     static int failures;
     static void Check(string name, bool ok) { Console.WriteLine((ok ? "PASS " : "FAIL ") + name); if (!ok) failures++; }
-    static void Main()
+    static void Main(string[] args)
     {
+        if(args.Length>0&&args[0]=="--emit-catalog"){
+            string root=Directory.GetCurrentDirectory();
+            if(!Directory.Exists(Path.Combine(root,"Assets")))root=Path.GetFullPath(Path.Combine(AppContext.BaseDirectory,"../../../.."));
+            string path=Path.Combine(root,"Assets","Prism","Resources","LevelCatalog.asset");
+            string output=CatalogExporter.Rebuild(File.ReadAllText(path),Levels.Create(),"2026-10-10-spatial-optics-v3");
+            Console.WriteLine("CATALOG_EXPORT_BEGIN");
+            for(int i=0;i<output.Length;i+=2500)
+                Console.WriteLine("CATALOG_CHUNK "+System.Text.Json.JsonSerializer.Serialize(output.Substring(i,Math.Min(2500,output.Length-i))));
+            Console.WriteLine("CATALOG_EXPORT_END");
+            return;
+        }
         Check("mirror sends rightward beam upward", (Optics.Reflect(new V(1,0), new V(-1,1).Unit) - new V(0,1)).Length < 0.0001);
         V refracted;
         Check("normal-incidence refraction preserves direction", Optics.Refract(new V(1,0),new V(-1,0),1,1.5,out refracted) && (refracted-new V(1,0)).Length<0.0001);
@@ -67,7 +78,9 @@ class Program
         string bakedPath=Path.Combine(repoRoot,"Assets","Prism","Resources","LevelCatalog.asset");
         string baked=File.Exists(bakedPath)?File.ReadAllText(bakedPath):"";
         int bakedCount=System.Text.RegularExpressions.Regex.Matches(baked,@"(?m)^  - id: ").Count;
-        Check("build includes versioned one hundred level catalog",bakedCount==100&&baked.Contains("campaignRevision: 2026-10-06-spatial-optics-v2"));
+        Check("build includes versioned one hundred level catalog",bakedCount==100&&baked.Contains("campaignRevision: 2026-10-10-spatial-optics-v3"));
+        Check("baked catalog walls match deterministic generator",
+            baked.Length>0&&CatalogExporter.Rebuild(baked,levels,"2026-10-10-spatial-optics-v3")==baked);
         var ids=new HashSet<string>();
         bool validIds=true;
         foreach(var level in levels){if(string.IsNullOrWhiteSpace(level.Id)||!ids.Add(level.Id))validIds=false;}

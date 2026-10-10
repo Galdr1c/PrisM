@@ -23,3 +23,11 @@ Water in these rooms is intentionally normal-incidence reinforcement; it does no
 The core test harness checks physical face hits, diagonal walls, flat end caps, rectangle corner distance, thickness-aware placement, zero raycast allocation, all 100 known solutions and placement/gameplay rules, wall removal witnesses, mixed late inventories and ablation of every late optic (without the inventory completion rule). Authoring catalog validation also checks placement, witnesses and optical solutions. Runtime checks structural catalog integrity and revision, then loads baked definitions without rerunning 100 optical solutions or procedural authoring. Development fallback generation remains available when the resource is absent or mismatched.
 
 Measured on the desktop .NET harness: generation ~724 ms; chapter 8 mean optical solve ~2.02 ms. Meaningful segment totals by chapter: 9, 10, 10, 0, 10, 10, 20, 30, 60, 80. Chapter 4 remains an open focus lesson rather than adding nonfunctional geometry. These figures are not Android benchmarks.
+
+## 2026-10-10 — emission, placements and wall authoring (v3)
+
+The first 80 levels now choose shorter, middle-of-board shortcut occluders before long barriers near edges. Candidate generation rejects visible-board overflow and actual overlap with the rotated footprints of known solution pieces. The shipped `LevelCatalog.asset` has been rebaked by `Tests/CatalogExporter.cs` from the deterministic `Levels.Create()` result (revision `2026-10-10-spatial-optics-v3`). Run the core suite after changing geometry; it checks catalog parity and all 100 known solutions.
+
+Mirrors, prisms, lenses and spheres now use their rendered geometry for collision against free-standing barriers. Legacy mastery gate rooms retain their earlier center-clearance exception to avoid invalidating their tightly packed authored solutions; redesigning those gate corridors with fully physical optic clearances remains a separate authoring task.
+
+The source's solver coordinate is now visually the forward slit aperture. Wide focus sources have a correspondingly wide housing, while ray glow is attenuated by the seven spectral bands instead of incorrectly brightening each sample to full power. The optical solver's gameplay energy remains unchanged.

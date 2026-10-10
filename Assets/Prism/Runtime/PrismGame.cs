@@ -398,7 +398,9 @@ public class PrismGame : MonoBehaviour {
    raw=m.position.ReadValue();down=m.leftButton.wasPressedThisFrame;held=m.leftButton.isPressed;up=m.leftButton.wasReleasedThisFrame;
    if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&Math.Abs(m.scroll.ReadValue().y)>.01f&&!won){
     session.BeginEdit();
-    session.Pieces[selected].Angle=Normalize(session.Pieces[selected].Angle+Math.Sign(m.scroll.ReadValue().y));
+    double newAngle=Normalize(session.Pieces[selected].Angle+Math.Sign(m.scroll.ReadValue().y));
+     if(PlacementRules.IsValid(session.Level,session.Pieces,session.Pieces[selected].Kind,session.Pieces[selected].Position,selected,newAngle))
+      session.Pieces[selected].Angle=newAngle;
     session.EndEdit();dirty=true;feedback?.Rotate();
    }
   }else return;
@@ -654,7 +656,7 @@ public class PrismGame : MonoBehaviour {
   for(int i=0;i<levels.Length;i++){
    Load(i,true);
    foreach(var piece in levels[i].Solution){
-    bool placed=session.Place(piece.Kind,piece.Position);
+    bool placed=session.Place(piece.Kind,piece.Position,piece.Angle);
     if(!placed)throw new Exception("Inventory/placement failure in level "+(i+1));
     session.BeginEdit();session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;session.EndEdit();
    }

@@ -397,11 +397,11 @@ public class PrismGame : MonoBehaviour {
    var m=Mouse.current;
    raw=m.position.ReadValue();down=m.leftButton.wasPressedThisFrame;held=m.leftButton.isPressed;up=m.leftButton.wasReleasedThisFrame;
    if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&Math.Abs(m.scroll.ReadValue().y)>.01f&&!won){
-    session.BeginEdit();
-    double newAngle=Normalize(session.Pieces[selected].Angle+Math.Sign(m.scroll.ReadValue().y));
-     if(PlacementRules.IsValid(session.Level,session.Pieces,session.Pieces[selected].Kind,session.Pieces[selected].Position,selected,newAngle))
-      session.Pieces[selected].Angle=newAngle;
-    session.EndEdit();dirty=true;feedback?.Rotate();
+    var current=session.Pieces[selected];
+    double newAngle=Normalize(current.Angle+Math.Sign(m.scroll.ReadValue().y));
+    if(PlacementRules.IsValid(session.Level,session.Pieces,current.Kind,current.Position,selected,newAngle)){
+     session.BeginEdit();current.Angle=newAngle;session.EndEdit();dirty=true;feedback?.Rotate();
+    }else{feedback?.Invalid();Notify("Bu açı duvara çarpıyor.",danger);}
    }
   }else return;
 

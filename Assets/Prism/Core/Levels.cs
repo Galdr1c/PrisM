@@ -156,6 +156,7 @@ public static class Levels {
      if(alreadyBlocked)continue;
      // Prefer central, readable occluders over early edge barriers.
      foreach(int step in new[]{5,4,6,3,7,2,8}){
+      if(walls.Count>=target)break;
       V center=a+(b-a)*(step/10.0);
       foreach(double length in new[]{2.0,2.4,1.6,2.8,3.2}){
        var candidate=new Wall(center-direction.Perp*(length*.5),center+direction.Perp*(length*.5),Wall.DefaultThickness,"shortcut occluder",walls.Count+1);

@@ -60,8 +60,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 1.8745731, y: -2.1067836}
-      b: {x: 0.12542693, y: -4.293216}
+    - a: {x: 0.12469505, y: -1.2191312}
+      b: {x: -1.1246951, y: -2.7808688}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -89,8 +89,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 2.1067836, y: 1.8745731}
-      b: {x: 4.293216, y: 0.12542693}
+    - a: {x: 1.2191312, y: 0.12469505}
+      b: {x: 2.7808688, y: -1.1246951}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -118,8 +118,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -1.8745731, y: 2.1067836}
-      b: {x: -0.12542693, y: 4.293216}
+    - a: {x: -0.12469505, y: 1.2191312}
+      b: {x: 1.1246951, y: 2.7808688}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -147,8 +147,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -4.293216, y: 0.12542693}
-      b: {x: -2.1067836, y: 1.8745731}
+    - a: {x: -2.7808688, y: -1.1246951}
+      b: {x: -1.2191312, y: 0.12469505}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -176,8 +176,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 4.293216, y: -0.12542693}
-      b: {x: 2.1067836, y: -1.8745731}
+    - a: {x: 2.7808688, y: 1.1246951}
+      b: {x: 1.2191312, y: -0.12469505}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -205,8 +205,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.12542693, y: -4.293216}
-      b: {x: -1.8745731, y: -2.1067836}
+    - a: {x: 1.1246951, y: -2.7808688}
+      b: {x: -0.12469505, y: -1.2191312}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -234,8 +234,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.12542693, y: 4.293216}
-      b: {x: 1.8745731, y: 2.1067836}
+    - a: {x: -1.1246951, y: 2.7808688}
+      b: {x: 0.12469505, y: 1.2191312}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -263,8 +263,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -1.9667836, y: -1.694573}
-      b: {x: -4.1532164, y: 0.054573067}
+    - a: {x: -1.0791312, y: 0.055304952}
+      b: {x: -2.640869, y: 1.304695}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -292,8 +292,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.2467837, y: -2.054573}
-      b: {x: -4.433216, y: -0.30542693}
+    - a: {x: -1.3591312, y: -0.30469504}
+      b: {x: -2.9208689, y: 0.94469506}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -615,8 +615,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.2514718, y: 0.051471863}
-      b: {x: -3.948528, y: 1.7485281}
+    - a: {x: -1.7928932, y: 0.79289323}
+      b: {x: -3.2071068, y: 2.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -648,8 +648,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -0.051471863, y: -2.2514718}
-      b: {x: -1.7485281, y: -3.948528}
+    - a: {x: -0.79289323, y: -1.7928932}
+      b: {x: -2.2071068, y: -3.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -681,8 +681,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 2.2514718, y: -0.051471863}
-      b: {x: 3.948528, y: -1.7485281}
+    - a: {x: 1.7928932, y: -0.79289323}
+      b: {x: 3.2071068, y: -2.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -714,8 +714,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 0.051471863, y: 2.2514718}
-      b: {x: 1.7485281, y: 3.948528}
+    - a: {x: 0.79289323, y: 1.7928932}
+      b: {x: 2.2071068, y: 3.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -747,8 +747,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -3.948528, y: -1.7485281}
-      b: {x: -2.2514718, y: -0.051471863}
+    - a: {x: -3.2071068, y: -2.2071068}
+      b: {x: -1.7928932, y: -0.79289323}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -780,8 +780,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 3.948528, y: 1.7485281}
-      b: {x: 2.2514718, y: 0.051471863}
+    - a: {x: 3.2071068, y: 2.2071068}
+      b: {x: 1.7928932, y: 0.79289323}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -813,8 +813,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: 1.7485281, y: -3.948528}
-      b: {x: 0.051471863, y: -2.2514718}
+    - a: {x: 2.2071068, y: -3.2071068}
+      b: {x: 0.79289323, y: -1.7928932}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -846,8 +846,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -1.7485281, y: 3.948528}
-      b: {x: -0.051471863, y: 2.2514718}
+    - a: {x: -2.2071068, y: 3.2071068}
+      b: {x: -0.79289323, y: 1.7928932}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -879,8 +879,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.111472, y: 0.23147187}
-      b: {x: -3.8085282, y: 1.9285282}
+    - a: {x: -1.6528932, y: 0.97289324}
+      b: {x: -3.0671067, y: 2.387107}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -912,8 +912,8 @@ MonoBehaviour:
       radius: 0.42
       threshold: 0.24
     walls:
-    - a: {x: -2.3914719, y: -0.12852813}
-      b: {x: -4.088528, y: 1.5685282}
+    - a: {x: -1.9328933, y: 0.6128932}
+      b: {x: -3.3471067, y: 2.0271068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1188,8 +1188,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -2.3928933, y: 0.19289322}
-      b: {x: -3.8071067, y: 1.6071068}
+    - a: {x: -1.7928932, y: 0.79289323}
+      b: {x: -3.2071068, y: 2.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1224,8 +1224,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -0.19289322, y: -2.3928933}
-      b: {x: -1.6071068, y: -3.8071067}
+    - a: {x: -0.79289323, y: -1.7928932}
+      b: {x: -2.2071068, y: -3.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1260,8 +1260,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 2.3928933, y: -0.19289322}
-      b: {x: 3.8071067, y: -1.6071068}
+    - a: {x: 1.7928932, y: -0.79289323}
+      b: {x: 3.2071068, y: -2.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1296,8 +1296,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 0.19289322, y: 2.3928933}
-      b: {x: 1.6071068, y: 3.8071067}
+    - a: {x: 0.79289323, y: 1.7928932}
+      b: {x: 2.2071068, y: 3.2071068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1332,8 +1332,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -3.8071067, y: -1.6071068}
-      b: {x: -2.3928933, y: -0.19289322}
+    - a: {x: -3.2071068, y: -2.2071068}
+      b: {x: -1.7928932, y: -0.79289323}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1368,8 +1368,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 3.8071067, y: 1.6071068}
-      b: {x: 2.3928933, y: 0.19289322}
+    - a: {x: 3.2071068, y: 2.2071068}
+      b: {x: 1.7928932, y: 0.79289323}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1404,8 +1404,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: 1.6071068, y: -3.8071067}
-      b: {x: 0.19289322, y: -2.3928933}
+    - a: {x: 2.2071068, y: -3.2071068}
+      b: {x: 0.79289323, y: -1.7928932}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1440,8 +1440,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -1.6071068, y: 3.8071067}
-      b: {x: -0.19289322, y: 2.3928933}
+    - a: {x: -2.2071068, y: 3.2071068}
+      b: {x: -0.79289323, y: 1.7928932}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1476,8 +1476,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -2.2528932, y: 0.3728932}
-      b: {x: -3.6671069, y: 1.7871068}
+    - a: {x: -1.6528932, y: 0.97289324}
+      b: {x: -3.0671067, y: 2.387107}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1512,8 +1512,8 @@ MonoBehaviour:
       radius: 0.45
       threshold: 0.2
     walls:
-    - a: {x: -2.5328932, y: 0.012893219}
-      b: {x: -3.9471068, y: 1.4271067}
+    - a: {x: -1.9328933, y: 0.6128932}
+      b: {x: -3.3471067, y: 2.0271068}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 1
@@ -1544,11 +1544,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -2.415922, y: -0.5078072}
-      b: {x: -1.184078, y: 1.0678072}
+    - a: {x: -1.865922, y: -0.93780714}
+      b: {x: -0.634078, y: 0.6378072}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -1.5, y: -3}
       max: {x: 3, y: 0.5}
@@ -1579,11 +1579,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 0.5078072, y: -2.415922}
-      b: {x: -1.0678072, y: -1.184078}
+    - a: {x: 0.93780714, y: -1.865922}
+      b: {x: -0.6378072, y: -0.634078}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -0.5, y: -1.5}
       max: {x: 3, y: 3}
@@ -1614,11 +1614,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 2.415922, y: 0.5078072}
-      b: {x: 1.184078, y: -1.0678072}
+    - a: {x: 1.865922, y: 0.93780714}
+      b: {x: 0.634078, y: -0.6378072}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -3, y: -0.5}
       max: {x: 1.5, y: 3}
@@ -1649,11 +1649,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -0.5078072, y: 2.415922}
-      b: {x: 1.0678072, y: 1.184078}
+    - a: {x: -0.93780714, y: 1.865922}
+      b: {x: 0.6378072, y: 0.634078}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -3, y: -3}
       max: {x: 0.5, y: 1.5}
@@ -1684,11 +1684,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -1.184078, y: -1.0678072}
-      b: {x: -2.415922, y: 0.5078072}
+    - a: {x: -0.634078, y: -0.6378072}
+      b: {x: -1.865922, y: 0.93780714}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -1.5, y: -0.5}
       max: {x: 3, y: 3}
@@ -1719,11 +1719,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 1.184078, y: 1.0678072}
-      b: {x: 2.415922, y: -0.5078072}
+    - a: {x: 0.634078, y: 0.6378072}
+      b: {x: 1.865922, y: -0.93780714}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -3, y: -3}
       max: {x: 1.5, y: 0.5}
@@ -1754,11 +1754,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: 1.0678072, y: -1.184078}
-      b: {x: -0.5078072, y: -2.415922}
+    - a: {x: 0.6378072, y: -0.634078}
+      b: {x: -0.93780714, y: -1.865922}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -3, y: -1.5}
       max: {x: 0.5, y: 3}
@@ -1789,11 +1789,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -1.0678072, y: 1.184078}
-      b: {x: 0.5078072, y: 2.415922}
+    - a: {x: -0.6378072, y: 0.634078}
+      b: {x: 0.93780714, y: 1.865922}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -0.5, y: -3}
       max: {x: 3, y: 1.5}
@@ -1824,11 +1824,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -2.275922, y: -0.32780716}
-      b: {x: -1.044078, y: 1.2478071}
+    - a: {x: -1.725922, y: -0.7578072}
+      b: {x: -0.49407804, y: 0.81780714}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -1.36, y: -2.82}
       max: {x: 3.14, y: 0.68}
@@ -1859,11 +1859,11 @@ MonoBehaviour:
       radius: 0.35
       threshold: 0.4
     walls:
-    - a: {x: -2.555922, y: -0.68780714}
-      b: {x: -1.3240781, y: 0.8878072}
+    - a: {x: -2.005922, y: -1.1178071}
+      b: {x: -0.774078, y: 0.45780715}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 2
     waterZones:
     - min: {x: -1.64, y: -3.18}
       max: {x: 2.86, y: 0.32}
@@ -1906,11 +1906,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -2.454624, y: -2.07793}
-      b: {x: -4.745376, y: -1.36207}
+    - a: {x: -2.636416, y: -1.31862}
+      b: {x: -4.1635838, y: -0.84138}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -0.8235444, y: -0.08094965}
+      b: {x: -0.47645563, y: 1.4809496}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v02
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kuzey rotas\u0131"
@@ -1950,11 +1955,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: 2.07793, y: -2.454624}
-      b: {x: 1.36207, y: -4.745376}
+    - a: {x: 1.31862, y: -2.636416}
+      b: {x: 0.84138, y: -4.1635838}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: 0.08094965, y: -0.8235444}
+      b: {x: -1.4809496, y: -0.47645563}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v03
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Kar\u015F\u0131 k\u0131y\u0131"
@@ -1994,11 +2004,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: 2.454624, y: 2.07793}
-      b: {x: 4.745376, y: 1.36207}
+    - a: {x: 2.636416, y: 1.31862}
+      b: {x: 4.1635838, y: 0.84138}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: 0.8235444, y: 0.08094965}
+      b: {x: 0.47645563, y: -1.4809496}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v04
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 G\xFCney rotas\u0131"
@@ -2038,11 +2053,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -2.07793, y: 2.454624}
-      b: {x: -1.36207, y: 4.745376}
+    - a: {x: -1.31862, y: 2.636416}
+      b: {x: -0.84138, y: 4.1635838}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -0.08094965, y: 0.8235444}
+      b: {x: 1.4809496, y: 0.47645563}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v05
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Sessiz y\xFCzey"
@@ -2082,11 +2102,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -4.745376, y: 1.36207}
-      b: {x: -2.454624, y: 2.07793}
+    - a: {x: -4.1635838, y: 0.84138}
+      b: {x: -2.636416, y: 1.31862}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -0.47645563, y: -1.4809496}
+      b: {x: -0.8235444, y: 0.08094965}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v06
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Ters ufuk"
@@ -2126,11 +2151,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: 4.745376, y: -1.36207}
-      b: {x: 2.454624, y: -2.07793}
+    - a: {x: 4.1635838, y: -0.84138}
+      b: {x: 2.636416, y: -1.31862}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: 0.47645563, y: 1.4809496}
+      b: {x: 0.8235444, y: -0.08094965}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v07
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 \xC7apraz yol"
@@ -2170,11 +2200,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -1.36207, y: -4.745376}
-      b: {x: -2.07793, y: -2.454624}
+    - a: {x: -0.84138, y: -4.1635838}
+      b: {x: -1.31862, y: -2.636416}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: 1.4809496, y: -0.47645563}
+      b: {x: -0.08094965, y: -0.8235444}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v08
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 K\u0131r\u0131k k\xF6\u015Fe"
@@ -2214,11 +2249,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: 1.36207, y: 4.745376}
-      b: {x: 2.07793, y: 2.454624}
+    - a: {x: 0.84138, y: 4.1635838}
+      b: {x: 1.31862, y: 2.636416}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -1.4809496, y: 0.47645563}
+      b: {x: 0.08094965, y: 0.8235444}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: garden-01-v09
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 \u0130nce ayar"
@@ -2258,11 +2298,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -2.314624, y: -1.89793}
-      b: {x: -4.605376, y: -1.18207}
+    - a: {x: -2.30552, y: -1.198275}
+      b: {x: -4.21448, y: -0.601725}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -0.68354434, y: 0.09905035}
+      b: {x: -0.33645564, y: 1.6609497}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 4
     waterZones: []
   - id: garden-01-v10
     displayName: "I\u015F\u0131k bah\xE7esi \xB7 Son prova"
@@ -2302,11 +2347,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 1
-    - a: {x: -2.594624, y: -2.25793}
-      b: {x: -4.885376, y: -1.54207}
+    - a: {x: -2.776416, y: -1.49862}
+      b: {x: -4.303584, y: -1.02138}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 2
+    - a: {x: -0.96354437, y: -0.26094964}
+      b: {x: -0.6164556, y: 1.3009497}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 3
     waterZones: []
   - id: symphony-01
     displayName: Optik senfoni
@@ -2358,11 +2408,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -2.2336314, y: -1.8663268}
-      b: {x: -5.366369, y: -1.2136732}
+    - a: {x: -2.6168156, y: 0.2168366}
+      b: {x: -4.183184, y: 0.5431634}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: -2.440042, y: -2.0124235}
+      b: {x: -4.079958, y: -0.8675764}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: 0, y: -1.5}
       max: {x: 3.5, y: 0.5}
@@ -2417,11 +2472,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: 1.8663268, y: -2.2336314}
-      b: {x: 1.2136732, y: -5.366369}
+    - a: {x: -0.2168366, y: -2.6168156}
+      b: {x: -0.5431634, y: -4.183184}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: 2.0124235, y: -2.440042}
+      b: {x: 0.8675764, y: -4.079958}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -0.5, y: 0}
       max: {x: 1.5, y: 3.5}
@@ -2476,11 +2536,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: 2.2336314, y: 1.8663268}
-      b: {x: 5.366369, y: 1.2136732}
+    - a: {x: 2.6168156, y: -0.2168366}
+      b: {x: 4.183184, y: -0.5431634}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: 2.440042, y: 2.0124235}
+      b: {x: 4.079958, y: 0.8675764}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -3.5, y: -0.5}
       max: {x: 0, y: 1.5}
@@ -2535,11 +2600,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -1.8663268, y: 2.2336314}
-      b: {x: -1.2136732, y: 5.366369}
+    - a: {x: 0.2168366, y: 2.6168156}
+      b: {x: 0.5431634, y: 4.183184}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: -2.0124235, y: 2.440042}
+      b: {x: -0.8675764, y: 4.079958}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -1.5, y: -3.5}
       max: {x: 0.5, y: 0}
@@ -2594,11 +2664,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -5.366369, y: 1.2136732}
-      b: {x: -2.2336314, y: 1.8663268}
+    - a: {x: -4.183184, y: -0.5431634}
+      b: {x: -2.6168156, y: -0.2168366}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: -4.079958, y: 0.8675764}
+      b: {x: -2.440042, y: 2.0124235}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: 0, y: -0.5}
       max: {x: 3.5, y: 1.5}
@@ -2653,11 +2728,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: 5.366369, y: -1.2136732}
-      b: {x: 2.2336314, y: -1.8663268}
+    - a: {x: 4.183184, y: 0.5431634}
+      b: {x: 2.6168156, y: 0.2168366}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: 4.079958, y: -0.8675764}
+      b: {x: 2.440042, y: -2.0124235}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -3.5, y: -1.5}
       max: {x: 0, y: 0.5}
@@ -2712,11 +2792,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -1.2136732, y: -5.366369}
-      b: {x: -1.8663268, y: -2.2336314}
+    - a: {x: 0.5431634, y: -4.183184}
+      b: {x: 0.2168366, y: -2.6168156}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: -0.8675764, y: -4.079958}
+      b: {x: -2.0124235, y: -2.440042}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -1.5, y: 0}
       max: {x: 0.5, y: 3.5}
@@ -2771,11 +2856,16 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: 1.2136732, y: 5.366369}
-      b: {x: 1.8663268, y: 2.2336314}
+    - a: {x: -0.5431634, y: 4.183184}
+      b: {x: -0.2168366, y: 2.6168156}
       thickness: 0.36
       purpose: shortcut occluder
-      cluster: 3
+      cluster: 4
+    - a: {x: 0.8675764, y: 4.079958}
+      b: {x: 2.0124235, y: 2.440042}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -0.5, y: -3.5}
       max: {x: 1.5, y: 0}
@@ -2830,8 +2920,8 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -2.0936313, y: -1.6863269}
-      b: {x: -5.226369, y: -1.0336732}
+    - a: {x: -2.3810196, y: -0.12395425}
+      b: {x: -4.33898, y: 0.28395426}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 3
@@ -2889,11 +2979,21 @@ MonoBehaviour:
       thickness: 0.36
       purpose: baffle
       cluster: 2
-    - a: {x: -2.3736312, y: -2.0463269}
-      b: {x: -5.5063686, y: -1.3936732}
+    - a: {x: -2.7568157, y: 0.036836598}
+      b: {x: -4.3231845, y: 0.3631634}
       thickness: 0.36
       purpose: shortcut occluder
       cluster: 3
+    - a: {x: -2.580042, y: -2.1924236}
+      b: {x: -4.2199583, y: -1.0475764}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 4
+    - a: {x: -0.44432682, y: 1.5579981}
+      b: {x: -1.5356731, y: -0.117998086}
+      thickness: 0.36
+      purpose: shortcut occluder
+      cluster: 5
     waterZones:
     - min: {x: -0.14, y: -1.68}
       max: {x: 3.36, y: 0.32}
@@ -4486,4 +4586,4 @@ MonoBehaviour:
     - min: {x: -3.2, y: 3.9}
       max: {x: -2.4, y: 4.2}
       refractiveIndex: 1.333
-  campaignRevision: 2026-10-06-spatial-optics-v2
+  campaignRevision: 2026-10-10-spatial-optics-v3

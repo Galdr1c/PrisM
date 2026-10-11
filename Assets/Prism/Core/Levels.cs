@@ -154,15 +154,22 @@ public static class Levels {
      V a=probes[probe],b=goal.Position;V direction=(b-a).Unit;
      bool alreadyBlocked=false;foreach(var wall in walls)if(WallGeometry.Blocks(wall,a,b))alreadyBlocked=true;
      if(alreadyBlocked)continue;
-     for(int step=2;step<=8&&walls.Count<target;step++){
+     // Prefer central, readable occluders over early edge barriers.
+     foreach(int step in new[]{5,4,6,3,7,2,8}){
+      if(walls.Count>=target)break;
       V center=a+(b-a)*(step/10.0);
-      for(double length=3.2;length>=1.6;length-=.4){
+      foreach(double length in new[]{2.0,2.4,1.6,2.8,3.2}){
        var candidate=new Wall(center-direction.Perp*(length*.5),center+direction.Perp*(length*.5),Wall.DefaultThickness,"shortcut occluder",walls.Count+1);
        bool clear=true;
        if(WallGeometry.Distance(level.Source,candidate)<.5)clear=false;
+       // Keep the complete solid barrier on the playable board; avoid clipped or
+       // visually isolated segments that frustrate player placement.
+       if(Math.Max(Math.Abs(candidate.A.X),Math.Abs(candidate.B.X))>4.35||
+          Math.Max(Math.Abs(candidate.A.Y),Math.Abs(candidate.B.Y))>4.35)clear=false;
        if(!WallGeometry.Blocks(candidate,a,b))clear=false;
        foreach(var receiver in level.Goals)if(WallGeometry.Distance(receiver.Position,candidate)<receiver.Radius+.15)clear=false;
-       foreach(var piece in level.Solution)if(WallGeometry.Distance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.10)clear=false;
+       foreach(var piece in level.Solution)if(WallGeometry.Distance(piece.Position,candidate)<PlacementRules.Clearance(piece.Kind)+.10||
+          PieceFootprint.OverlapsWall(piece.Kind,piece.Position,piece.Angle,candidate))clear=false;
        foreach(var wall in walls)if(SegmentDistance(candidate,wall)<.4)clear=false;
        if(!clear)continue;
        walls.Add(candidate);level.Walls=walls.ToArray();
@@ -184,7 +191,7 @@ public static class Levels {
  static void ValidateKnownSolution(Level level){
   var session=new Session(level);
   foreach(var piece in level.Solution){
-   if(!session.Place(piece.Kind,piece.Position))throw new InvalidOperationException("Spatial geometry blocks placement: "+level.Id);
+   if(!session.Place(piece.Kind,piece.Position,piece.Angle))throw new InvalidOperationException("Spatial geometry blocks placement: "+level.Id+" "+piece.Kind+" at "+piece.Position.X+","+piece.Position.Y+" angle="+piece.Angle+" ("+PlacementRules.Check(level,session.Pieces,piece.Kind,piece.Position,angle:piece.Angle)+")");
    session.Pieces[session.Pieces.Count-1].Angle=piece.Angle;
   }
   var solved=Optics.Solve(level,session.Pieces);

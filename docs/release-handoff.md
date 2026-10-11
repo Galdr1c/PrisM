@@ -5,9 +5,9 @@ Bu teslim Google Play Internal testing için hazırlanmış sürüm adayıdır. 
 ## Çıktılar
 
 - Windows deneme paketi: `Builds/Windows/PrisM.exe` ve yanındaki veri/DLL klasörleri.
-- Android: `Builds/Android/PrisM-0.9.1-91.aab`; paket `com.prismstudio.lightworkshop`, API 36, min API 26, ARM64, IL2CPP.
+- Android: `Builds/Android/PrisM-0.9.2-92.aab`; paket `com.prismstudio.lightworkshop`, API 36, min API 26, ARM64, IL2CPP.
 - Mağaza ikonu ve feature graphic: `Builds/StoreAssets`.
-- Sekiz 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20261011-114945` (spectrum, mastery, water/glass, reflection, symphony, map, menu, settings).
+- Sekiz 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20261011-124612` (spectrum, mastery, water/glass, reflection, symphony, map, menu, settings).
 - TR/EN metinler: `docs/store-listing.md`; deklarasyon rehberi: `docs/play-console-declarations.md`.
 - Gizlilik politikası kaynağı: `docs/privacy-policy.md`. Play hesabında gerçek destek adresi ve herkese açık HTTPS politika URL'si tamamlanmalıdır.
 
@@ -23,12 +23,12 @@ Yerel upload anahtarı `Builds/Secrets/prism-upload.p12`, alias `prism-upload`. 
 
 30 Eylül görsel ve bölüm düzeni: sabit tuğla duvarlar artırıldı, son 20 bölümde en az 5 ve final ünitesinde en az 6 aktif ayna kullanılır. Genişleyen ışık hüzmesi, ön plandaki optik parçalar, belirgin döndürme yörüngesi ve sıcak/yuvarlak UI Windows'da derlenip 100 bölüm smoke testinden geçti. Yeni `LevelCatalog.asset` açılış için 100 bölümü önceden içerir.
 
-Son doğrulanmış signed AAB SHA256: `14D23ACE9A5710FE15A4115A7907C35C2CD2566FEF7C2AB52073D2D6DAFB4084` (29.595.058 byte; bundletool validation ve 16 KB kontrolü PASS). Manifest API 36/min API 26 ve yalnız VIBRATE iznini içerir. Önceden bekleyen manifest düzeltmesi bu pakete dahil edildi.
+Son doğrulanmış signed AAB SHA256: `55ECD795FBFBC1D5365EA91E7E3621AC11656AE7C8DFAFCF1585044E4B668B31` (29.615.379 byte; bundletool validation, JAR imzası ve altı ARM64 ELF/16 KB kontrolü PASS). Manifest API 36/min API 26 ve yalnız VIBRATE iznini içerir.
 
 06 Ekim 0.9.1/91 kaynak teslimi: kullanıcı tarafından sağlanan uygulama/mağaza ikonu, Android 13 monochrome adaptive layer, ortak kalınlıklı fiziksel duvarlar, gate/corridor topolojisi, mixed-optics mastery odaları, UI gesture/undo/back düzeltmeleri ve 468 core kontrolü içeriyordu.
 
 11 Ekim dal entegrasyonu: `fix/optics-walls-mobile-ux-20261010` incelenerek uygulandı; v3 katalog, döndürülmüş duvar çakışması, enerjiye göre ışın görünümü ve aşamalı ipuçları doğrulandı. Entegrasyon derleme hatası, LF/CRLF katalog uyumu, geniş ekran layout ve erken prizma açısı ifşası düzeltildi. 477 core kontrolü ve 360×800 / 1280×720 oyuncu çalışmalarında 213'er PASS (100 çözüm + 100 reset dahil) geçti. Ayrıntılar `docs/branch-integration-20261011.md` içindedir.
 
-05 Ekim sunum geçişi: Canvas/TMP + Sora sunum katmanı, yeni PRISM glyph/icon seti, obsidiyen segment duvarlar, drag tepsisi, takımyıldız haritası, sheet modal akışı, üç aşamalı ipucu, accessibility ayarları ve final ışık sekansı kaynakta tamamlandı. Undo/reset geçişleri sonuç hesaplamasını kilitler; gesture iptali ekran/pause/focus değişimlerinde temizlenir; ilerleme dosyası atomik replace ve `.bak`/`.tmp` fallback kullanır. Son doğrulanmış AAB yukarıdaki hash'tir; bu son kaynak değişikliklerinden sonra Unity lisans kanalına erişim gerektiren yeniden paketleme bu makine oturumunda otomatik onay kotasına takıldı ve cihaz/Play pre-launch testleri hâlâ ayrıdır.
+11 Ekim 0.9.2/92 tasarım teslimi: kullanıcının SVG/HTML tasarımı ana menü, harita, parça tepsisi, seçili parça kontrolleri, lavanta tuğlalar ve optik çizimlere uygulandı. 477 core kontrolü; 540×960 ve 1280×720 oyuncu çalışmalarında 215'er PASS (100 çözüm + 100 reset dahil) geçti. Çalışma kayıtları `TestResults/smoke-20261011-124532` ve `TestResults/smoke-20261011-124552`; bölüm önizlemesi ilk klasörde `map-preview.png`. Görsel sonuçlar incelendi; alt etiket taşması, kararan duvarlar ve seçili araç çubuğu çakışması düzeltildi. Ayrıntılar `docs/ui-design-implementation-20261011.md` içindedir.
 
 Kalan cihaz kontrolleri: farklı ekran/safe-area, touch/rotate, ünite geri dönüşü, Android Back, müzik/SFX ayarları, pause/resume, düşük/orta/yüksek kalite, ısınma ve uzun oturum. Bunlar masaüstü testleriyle doğrulanmış sayılmaz.

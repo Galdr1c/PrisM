@@ -196,7 +196,7 @@ public class PrismGame : MonoBehaviour {
   if(!cam){cam=new GameObject("Camera").AddComponent<Camera>();cam.tag="MainCamera";}
   cam.orthographic=true;
   cam.transform.position=new Vector3(0,0,-10);
-  cam.backgroundColor=new Color(.025f,.042f,.06f);
+  cam.backgroundColor=new Color32(7,6,26,255);
   cam.clearFlags=CameraClearFlags.SolidColor;
   VisualEnvironment.Configure(cam);
 
@@ -275,11 +275,11 @@ public class PrismGame : MonoBehaviour {
   if(safe.width<1||safe.height<1)safe=new Rect(0,0,Screen.width,Screen.height);
   // Reserve top HUD and bottom tray/rotation controls, including short displays.
   float uiScale=UiScale;
-  float bottomReserve=195f*uiScale,topReserve=112f*uiScale;
+  float bottomReserve=280f*uiScale,topReserve=112f*uiScale;
   float availableHeight=Mathf.Max(125f,safe.height-bottomReserve-topReserve);
   float boardPixels=Mathf.Min(safe.width*.96f,availableHeight);
   float pixelsPerUnit=boardPixels/10f;
-  Vector2 center=new Vector2(safe.center.x,safe.yMin+bottomReserve+availableHeight*.5f);
+  Vector2 center=new Vector2(safe.center.x,safe.yMax-topReserve-boardPixels*.5f);
   cam.orthographicSize=Screen.height/(pixelsPerUnit*2f);
   if(won&&!VisualEnvironment.ReducedMotion)cam.orthographicSize*=1f+.035f*Mathf.SmoothStep(0,1,(Time.unscaledTime-winShownAt)/.7f);
   cam.transform.position=new Vector3((Screen.width*.5f-center.x)/pixelsPerUnit,(Screen.height*.5f-center.y)/pixelsPerUnit,-10f);
@@ -598,6 +598,21 @@ public class PrismGame : MonoBehaviour {
   InputSystem.QueueStateEvent(testKeyboard,new KeyboardState());InputSystem.Update();InputSystem.RemoveDevice(testKeyboard);
   if(presentation.BlocksBoardInput)throw new Exception("Closing settings does not resume gameplay");
   checks.Add("PASS Canvas menu settings back input flow");
+  Load(0,true);yield return null;presentation.ShowMap();yield return null;
+  var chapterButton=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>b.GetComponentInChildren<PrismIcon>()?.Symbol=="mirror");
+  if(!chapterButton)throw new Exception("Chapter map lacks the first optical node");chapterButton.onClick.Invoke();yield return null;
+  var levelButton=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>Array.Exists(b.GetComponentsInChildren<TMPro.TextMeshProUGUI>(),t=>t.text=="02"));
+  if(!levelButton)throw new Exception("Level map lacks selectable level 02");levelButton.onClick.Invoke();yield return null;
+  if(levelIndex!=0)throw new Exception("Selecting map preview started gameplay prematurely");
+  var playButton=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>b.GetComponentInChildren<TMPro.TextMeshProUGUI>()?.text=="Oyna");
+  if(!playButton)throw new Exception("Selected level preview lacks play action");playButton.onClick.Invoke();yield return null;
+  if(levelIndex!=1||presentation.BlocksBoardInput)throw new Exception("Map play action did not open selected level");
+  checks.Add("PASS optical chapter map previews and opens selected level");
+  presentation.ShowMap();yield return null;
+  chapterButton=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>b.GetComponentInChildren<PrismIcon>()?.Symbol=="mirror");
+  chapterButton.onClick.Invoke();yield return null;
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"map-preview.png")));
+  Load(0,true);yield return null;
   for(int stage=1;stage<=3;stage++){
    presentation.ShowHint();presentation.RevealNextHint();yield return null;
    if(LastRequestedHintStage!=stage)throw new Exception("Hint skipped reveal stage "+stage);
@@ -605,6 +620,11 @@ public class PrismGame : MonoBehaviour {
   checks.Add("PASS hints reveal region before exact direction");
   Load(0,true);yield return null;
   session.Place(Kind.Mirror,new V(0,-2),45);dirty=true;yield return null;
+  selected=0;yield return null;
+  var selectionBar=Array.Find(presentation.GetComponentsInChildren<RectTransform>(),t=>t.name=="Seçili parça");
+  var corners=new Vector3[4];selectionBar.GetWorldCorners(corners);
+  if(corners[1].y>cam.WorldToScreenPoint(new Vector3(0,-5,0)).y-1)throw new Exception("Selection controls overlap the playable board");
+  checks.Add("PASS selection controls remain outside the playable board");
   var testMouse=InputSystem.AddDevice<Mouse>();
   Vector3 dragStart=cam.WorldToScreenPoint(new Vector3(0,-2,0));
   InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(dragStart.x,dragStart.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();yield return null;

@@ -3,6 +3,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 namespace Prism {
 public class BoardRenderer : MonoBehaviour {
+ static readonly Color StoneFace=new Color(56f/255,51f/255,79f/255);
+ static readonly Color StoneLight=new Color(75f/255,69f/255,113f/255);
+ static readonly Color StoneDark=new Color(38f/255,34f/255,62f/255);
+ static readonly Color LavenderEdge=new Color(111f/255,102f/255,150f/255);
+ static readonly Color NightInterior=new Color(13f/255,11f/255,38f/255);
+ static readonly Vector2[] PrismFacetUv={new Vector2(.5f,1),new Vector2(0,0),new Vector2(1,0)};
+ static readonly Color[] PrismFacetColors={new Color(.71f,.80f,1,.94f),new Color(.55f,.52f,.91f,.94f),new Color(.76f,.64f,.97f,.94f)};
  sealed class MeshBuffer {
   public readonly List<Vector3> vertices=new List<Vector3>();
   public readonly List<Color> colors=new List<Color>();
@@ -76,10 +83,12 @@ public class BoardRenderer : MonoBehaviour {
   var surface=level.WaterZones.Length>0?waterSurface:level.Difficulty>=9?masterySurface:labSurface;
   if(surface==null)surface=labSurface;
   if(currentSurface!=surface){currentSurface=surface;boardMaterial.SetTexture("_SurfaceTex",surface);}
-  boardMaterial.SetFloat("_SurfaceAmount",surface!=null?.025f:0f);
-  int chapter=Mathf.Clamp((level.Difficulty-1)/4,0,2);
-  boardMaterial.SetColor("_Background",chapter==0?new Color(7f/255,7f/255,17f/255):chapter==1?new Color(9f/255,9f/255,21f/255):new Color(13f/255,11f/255,24f/255));
-  boardMaterial.SetColor("_GridColor",VisualEnvironment.HighContrast?new Color(.27f,.24f,.38f):new Color(.10f,.09f,.16f));
+  boardMaterial.SetFloat("_SurfaceAmount",surface!=null?.012f:0f);
+  boardMaterial.SetColor("_Background",NightInterior);
+  boardMaterial.SetColor("_EdgeBackground",new Color(7f/255,6f/255,26f/255));
+  boardMaterial.SetColor("_GridColor",VisualEnvironment.HighContrast?new Color(.82f,.77f,1):new Color(180f/255,169f/255,1));
+  // Dot alpha is blended in linear light; keep its perceived contrast close to the SVG reference.
+  boardMaterial.SetFloat("_GridStrength",VisualEnvironment.HighContrast?.04f:.009f);
   if(waterMaterial!=null)waterMaterial.SetColor("_Tint",new Color(.11f,.31f,.44f,.22f));
   if(beamMaterial!=null){
    float brightness=Mathf.Lerp(.8f,1.2f,Mathf.InverseLerp(.5f,1.5f,VisualEnvironment.BeamScale));
@@ -88,7 +97,7 @@ public class BoardRenderer : MonoBehaviour {
    var center=selected>=0&&selected<pieces.Count?pieces[selected].Position:new V();
    beamMaterial.SetVector("_SelectedPosition",new Vector4((float)center.X,(float)center.Y,0,selected>=0&&selected<pieces.Count?1:0));
   }
-  if(glassMaterial!=null)glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low?.75f:tier==VisualQualityTier.High?1.1f:.95f);
+  if(glassMaterial!=null){glassMaterial.SetColor("_Tint",new Color(.77f,.79f,1,.50f));glassMaterial.SetFloat("_EdgeIntensity",tier==VisualQualityTier.Low?.45f:tier==VisualQualityTier.High?.65f:.55f);}
   if(waterMaterial!=null)waterMaterial.SetFloat("_Glow",tier==VisualQualityTier.Low?.72f:tier==VisualQualityTier.High?1.2f:.96f);
   boardBuffer.Quad(new V(-5,-5),new V(5,-5),new V(5,5),new V(-5,5),Color.white);
   foreach(var wz in level.WaterZones){
@@ -110,10 +119,10 @@ public class BoardRenderer : MonoBehaviour {
   }
   foreach(var wall in level.Walls)DrawObsidianWall(wall,result);
   if(pointerAnchor.HasValue&&selected>=0&&selected<pieces.Count){
-   foregroundBuffer.Ring(pointerAnchor.Value,.12,.018,new Color(.64f,.57f,.81f,.55f));
-   foregroundBuffer.Line(pointerAnchor.Value,pieces[selected].Position,.014,new Color(.64f,.57f,.81f,.30f));
+   foregroundBuffer.Ring(pointerAnchor.Value,.12,.018,new Color(.78f,.71f,1,VisualEnvironment.HighContrast?1:.7f));
+   foregroundBuffer.Line(pointerAnchor.Value,pieces[selected].Position,.014,new Color(.78f,.71f,1,VisualEnvironment.HighContrast?.8f:.45f));
   }
-  Color white=new Color(.91f,.98f,1);V dir=level.Direction.Unit,sourceSide=dir.Perp;
+  Color white=new Color(.96f,.95f,.91f);V dir=level.Direction.Unit,sourceSide=dir.Perp;
   // level.Source is the leading optical aperture, not the center of a circular lamp.
   // Wide lens lessons require an equally wide slit emitter, never a large beam from a tiny disc.
   double aperture=System.Math.Max(.08,level.Width);
@@ -121,26 +130,26 @@ public class BoardRenderer : MonoBehaviour {
   if(aperture>.54){
    double half=aperture*.5+.10;
    V back=bodyCenter-dir*.22;
-   foregroundBuffer.Quad(back-sourceSide*half,back+sourceSide*half,level.Source+sourceSide*half,level.Source-sourceSide*half,new Color(.16f,.15f,.22f));
-   foregroundBuffer.Line(back-sourceSide*half,back+sourceSide*half,.05,new Color(.45f,.45f,.58f));
+   foregroundBuffer.Quad(back-sourceSide*half,back+sourceSide*half,level.Source+sourceSide*half,level.Source-sourceSide*half,StoneFace);
+   foregroundBuffer.Line(back-sourceSide*half,back+sourceSide*half,.05,LavenderEdge);
    foregroundBuffer.Line(level.Source-sourceSide*(aperture*.5),level.Source+sourceSide*(aperture*.5),.075,white);
    foregroundBuffer.Line(level.Source-sourceSide*half,level.Source-sourceSide*half-dir*.42,.038,new Color(.48f,.58f,.65f));
    foregroundBuffer.Line(level.Source+sourceSide*half,level.Source+sourceSide*half-dir*.42,.038,new Color(.48f,.58f,.65f));
   }else{
-   foregroundBuffer.Disc(bodyCenter+new V(.022,-.028),.34,new Color(.065f,.06f,.10f));
-   foregroundBuffer.Disc(bodyCenter,.31,new Color(.16f,.15f,.22f));
-   foregroundBuffer.Arc(bodyCenter,.30,.025,35,220,new Color(.56f,.53f,.66f));
-   foregroundBuffer.Disc(bodyCenter,.235,new Color(.04f,.04f,.085f));
-   foregroundBuffer.Ring(bodyCenter,.22,.025,new Color(.45f,.78f,.84f));
-   foregroundBuffer.Disc(bodyCenter,.15,new Color(.86f,.93f,.94f));
+   foregroundBuffer.Disc(bodyCenter+new V(.022,-.028),.34,StoneDark);
+   foregroundBuffer.Disc(bodyCenter,.31,StoneFace);
+   foregroundBuffer.Ring(bodyCenter,.30,.025,VisualEnvironment.HighContrast?new Color(.82f,.77f,1):LavenderEdge);
+   foregroundBuffer.Disc(bodyCenter,.235,NightInterior);
+   foregroundBuffer.Ring(bodyCenter,.22,.025,new Color(.71f,.65f,.91f));
+   foregroundBuffer.Disc(bodyCenter,.15,white);
    foregroundBuffer.Line(bodyCenter+dir*.18,level.Source,.12,new Color(.33f,.40f,.47f));
    foregroundBuffer.Line(level.Source-sourceSide*(aperture*.5),level.Source+sourceSide*(aperture*.5),.065,white);
   }
   Color sourceGlow=white;sourceGlow.a=.026f;beamBuffer.RadialDisc(level.Source,.19,sourceGlow);
-  for(int i=0;i<level.Goals.Length;i++){var g=level.Goals[i];Color c=g.Band<0?white:Spectrum[g.Band];float energy=Mathf.Clamp01((float)(result.Energy[i]/g.Threshold));Color glow=c;glow.a=.025f+energy*.085f;beamBuffer.RadialDisc(g.Position,g.Radius+.26,glow);if(energy>=.999f){Color achieved=c;achieved.a=.065f;beamBuffer.RadialDisc(g.Position,g.Radius+.50,achieved);}ReceiverBase(g.Position,g.Radius+.09);foregroundBuffer.Disc(g.Position,g.Radius,new Color(.04f,.075f,.10f));Color dim=c;dim.a=.52f;
+  for(int i=0;i<level.Goals.Length;i++){var g=level.Goals[i];Color c=g.Band<0?white:Spectrum[g.Band];float energy=Mathf.Clamp01((float)(result.Energy[i]/g.Threshold));Color glow=c;glow.a=.025f+energy*.085f;beamBuffer.RadialDisc(g.Position,g.Radius+.26,glow);if(energy>=.999f){Color achieved=c;achieved.a=.065f;beamBuffer.RadialDisc(g.Position,g.Radius+.50,achieved);}ReceiverBase(g.Position,g.Radius+.09);foregroundBuffer.Disc(g.Position,g.Radius,NightInterior);Color dim=c;dim.a=.52f;
    float pulse=energy>=.7f&&energy<.999f&&!VisualEnvironment.ReducedMotion?2f:0;
    for(int k=0;k<8;k++){Color segment=dim;segment.a=energy>=1||energy>=.30f&&k<Mathf.CeilToInt(energy*8)? .55f+energy*.35f:.22f;foregroundBuffer.Arc(g.Position,g.Radius,.045,k*45+4,36,segment,pulse);}
-   foregroundBuffer.Ring(g.Position,g.Radius*.72,.024,new Color(.22f,.34f,.4f));
+   foregroundBuffer.Ring(g.Position,g.Radius*.72,.024,LavenderEdge);
    if(energy>0){c.a=.55f+energy*.4f;foregroundBuffer.Arc(g.Position,g.Radius*.78,.05,90,-360*energy,c);}c.a=.7f;foregroundBuffer.Disc(g.Position,.07+energy*.03,c);
    if(VisualEnvironment.ColorSymbols&&g.Band>=0)DrawBandSymbol(g.Position,g.Band,c);
   }
@@ -151,10 +160,20 @@ public class BoardRenderer : MonoBehaviour {
     p=p.Copy();p.Position+=new V(0,liftWorld);foregroundBuffer.Line(anchor,p.Position,.015,new Color(.66f,.59f,.88f,.45f));
    }
    V axis=V.Angle(p.Angle);Color c=white;
-   if(p.Kind==Kind.Prism){var vs=Optics.Vertices(p);V shadow=new V(.04,-.07);baseBuffer.Tri(vs[0]+shadow,vs[1]+shadow,vs[2]+shadow,new Color(.015f,.035f,.055f,.9f));glassBuffer.Tri(vs[0],vs[1],vs[2],new Color(.65f,.86f,1,.9f),new Vector2(.5f,1),new Vector2(0,0),new Vector2(1,0),0);for(int k=0;k<3;k++){foregroundBuffer.Line(vs[k],vs[(k+1)%3],.065,new Color(.23f,.42f,.53f,.75f));foregroundBuffer.Line(vs[k],vs[(k+1)%3],.021,new Color(.79f,.94f,1,.85f));foregroundBuffer.Line(p.Position,vs[k],.014,new Color(.42f,.71f,.88f,.35f));}}
+   if(p.Kind==Kind.Prism){
+    var vs=Optics.Vertices(p);V shadow=new V(.04,-.07);
+    baseBuffer.Tri(vs[0]+shadow,vs[1]+shadow,vs[2]+shadow,new Color(.04f,.03f,.09f,.65f));
+    // Three visual facets share the original optical triangle and its centroid.
+    for(int k=0;k<3;k++){
+     glassBuffer.Tri(p.Position,vs[k],vs[(k+1)%3],PrismFacetColors[k],new Vector2(.5f,1f/3),PrismFacetUv[k],PrismFacetUv[(k+1)%3],0);
+     foregroundBuffer.Line(vs[k],vs[(k+1)%3],.065,new Color(.32f,.30f,.50f,.75f));
+     foregroundBuffer.Line(vs[k],vs[(k+1)%3],.021,new Color(.79f,.90f,1,VisualEnvironment.HighContrast?1:.9f));
+     foregroundBuffer.Line(p.Position,vs[k],.014,new Color(.77f,.76f,1,.45f));
+    }
+   }
    else if(p.Kind==Kind.Sphere){Mount(baseBuffer,p.Position,.62);glassBuffer.GlassDisc(p.Position,.55,new Color(.74f,.91f,1,.9f));foregroundBuffer.Ring(p.Position,.55,.026,white);foregroundBuffer.Arc(p.Position,.43,.026,70,90,new Color(.65f,.86f,1,.6f));foregroundBuffer.Disc(p.Position+new V(-.17,.19),.06,new Color(1,1,1,.65f));}
-   else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);V a=p.Position+axis*(t*.9)+side*w,b=p.Position+axis*(t*.9)-side*w,c1=p.Position+axis*(t2*.9)-side*w2,d=p.Position+axis*(t2*.9)+side*w2;Color lens=new Color(.8f,.94f,1,.75f);Vector2 ua=new Vector2((float)(t+1)*.5f,.5f+(float)w/.36f),ub=new Vector2(ua.x,.5f-(float)w/.36f),uc=new Vector2((float)(t2+1)*.5f,.5f-(float)w2/.36f),ud=new Vector2(uc.x,.5f+(float)w2/.36f);glassBuffer.Tri(a,b,c1,lens,ua,ub,uc,0);glassBuffer.Tri(a,c1,d,lens,ua,uc,ud,0);foregroundBuffer.Line(a,d,.022,white);foregroundBuffer.Line(b,c1,.022,white);}for(int end=-1;end<=1;end+=2){V socket=p.Position+axis*(end*.9);foregroundBuffer.Disc(socket,.095,new Color(.17f,.27f,.34f));foregroundBuffer.Ring(socket,.09,.014,new Color(.46f,.59f,.63f));foregroundBuffer.Disc(socket,.025,new Color(.77f,.65f,.43f));}}
-   else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;foregroundBuffer.Line(a+side*.025,b+side*.025,.20,new Color(.08f,.14f,.19f));foregroundBuffer.Disc(a,.10,new Color(.18f,.27f,.33f));foregroundBuffer.Disc(b,.10,new Color(.18f,.27f,.33f));foregroundBuffer.Line(a,b,.095,new Color(.29f,.43f,.51f));foregroundBuffer.Line(a+side*.035,b+side*.035,.036,c);foregroundBuffer.Disc(a,.032,new Color(.76f,.65f,.43f));foregroundBuffer.Disc(b,.032,new Color(.76f,.65f,.43f));}
+   else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);V a=p.Position+axis*(t*.9)+side*w,b=p.Position+axis*(t*.9)-side*w,c1=p.Position+axis*(t2*.9)-side*w2,d=p.Position+axis*(t2*.9)+side*w2;Color lens=new Color(.8f,.94f,1,.75f);Vector2 ua=new Vector2((float)(t+1)*.5f,.5f+(float)w/.36f),ub=new Vector2(ua.x,.5f-(float)w/.36f),uc=new Vector2((float)(t2+1)*.5f,.5f-(float)w2/.36f),ud=new Vector2(uc.x,.5f+(float)w2/.36f);glassBuffer.Tri(a,b,c1,lens,ua,ub,uc,0);glassBuffer.Tri(a,c1,d,lens,ua,uc,ud,0);foregroundBuffer.Line(a,d,.022,white);foregroundBuffer.Line(b,c1,.022,white);}for(int end=-1;end<=1;end+=2){V socket=p.Position+axis*(end*.9);foregroundBuffer.Disc(socket,.095,StoneDark);foregroundBuffer.Ring(socket,.09,.014,LavenderEdge);foregroundBuffer.Disc(socket,.025,new Color(1,.80f,.42f));}}
+   else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;foregroundBuffer.Line(a+side*.025,b+side*.025,.20,StoneDark);foregroundBuffer.Disc(a,.10,StoneFace);foregroundBuffer.Disc(b,.10,StoneFace);foregroundBuffer.Line(a,b,.095,new Color(.44f,.49f,.62f));foregroundBuffer.Line(a+side*.035,b+side*.035,.036,c);foregroundBuffer.Disc(a,.032,new Color(1,.80f,.42f));foregroundBuffer.Disc(b,.032,new Color(1,.80f,.42f));}
    if(i==previewIndex&&!previewAllowed){
     foregroundBuffer.Ring(p.Position,PieceInfo.SelectionRadius(p.Kind),.035,new Color(1f,.37f,.43f,.94f));
     foregroundBuffer.Line(p.Position+new V(-.14,-.14),p.Position+new V(.14,.14),.027,new Color(1f,.37f,.43f));
@@ -174,17 +193,17 @@ public class BoardRenderer : MonoBehaviour {
   double half=WallGeometry.Thickness(wall)*.5;
   var outline=WallGeometry.Vertices(wall);
   V depth=new V(.026,-.038);
-  for(int k=0;k<outline.Length;k++)foregroundBuffer.Quad(outline[k],outline[(k+1)%outline.Length],outline[(k+1)%outline.Length]+depth,outline[k]+depth,new Color(.074f,.066f,.10f));
+  for(int k=0;k<outline.Length;k++)foregroundBuffer.Quad(outline[k],outline[(k+1)%outline.Length],outline[(k+1)%outline.Length]+depth,outline[k]+depth,StoneDark);
   // A continuous physical face under the seams: no fake gaps or oversized shadow.
-  foregroundBuffer.Quad(outline[0],outline[1],outline[2],outline[3],new Color(.15f,.14f,.20f));
+  foregroundBuffer.Quad(outline[0],outline[1],outline[2],outline[3],StoneDark);
   int count=System.Math.Max(1,(int)System.Math.Ceiling(length/.52));double step=length/count;
   for(int i=0;i<count;i++){
    double start=i*step+.014,end=(i+1)*step-.014;if(end<=start)continue;
    double chamfer=System.Math.Min(System.Math.Min(.045,half*.35),(end-start)*.2);
    V[] poly={a+axis*(start+chamfer)+side*half,a+axis*(end-chamfer)+side*half,a+axis*end+side*(half-chamfer),a+axis*end-side*(half-chamfer),a+axis*(end-chamfer)-side*half,a+axis*(start+chamfer)-side*half,a+axis*start-side*(half-chamfer),a+axis*start+side*(half-chamfer)};
-   V center=a+axis*((start+end)*.5);float variation=.96f+.04f*Mathf.Sin(i*1.7f);Color face=new Color(.19f*variation,.18f*variation,.25f*variation);
-   for(int k=0;k<8;k++){foregroundBuffer.Tri(center,poly[k],poly[(k+1)%8],face);foregroundBuffer.Line(poly[k],poly[(k+1)%8],.017,k<3?new Color(.38f,.35f,.46f):new Color(.10f,.09f,.14f));}
-   foregroundBuffer.Line(a+axis*(start+chamfer)+side*(half-.035),a+axis*(end-chamfer)+side*(half-.035),.011,new Color(.45f,.41f,.53f,.65f));
+   V center=a+axis*((start+end)*.5);float variation=.96f+.04f*Mathf.Sin(i*1.7f);Color face=new Color(StoneFace.r*variation,StoneFace.g*variation,StoneFace.b*variation);
+   for(int k=0;k<8;k++){foregroundBuffer.Tri(center,poly[k],poly[(k+1)%8],face);foregroundBuffer.Line(poly[k],poly[(k+1)%8],.017,k<3?(VisualEnvironment.HighContrast?LavenderEdge:StoneLight):StoneDark);}
+   foregroundBuffer.Line(a+axis*(start+chamfer)+side*(half-.035),a+axis*(end-chamfer)+side*(half-.035),.011,new Color(StoneLight.r,StoneLight.g,StoneLight.b,.85f));
   }
   wallImpacts.Clear();
   foreach(var beam in result.Beams){
@@ -225,7 +244,7 @@ public class BoardRenderer : MonoBehaviour {
   if(hintStage>=3&&PieceInfo.CanRotate(hintPiece.Kind)){V axis=V.Angle(hintPiece.Angle);foregroundBuffer.Line(p,p+axis*.85,.014,c);foregroundBuffer.Disc(p+axis*.85,.055,c);}
  }
  void Mount(MeshBuffer buffer,V p,double radius){buffer.Disc(p+new V(.035,-.055),radius+.03,new Color(.012f,.028f,.043f,.85f));buffer.Disc(p,radius,new Color(.11f,.18f,.24f));buffer.Ring(p,radius,.018,new Color(.28f,.39f,.46f));for(int k=0;k<3;k++)buffer.Disc(p+V.Angle(90+k*120)*(radius*.84),.022,new Color(.57f,.65f,.66f));}
- void ReceiverBase(V p,double radius){foregroundBuffer.Disc(p+new V(.02,-.035),radius,new Color(.065f,.058f,.095f));foregroundBuffer.Disc(p,radius,new Color(.15f,.13f,.21f));foregroundBuffer.Arc(p,radius,.018,30,215,new Color(.38f,.34f,.47f));}
+ void ReceiverBase(V p,double radius){foregroundBuffer.Disc(p+new V(.02,-.035),radius,StoneDark);foregroundBuffer.Disc(p,radius,StoneFace);foregroundBuffer.Ring(p,radius,.018,VisualEnvironment.HighContrast?new Color(.82f,.77f,1):LavenderEdge);}
  void OnDestroy(){DestroyMaterial(boardMaterial);DestroyMaterial(baseMaterial);DestroyMaterial(beamMaterial);DestroyMaterial(glassMaterial);DestroyMaterial(waterMaterial);DestroyMaterial(foregroundMaterial);}
  void DestroyMaterial(Material material){if(material==null)return;if(Application.isPlaying)Destroy(material);else DestroyImmediate(material);}
 }

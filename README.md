@@ -43,7 +43,7 @@ Unity yolu farklıysa `PRISM_UNITY_EDITOR` ile belirtilebilir.
 ## Android / Google Play
 Release build sözleşmesi:
 - package: `com.prismstudio.lightworkshop`
-- sürüm: `0.9.1`, versionCode `91` (environment variable ile override edilebilir)
+- sürüm: `0.9.2`, versionCode `92` (environment variable ile override edilebilir)
 - signed `.aab`
 - target API 36, min API 26
 - ARM64

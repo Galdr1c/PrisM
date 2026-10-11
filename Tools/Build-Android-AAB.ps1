@@ -14,8 +14,8 @@ foreach ($name in $required) {
 }
 if (-not (Test-Path -LiteralPath $env:PRISM_KEYSTORE_PATH)) { throw "Keystore not found: $env:PRISM_KEYSTORE_PATH" }
 
-$version = if ($env:PRISM_VERSION_NAME) { $env:PRISM_VERSION_NAME } else { '0.9.1' }
-$code = if ($env:PRISM_VERSION_CODE) { $env:PRISM_VERSION_CODE } else { '91' }
+$version = if ($env:PRISM_VERSION_NAME) { $env:PRISM_VERSION_NAME } else { '0.9.2' }
+$code = if ($env:PRISM_VERSION_CODE) { $env:PRISM_VERSION_CODE } else { '92' }
 $buildLog = Join-Path $projectRoot 'unity-android-release.log'
 
 $args = @(

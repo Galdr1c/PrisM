@@ -5,10 +5,14 @@ using UnityEngine.TextCore.LowLevel;
 namespace Prism {
 // Presentation resources only: technical package/namespace identity stays Prism.
 public static class PrismTheme {
- public static readonly Color Background=new Color32(9,8,18,255);
- public static readonly Color Surface=new Color(20/255f,18/255f,34/255f,.92f);
+ public static readonly Color Background=new Color32(7,6,26,255);
+ public static readonly Color Surface=new Color32(38,34,62,245);
+ public static readonly Color Stone=new Color32(56,51,79,255);
+ public static readonly Color StoneLight=new Color32(75,69,113,255);
+ public static readonly Color Primary=new Color32(237,232,252,255);
+ public static readonly Color PrimaryInk=new Color32(23,19,55,255);
  public static readonly Color Ivory=new Color32(245,242,232,255);
- public static readonly Color Muted=new Color32(173,167,189,255);
+ public static readonly Color Muted=new Color32(179,173,198,255);
  public static readonly Color Accent=new Color32(143,213,228,255);
  public static readonly Color Success=new Color32(142,225,183,255);
  static TMP_FontAsset regular,semibold;

@@ -39,7 +39,7 @@
 - Android back overlay/navigation davranışı.
 - Procedural audio + optional haptics.
 - Auto/Low/Medium/High visual quality.
-- HDR beam, Bloom/ACES, water/glass katmanları.
+- HDR beam, Bloom, water/glass katmanları; düz illüstrasyon paletini koruyan ton eşlemesiz sunum.
 - 100-level runtime smoke kodu: her bölüm için known solution + reset kontrolü; chapter örnek screenshot'ları.
 - ScriptableObject LevelCatalog; stale/invalid catalog güvenli fallback.
 - Signed Android AAB build otomasyonu, 16 KB page-size doğrulaması, Play store asset generatorü ve Play Console deklarasyon cevap sayfası.

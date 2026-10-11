@@ -11,8 +11,8 @@ namespace Prism.Editor {
 public static class BuildProject {
  const string ScenePath="Assets/Scenes/Prism.unity";
  const string ApplicationId="com.prismstudio.lightworkshop";
- const string DefaultVersion="0.9.1";
- const int DefaultVersionCode=91;
+ const string DefaultVersion="0.9.2";
+ const int DefaultVersionCode=92;
 
  public static void Build(){BuildWindowsDevelopment();}
 

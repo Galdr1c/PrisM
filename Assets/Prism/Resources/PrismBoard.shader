@@ -1,7 +1,9 @@
 Shader "Prism/Board" {
  Properties {
-  _Background("Background", Color) = (0.02745,0.02745,0.06667,1)
-  _GridColor("Grid", Color) = (0.10,0.09,0.16,1)
+  _Background("Background", Color) = (0.05098,0.04314,0.14902,1)
+  _EdgeBackground("Edge Background", Color) = (0.02745,0.02353,0.10196,1)
+  _GridColor("Grid", Color) = (0.70588,0.66275,1,1)
+  _GridStrength("Grid Strength", Range(0,0.35)) = 0.009
   _SurfaceTex("Laboratory Surface", 2D) = "black" {}
   _SurfaceAmount("Surface Amount", Range(0,0.35)) = 0
  }
@@ -14,7 +16,9 @@ Shader "Prism/Board" {
    #pragma fragment frag
    #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
    float4 _Background;
+   float4 _EdgeBackground;
    float4 _GridColor;
+   float _GridStrength;
    TEXTURE2D(_SurfaceTex); SAMPLER(sampler_SurfaceTex);
    float _SurfaceAmount;
    struct A { float4 positionOS:POSITION; };
@@ -25,13 +29,12 @@ Shader "Prism/Board" {
     float aa=max(fwidth(length(cell)),0.008);
     float dotMask=1.0-smoothstep(0.045-aa,0.045+aa,length(cell));
     float radius=length(i.world);
-    float vignette=saturate(1.08-radius*0.06);
     float centerGlow=saturate(1.0-radius/6.5);
     float edgeFade=1.0-smoothstep(3.6,5.2,radius);
-    float3 baseColor=_Background.rgb*(0.80+0.17*vignette)+float3(0.002,0.001,0.006)*centerGlow;
+    float3 baseColor=lerp(_EdgeBackground.rgb,_Background.rgb,centerGlow);
     float3 surface=SAMPLE_TEXTURE2D(_SurfaceTex,sampler_SurfaceTex,saturate(i.world/10.0+0.5)).rgb;
     baseColor=lerp(baseColor,surface,_SurfaceAmount);
-    float gridStrength=dotMask*(0.10+0.035*centerGlow)*edgeFade;
+    float gridStrength=dotMask*_GridStrength*(0.72+0.28*centerGlow)*edgeFade;
     return half4(lerp(baseColor,_GridColor.rgb,gridStrength),1);
    }
    ENDHLSL

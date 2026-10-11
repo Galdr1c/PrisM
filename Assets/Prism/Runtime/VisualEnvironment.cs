@@ -63,7 +63,9 @@ public static class VisualEnvironment {
    var volume=root.AddComponent<Volume>();volume.isGlobal=true;volume.priority=50f;
    var profile=ScriptableObject.CreateInstance<VolumeProfile>();profile.name="Prism Runtime Volume";volume.sharedProfile=profile;
    bloom=profile.Add<Bloom>(true);
-   var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.ACES);
+   // The illustrated stone palette uses display colors. Filmic mapping crushes
+   // its dark lavender faces; bloom still supplies the beam's soft halo.
+   var tone=profile.Add<Tonemapping>(true);tone.mode.Override(TonemappingMode.None);
    color=profile.Add<ColorAdjustments>(true);
    Object.DontDestroyOnLoad(root);
   }
@@ -122,9 +124,9 @@ public static class VisualEnvironment {
    bloom.highQualityFiltering.Override(resolved==VisualQualityTier.High);
   }
   if(color!=null){
-   color.postExposure.Override(resolved==VisualQualityTier.Low?-.14f:-.1f);
-   color.contrast.Override(highContrast?15f:resolved==VisualQualityTier.High?9f:7f);
-   color.saturation.Override(resolved==VisualQualityTier.Low?5f:7f);
+   color.postExposure.Override(0f);
+   color.contrast.Override(0f);
+   color.saturation.Override(0f);
   }
  }
 

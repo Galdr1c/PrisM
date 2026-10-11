@@ -36,7 +36,7 @@ public static class PieceFootprint {
  }
 }
 public static class PlacementRules {
- const double BoardHalfExtent=4.25;
+ public const double BoardHalfExtent=4.25;
  public static double Clearance(Kind kind){
   switch(kind){
    case Kind.Prism:return .48;
@@ -71,6 +71,11 @@ public static class PlacementRules {
 public class Session {
  public Level Level;public List<Piece> Pieces=new List<Piece>();
  readonly Stack<List<Piece>> history=new Stack<List<Piece>>(); List<Piece> before;
+ public bool CanUndo=>history.Count>0;
+ static double CanonicalAngle(double angle){double value=angle%360;return value<0?value+360:value;}
+ static bool Same(Piece a,Piece b)=>a.Kind==b.Kind&&(a.Position-b.Position).Length<1e-8&&
+  Math.Abs(CanonicalAngle(a.Angle)-CanonicalAngle(b.Angle))<1e-8;
+ static bool Same(IList<Piece> a,IList<Piece> b){if(a.Count!=b.Count)return false;for(int i=0;i<a.Count;i++)if(!Same(a[i],b[i]))return false;return true;}
  static List<Piece> Copy(IEnumerable<Piece> ps){var copy=new List<Piece>();foreach(var p in ps)copy.Add(p.Copy());return copy;}
  public Session(Level l){Level=l;Pieces=Copy(l.Initial);}
  public int Remaining(Kind kind){int n=0;foreach(var k in Level.Stock)if(k==kind)n++;foreach(var p in Pieces)if(p.Kind==kind)n--;return n;}
@@ -78,7 +83,33 @@ public class Session {
   if(Remaining(kind)<=0||!PlacementRules.IsValid(Level,Pieces,kind,position,angle:angle))return false;
   BeginEdit();Pieces.Add(new Piece(kind,position,angle));EndEdit();return true;
  }
- public void BeginEdit(){before=Copy(Pieces);} public void EndEdit(){if(before!=null){history.Push(before);before=null;}}
+ public void BeginEdit(){if(before==null)before=Copy(Pieces);} public void EndEdit(){if(before!=null){if(!Same(before,Pieces))history.Push(before);before=null;}}
+ public void CancelEdit(){if(before!=null)Pieces=before;before=null;}
+ static bool Finite(double value)=>!double.IsNaN(value)&&!double.IsInfinity(value);
+ // Persisted experiments are untrusted. Validate the complete layout before changing live state.
+ public bool RestorePieces(IList<Piece> snapshot){
+  if(snapshot==null||Level==null)return false;
+  var capacities=new Dictionary<Kind,int>();var initialCounts=new Dictionary<Kind,int>();var counts=new Dictionary<Kind,int>();
+  foreach(var kind in Level.Stock){if(!capacities.ContainsKey(kind))capacities[kind]=0;capacities[kind]++;}
+  foreach(var piece in Level.Initial){if(!initialCounts.ContainsKey(piece.Kind))initialCounts[piece.Kind]=0;initialCounts[piece.Kind]++;}
+  foreach(var entry in initialCounts){if(!capacities.ContainsKey(entry.Key)||capacities[entry.Key]<entry.Value)capacities[entry.Key]=entry.Value;}
+  var restored=new List<Piece>();
+  foreach(var piece in snapshot){
+   if(piece==null||!Finite(piece.Position.X)||!Finite(piece.Position.Y)||!Finite(piece.Angle)||!Enum.IsDefined(typeof(Kind),piece.Kind))return false;
+   if(!counts.ContainsKey(piece.Kind))counts[piece.Kind]=0;counts[piece.Kind]++;
+   if(!capacities.ContainsKey(piece.Kind)||counts[piece.Kind]>capacities[piece.Kind])return false;
+   restored.Add(new Piece(piece.Kind,piece.Position,CanonicalAngle(piece.Angle)));
+  }
+  var matchedInitial=new bool[Level.Initial.Length];
+  for(int i=0;i<restored.Count;i++){
+   bool authored=false;
+   for(int j=0;j<Level.Initial.Length;j++)if(!matchedInitial[j]&&Same(restored[i],Level.Initial[j])){matchedInitial[j]=true;authored=true;break;}
+   // Initial fixtures may intentionally sit on an emitter or in authored geometry.
+   // They remain movable/removable; only their exact original pose gets this exemption.
+   if(!authored&&!PlacementRules.IsValid(Level,restored,restored[i].Kind,restored[i].Position,i,restored[i].Angle))return false;
+  }
+  Pieces=restored;history.Clear();before=null;return true;
+ }
  public void Undo(){if(history.Count>0)Pieces=history.Pop();before=null;}
  public void Reset(){BeginEdit();Pieces=Copy(Level.Initial);EndEdit();}
  public void Remove(int index){if(index<0||index>=Pieces.Count)return;BeginEdit();Pieces.RemoveAt(index);EndEdit();}

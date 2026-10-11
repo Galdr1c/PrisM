@@ -10,6 +10,17 @@ public enum Kind { Mirror,Prism,Green,Red,Lens,Sphere }
 public static class PieceInfo {
  public static string Name(Kind kind){switch(kind){case Kind.Mirror:return "Ayna";case Kind.Prism:return "Prizma";case Kind.Green:return "Yeşil seçici";case Kind.Red:return "Kırmızı seçici";case Kind.Lens:return "Lens";case Kind.Sphere:return "Cam küre";default:return kind.ToString();}}
  public static bool CanRotate(Kind kind)=>kind!=Kind.Sphere;
+ public static string Description(Kind kind){
+  switch(kind){
+   case Kind.Mirror:return "Işığı yansıtır. Aynanın açısını değiştirerek ışığı hedefe yönlendir.";
+   case Kind.Prism:return "Beyaz ışığı renk bantlarına ayırır. Döndürerek çıkan renklerin yönünü değiştir.";
+   case Kind.Green:return "Yeşil bandı yansıtır; diğer renk bantları yoluna devam eder. Tek çizgili altıgenden tanıyabilirsin.";
+   case Kind.Red:return "Turuncu ve kırmızı bantları yansıtır; diğer renk bantları yoluna devam eder. Çift çizgili elmastan tanıyabilirsin.";
+   case Kind.Lens:return "Işınları odak noktasına doğru büker. Merceğin yönünü değiştirerek ışığı topla.";
+   case Kind.Sphere:return "Işık küreye girerken ve çıkarken kırılır. Konumunu değiştirerek ışığın yönünü ayarla; küre döndürülmez.";
+   default:return Name(kind);
+  }
+ }
  public static double SelectionRadius(Kind kind)=>kind==Kind.Sphere?0.85:1.02;
  public static string BandName(int band){
   switch(band){

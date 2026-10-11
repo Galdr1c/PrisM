@@ -11,7 +11,7 @@ public static class VisualEnvironment {
  static ColorAdjustments color;
  static VisualQualityTier requested=VisualQualityTier.Auto;
  static VisualQualityTier resolved=VisualQualityTier.Medium;
- static bool reducedMotion,highContrast,colorSymbols,precisionMode,paused;
+ static bool reducedMotion,highContrast,colorSymbols=true,precisionMode,largeText,paused;
  static float beamScale=1f,bloomScale=1f,motionTime;
  static bool motionHooked;
  static int lastMotionFrame=-1;
@@ -22,6 +22,7 @@ public static class VisualEnvironment {
  public static bool HighContrast=>highContrast;
  public static bool ColorSymbols=>colorSymbols;
  public static bool PrecisionMode=>precisionMode;
+ public static bool LargeText=>largeText;
  public static float BeamScale=>beamScale;
  public static float BloomScale=>bloomScale;
  public static bool Paused=>paused;
@@ -42,8 +43,9 @@ public static class VisualEnvironment {
   requested=(VisualQualityTier)Mathf.Clamp(PlayerPrefs.GetInt("prism.quality",0),0,3);
   reducedMotion=PlayerPrefs.GetInt("prism.reducedMotion",0)!=0;
   highContrast=PlayerPrefs.GetInt("prism.highContrast",0)!=0;
-  colorSymbols=PlayerPrefs.GetInt("prism.colorSymbols",0)!=0;
+  colorSymbols=PlayerPrefs.GetInt("prism.colorSymbols",1)!=0;
   precisionMode=PlayerPrefs.GetInt("prism.precisionMode",0)!=0;
+  largeText=PlayerPrefs.GetInt("prism.largeText",0)!=0;
   beamScale=Mathf.Clamp(PlayerPrefs.GetFloat("prism.beamScale",1f),.5f,1.5f);
   bloomScale=Mathf.Clamp(PlayerPrefs.GetFloat("prism.bloomScale",1f),0f,1.5f);
   Configure(Camera.main);
@@ -106,6 +108,7 @@ public static class VisualEnvironment {
  public static void SetHighContrast(bool value){highContrast=value;PlayerPrefs.SetInt("prism.highContrast",value?1:0);PlayerPrefs.Save();Apply();}
  public static void SetColorSymbols(bool value){colorSymbols=value;PlayerPrefs.SetInt("prism.colorSymbols",value?1:0);PlayerPrefs.Save();}
  public static void SetPrecisionMode(bool value){precisionMode=value;PlayerPrefs.SetInt("prism.precisionMode",value?1:0);PlayerPrefs.Save();}
+ public static void SetLargeText(bool value){largeText=value;PlayerPrefs.SetInt("prism.largeText",value?1:0);PlayerPrefs.Save();}
  public static void SetBeamScale(float value){beamScale=Mathf.Clamp(value,.5f,1.5f);PlayerPrefs.SetFloat("prism.beamScale",beamScale);PlayerPrefs.Save();}
  public static void SetBloomScale(float value){bloomScale=Mathf.Clamp(value,0f,1.5f);PlayerPrefs.SetFloat("prism.bloomScale",bloomScale);PlayerPrefs.Save();Apply();}
  public static void SetPaused(bool value){paused=value;}

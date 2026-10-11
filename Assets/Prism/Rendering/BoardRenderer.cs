@@ -40,12 +40,14 @@ public class BoardRenderer : MonoBehaviour {
  bool dragging,rotating;
  float liftWorld;
  Piece hintPiece;
+ Piece invalidPlacementGhost;
  struct WallImpact {public V Position;public Color Color;public float Power;}
  readonly List<WallImpact> wallImpacts=new List<WallImpact>(8);
  V? pointerAnchor;
  int previewIndex=-1;
  bool previewAllowed=true;
  public void SetPlacementPreview(int index,bool allowed){previewIndex=index;previewAllowed=allowed;}
+ public void SetInvalidPlacementGhost(Piece ghost){invalidPlacementGhost=ghost?.Copy();}
  public void SetPointerAnchor(V? anchor){pointerAnchor=anchor;}
  public void SetInteraction(int selected,bool dragging,bool rotating,float liftWorld){interactionSelected=selected;this.dragging=dragging;this.rotating=rotating;this.liftWorld=Mathf.Clamp(liftWorld,0,.8f);}
  public void ShowHint(int stage,Level level,IList<Piece> pieces){
@@ -118,6 +120,7 @@ public class BoardRenderer : MonoBehaviour {
    Color core=c;core.a=.50f*strength;beamBuffer.BeamLine(beam.A,beam.B,.016*width,core);
   }
   foreach(var wall in level.Walls)DrawObsidianWall(wall,result);
+  if(dragging)DrawPlacementBoundary();
   if(pointerAnchor.HasValue&&selected>=0&&selected<pieces.Count){
    foregroundBuffer.Ring(pointerAnchor.Value,.12,.018,new Color(.78f,.71f,1,VisualEnvironment.HighContrast?1:.7f));
    foregroundBuffer.Line(pointerAnchor.Value,pieces[selected].Position,.014,new Color(.78f,.71f,1,VisualEnvironment.HighContrast?.8f:.45f));
@@ -173,8 +176,8 @@ public class BoardRenderer : MonoBehaviour {
    }
    else if(p.Kind==Kind.Sphere){Mount(baseBuffer,p.Position,.62);glassBuffer.GlassDisc(p.Position,.55,new Color(.74f,.91f,1,.9f));foregroundBuffer.Ring(p.Position,.55,.026,white);foregroundBuffer.Arc(p.Position,.43,.026,70,90,new Color(.65f,.86f,1,.6f));foregroundBuffer.Disc(p.Position+new V(-.17,.19),.06,new Color(1,1,1,.65f));}
    else if(p.Kind==Kind.Lens){V side=axis.Perp;for(int k=0;k<24;k++){double t=-1+k/12.0,t2=-1+(k+1)/12.0;double w=.18*(1-t*t),w2=.18*(1-t2*t2);V a=p.Position+axis*(t*.9)+side*w,b=p.Position+axis*(t*.9)-side*w,c1=p.Position+axis*(t2*.9)-side*w2,d=p.Position+axis*(t2*.9)+side*w2;Color lens=new Color(.8f,.94f,1,.75f);Vector2 ua=new Vector2((float)(t+1)*.5f,.5f+(float)w/.36f),ub=new Vector2(ua.x,.5f-(float)w/.36f),uc=new Vector2((float)(t2+1)*.5f,.5f-(float)w2/.36f),ud=new Vector2(uc.x,.5f+(float)w2/.36f);glassBuffer.Tri(a,b,c1,lens,ua,ub,uc,0);glassBuffer.Tri(a,c1,d,lens,ua,uc,ud,0);foregroundBuffer.Line(a,d,.022,white);foregroundBuffer.Line(b,c1,.022,white);}for(int end=-1;end<=1;end+=2){V socket=p.Position+axis*(end*.9);foregroundBuffer.Disc(socket,.095,StoneDark);foregroundBuffer.Ring(socket,.09,.014,LavenderEdge);foregroundBuffer.Disc(socket,.025,new Color(1,.80f,.42f));}}
-   else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;foregroundBuffer.Line(a+side*.025,b+side*.025,.20,StoneDark);foregroundBuffer.Disc(a,.10,StoneFace);foregroundBuffer.Disc(b,.10,StoneFace);foregroundBuffer.Line(a,b,.095,new Color(.44f,.49f,.62f));foregroundBuffer.Line(a+side*.035,b+side*.035,.036,c);foregroundBuffer.Disc(a,.032,new Color(1,.80f,.42f));foregroundBuffer.Disc(b,.032,new Color(1,.80f,.42f));}
-   if(i==previewIndex&&!previewAllowed){
+   else{if(p.Kind==Kind.Green)c=Spectrum[3];if(p.Kind==Kind.Red)c=Spectrum[6];V side=axis.Perp;V a=p.Position-axis*.65,b=p.Position+axis*.65;foregroundBuffer.Line(a+side*.025,b+side*.025,.20,StoneDark);foregroundBuffer.Disc(a,.10,StoneFace);foregroundBuffer.Disc(b,.10,StoneFace);foregroundBuffer.Line(a,b,.095,new Color(.44f,.49f,.62f));foregroundBuffer.Line(a+side*.035,b+side*.035,.036,c);foregroundBuffer.Disc(a,.032,new Color(1,.80f,.42f));foregroundBuffer.Disc(b,.032,new Color(1,.80f,.42f));if(p.Kind==Kind.Red||p.Kind==Kind.Green)DrawSelectorIdentity(p.Position,axis,p.Kind,c);}
+   if(i==previewIndex&&!previewAllowed&&invalidPlacementGhost==null){
     foregroundBuffer.Ring(p.Position,PieceInfo.SelectionRadius(p.Kind),.035,new Color(1f,.37f,.43f,.94f));
     foregroundBuffer.Line(p.Position+new V(-.14,-.14),p.Position+new V(.14,.14),.027,new Color(1f,.37f,.43f));
    }
@@ -183,8 +186,34 @@ public class BoardRenderer : MonoBehaviour {
     for(int tick=-1;tick<=1;tick++){V tickAxis=V.Angle(p.Angle+tick*45);foregroundBuffer.Line(p.Position+tickAxis*(radius-.04),p.Position+tickAxis*(radius+.05),.018,selection);}
     if(rotating||VisualEnvironment.PrecisionMode)foregroundBuffer.Line(p.Position-axis*.18,p.Position+axis*.18,.015,selection);if(PieceInfo.CanRotate(p.Kind)){V handle=p.Position+axis*radius;foregroundBuffer.Line(p.Position+axis*(radius-.20),handle,.025,new Color(.97f,.77f,.38f,.8f));foregroundBuffer.Disc(handle,.112,new Color(.06f,.12f,.15f),Mathf.Max(14,VisualEnvironment.CircleSegments/2));foregroundBuffer.Ring(handle,.105,.026,new Color(1,.83f,.5f),Mathf.Max(14,VisualEnvironment.CircleSegments/2));foregroundBuffer.Disc(handle,.036,new Color(.97f,.84f,.56f));}}
   }
+  if(invalidPlacementGhost!=null)DrawInvalidPlacementGhost();
   DrawHint();
   boardBuffer.Apply(boardMesh);baseBuffer.Apply(baseMesh);waterBuffer.Apply(waterMesh);beamBuffer.Apply(beamMesh);glassBuffer.Apply(glassMesh);foregroundBuffer.Apply(foregroundMesh);
+ }
+ void DrawPlacementBoundary(){
+  // PlacementRules constrains the optic's centre, not its entire rendered footprint.
+  // Show that exact region only while moving a piece so fixtures remain uncluttered.
+  const double extent=PlacementRules.BoardHalfExtent,step=.20,dash=.10;
+  Color border=new Color(.79f,.73f,1,VisualEnvironment.HighContrast?.85f:.55f);
+  for(double t=-extent;t<extent;t+=step){double end=System.Math.Min(t+dash,extent);foregroundBuffer.Line(new V(t,-extent),new V(end,-extent),.018,border);foregroundBuffer.Line(new V(t,extent),new V(end,extent),.018,border);foregroundBuffer.Line(new V(-extent,t),new V(-extent,end),.018,border);foregroundBuffer.Line(new V(extent,t),new V(extent,end),.018,border);}
+ }
+ void DrawSelectorIdentity(V center,V axis,Kind kind,Color tint){
+  // Body badge echoes the tray glyph: red diamond/two bars; green hexagon/one bar.
+  // It is decorative and deliberately leaves the optical segment unchanged.
+  V side=axis.Perp;const double radius=.22;
+  foregroundBuffer.Disc(center,.26,StoneDark);
+  int corners=kind==Kind.Red?4:6;double rotation=kind==Kind.Red?90:0;
+  tint.a=1;
+  for(int k=0;k<corners;k++){V a=V.Angle(rotation+k*360.0/corners)*radius,b=V.Angle(rotation+(k+1)*360.0/corners)*radius;foregroundBuffer.Line(center+axis*a.X+side*a.Y,center+axis*b.X+side*b.Y,.030,tint);}
+  if(kind==Kind.Red){for(int k=-1;k<=1;k+=2)foregroundBuffer.Line(center-axis*.09+side*(k*.052),center+axis*.09+side*(k*.052),.023,tint);}
+  else foregroundBuffer.Line(center-axis*.12,center+axis*.12,.028,tint);
+ }
+ void DrawInvalidPlacementGhost(){
+  var p=invalidPlacementGhost;Color fill=new Color(1,.37f,.43f,.16f),edge=new Color(1,.37f,.43f,.85f);V axis=V.Angle(p.Angle);
+  if(p.Kind==Kind.Prism){var vertices=Optics.Vertices(p);foregroundBuffer.Tri(vertices[0],vertices[1],vertices[2],fill);for(int k=0;k<3;k++)foregroundBuffer.Line(vertices[k],vertices[(k+1)%3],.035,edge);}
+  else if(p.Kind==Kind.Sphere){foregroundBuffer.Disc(p.Position,.55,fill);foregroundBuffer.Ring(p.Position,.55,.035,edge);}
+  else {double size=p.Kind==Kind.Lens?.9:.65;foregroundBuffer.Line(p.Position-axis*size,p.Position+axis*size,p.Kind==Kind.Lens?.26:.18,fill);foregroundBuffer.Line(p.Position-axis*size,p.Position+axis*size,.038,edge);if(p.Kind==Kind.Red||p.Kind==Kind.Green)DrawSelectorIdentity(p.Position,axis,p.Kind,edge);}
+  foregroundBuffer.Line(p.Position+new V(-.10,-.10),p.Position+new V(.10,.10),.03,edge);foregroundBuffer.Line(p.Position+new V(-.10,.10),p.Position+new V(.10,-.10),.03,edge);
  }
  void DrawObsidianWall(Wall wall,Result result){
   V a=wall.A,b=wall.B;

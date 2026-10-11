@@ -16,9 +16,18 @@ public sealed class PrismPresentation : MonoBehaviour {
  Canvas canvas;
  RectTransform safe,screen,overlay;
  ScreenView view;
+ ScreenView mapOrigin;
+ float rememberedMapScroll=-1;
+ int rememberedMapChapter=-1;
+ bool reviewMode,skipCompletion;
+ RectTransform reviewTools;
+ Button undoButton;
+ readonly List<TextMeshProUGUI> goalReadings=new List<TextMeshProUGUI>();
+ readonly List<PrismIcon> goalSymbols=new List<PrismIcon>();
+ ScrollRect chapterScroll;
  string sheet="";
  int chapter, mapSelection, hintStage, hintLevel=-1;
- bool draggingTray,completionWaiting,tutorialReplay,interactionSeen,introPlayed,mapLevels;
+ bool draggingTray,completionWaiting,interactionSeen,introPlayed,mapLevels;
  float lastInteraction;
  Coroutine reveal;
  Rect lastSafe;int lastWidth,lastHeight;
@@ -35,6 +44,27 @@ public sealed class PrismPresentation : MonoBehaviour {
  public bool BlocksBoardInput=>view!=ScreenView.Gameplay||sheet.Length>0||completionWaiting||draggingTray;
  public bool IsGameplay=>view==ScreenView.Gameplay;
  public bool HasModal=>sheet.Length>0;
+ public RectTransform AccessibleRoot=>completionWaiting?null:sheet.Length>0?overlay:screen;
+ public IEnumerator AuditNavigationChecks(){
+  var failures=new List<string>();
+  ShowGameplay();int origin=game.CurrentIndex;ShowMap();yield return null;HandleBack();yield return null;
+  if(!IsGameplay||game.CurrentIndex!=origin)failures.Add("Map Back did not return to the current experiment");
+  var reader=GetComponent<PrismScreenReader>();ShowSettings();yield return null;reader.RefreshNow();
+  if(reader.NativeHierarchy==null||reader.NativeButtonCount<3)failures.Add("Settings lacks native semantic actions");
+  HandleBack();yield return null;
+  ShowGameplay();
+  ShowCompletion(false);yield return null;
+  var hud=screen.GetComponent<CanvasGroup>();
+  if(hud.interactable||hud.blocksRaycasts)failures.Add("Hidden completion HUD still accepts input");
+  reader.RefreshNow();if(reader.NodeCount!=0)failures.Add("Hidden completion HUD remains exposed to screen readers");
+  yield return new WaitForSecondsRealtime(1.3f);
+  var inspect=Array.Find(GetComponentsInChildren<Button>(),b=>Array.Exists(b.GetComponentsInChildren<TextMeshProUGUI>(),t=>t.text=="Çözümü incele"));
+  if(!inspect)throw new Exception("Completion sheet lacks review action");inspect.onClick.Invoke();yield return null;
+  var next=Array.Find(GetComponentsInChildren<Button>(),b=>Array.Exists(b.GetComponentsInChildren<TextMeshProUGUI>(),t=>t.text=="Sonraki bölüm"));
+  if(!next)failures.Add("Reviewed solution lacks persistent next-level action");else next.onClick.Invoke();yield return null;
+  if(next&&game.CurrentIndex!=origin+1)failures.Add("Review action did not advance the campaign");
+  if(failures.Count>0)throw new Exception(string.Join("; ",failures));
+ }
  public void CancelTrayGesture(){draggingTray=false;}
 
  public void Initialize(PrismGame controller){
@@ -47,11 +77,14 @@ public sealed class PrismPresentation : MonoBehaviour {
   screen=Rect("Screen",safe);Stretch(screen);overlay=Rect("Sheets",safe);Stretch(overlay);
   if(EventSystem.current==null){var events=new GameObject("Prism · UI input",typeof(EventSystem),typeof(InputSystemUIInputModule));events.GetComponent<InputSystemUIInputModule>().AssignDefaultActions();}
   ApplySafeArea();
+  gameObject.AddComponent<PrismScreenReader>().Initialize(this);
  }
  void Update(){
   if(game==null)return;
+  if(completionWaiting&&Pointer.current!=null&&Pointer.current.press.wasPressedThisFrame)skipCompletion=true;
   if(lastSafe!=UnityEngine.Screen.safeArea||lastWidth!=UnityEngine.Screen.width||lastHeight!=UnityEngine.Screen.height)ApplySafeArea();
   if(view!=ScreenView.Gameplay)return;
+  if(!game.IsAutomatedRun&&game.HasWon&&!completionWaiting&&sheet.Length==0&&!reviewMode){ReviewSolution();return;}
   if(Pointer.current!=null&&Pointer.current.press.wasPressedThisFrame){interactionSeen=true;lastInteraction=Time.unscaledTime;}
   if(levelTitle)levelTitle.text=game.CurrentLevel.Name;
   foreach(var entry in counts){
@@ -65,13 +98,28 @@ public sealed class PrismPresentation : MonoBehaviour {
   var result=game.CurrentResult;int lit=0;
   for(int i=0;i<goalDots.Count;i++){bool on=result!=null&&i<result.Energy.Length&&result.Energy[i]>=game.CurrentLevel.Goals[i].Threshold;goalDots[i].color=on?PrismTheme.Success:Alpha(PrismTheme.Ivory,.22f);if(on)lit++;}
   if(goalStatus)goalStatus.text=lit+" / "+goalDots.Count;
-  if(selectedTools)selectedTools.gameObject.SetActive(game.SelectedIndex>=0&&!game.HasWon&&sheet.Length==0&&!completionWaiting);
+  for(int i=0;i<goalReadings.Count;i++){
+   float charge=result==null?0:Mathf.Clamp01((float)(result.Energy[i]/game.CurrentLevel.Goals[i].Threshold));
+   bool done=result!=null&&result.Energy[i]>=game.CurrentLevel.Goals[i].Threshold;
+   goalReadings[i].text=done?"100%":Mathf.Min(99,Mathf.RoundToInt(charge*100))+"%";
+   goalReadings[i].color=done?PrismTheme.Success:PrismTheme.Muted;
+   goalSymbols[i].color=done?PrismTheme.Background:PrismTheme.Ivory;
+  }
+  if(undoButton)undoButton.interactable=game.CanUndo&&!game.HasWon&&!game.InteractionBusy;
+  if(selectedTools)selectedTools.gameObject.SetActive(game.SelectedIndex>=0&&!game.HasWon&&sheet.Length==0&&!completionWaiting&&!reviewMode);
   bool rotatable=game.SelectedIndex>=0&&PieceInfo.CanRotate(game.CurrentPieces[game.SelectedIndex].Kind);
   foreach(var control in precisionControls)if(control)control.SetActive(rotatable);
   if(angleStatus&&game.SelectedIndex>=0)angleStatus.text=rotatable?Mathf.RoundToInt((float)game.CurrentPieces[game.SelectedIndex].Angle)+"°":"Cam küre";
-  bool learning=game.CurrentIndex<3&&(tutorialReplay||!game.IsLevelComplete(game.CurrentIndex))&&sheet.Length==0&&!completionWaiting;
-  if(tutorial){bool visible=learning&&Time.unscaledTime-lastInteraction>=8;tutorial.gameObject.SetActive(visible);if(visible){tutorial.text=game.CurrentIndex==0?game.CurrentPieces.Count==0?"Aynayı ışığın yoluna sürükle":"Aynaya dokun. Açısını değiştir.":game.CurrentIndex==1?"Açıyı değiştir, ışığın yolunu izle.":"Bir hareketi geri almak için ok simgesine dokun.";}}
-  if(tutorialFinger){bool visible=learning&&!interactionSeen;tutorialFinger.gameObject.SetActive(visible);if(visible&&!VisualEnvironment.ReducedMotion){float t=Mathf.PingPong(Time.unscaledTime*.38f,1f);tutorialFinger.anchoredPosition=new Vector2(Mathf.Lerp(-90,-20,t),Mathf.Lerp(130,260,t));tutorialFinger.GetComponent<CanvasGroup>().alpha=Mathf.Sin(t*Mathf.PI)*.55f;}}
+  bool learning=game.CurrentIndex<3&&(game.IsTutorialReplay||!game.IsLevelComplete(game.CurrentIndex))&&sheet.Length==0&&!completionWaiting&&!reviewMode;
+  if(tutorial){tutorial.gameObject.SetActive(learning);if(learning) tutorial.text=game.CurrentPieces.Count==0?"1 · Aynayı tepsiden ışığın yoluna sürükle.":game.SelectedIndex<0?"2 · Aynaya dokun; dönüş tutamacını yakala.":lit<goalDots.Count?"3 · Aynayı döndür; ışığı hedefe ulaştır.":"Işık hedefe ulaştı!";}
+  if(tutorialFinger){
+   bool visible=learning&&!interactionSeen;tutorialFinger.gameObject.SetActive(visible);
+   if(visible){
+    Vector2 start=new Vector2(0,trayRoot?trayRoot.anchoredPosition.y+9:165),end=start;
+    if(Camera.main&&game.CurrentLevel.Solution.Length>0){var pose=game.CurrentLevel.Solution[0].Position;var point=Camera.main.WorldToScreenPoint(new Vector3((float)pose.X,(float)pose.Y,0));RectTransformUtility.ScreenPointToLocalPointInRectangle(safe,point,null,out var local);end=new Vector2(local.x,local.y+safe.rect.height*.5f);}
+    float t=VisualEnvironment.ReducedMotion?0:Mathf.PingPong(Time.unscaledTime*.38f,1f);tutorialFinger.anchoredPosition=Vector2.Lerp(start,end,t);tutorialFinger.GetComponent<CanvasGroup>().alpha=VisualEnvironment.ReducedMotion?.55f:Mathf.Sin(t*Mathf.PI)*.55f;
+   }
+  }
   if(feedback&&Time.unscaledTime>feedbackUntil)feedback.text="";
  }
  void ApplySafeArea(){
@@ -80,15 +128,14 @@ public sealed class PrismPresentation : MonoBehaviour {
   safe.anchorMin=new Vector2(lastSafe.xMin/lastWidth,lastSafe.yMin/lastHeight);safe.anchorMax=new Vector2(lastSafe.xMax/lastWidth,lastSafe.yMax/lastHeight);safe.offsetMin=safe.offsetMax=Vector2.zero;
   if(view==ScreenView.Home){Canvas.ForceUpdateCanvases();LayoutHome();}
  }
- void Clear(RectTransform parent){foreach(Transform child in parent)Destroy(child.gameObject);}
+ void Clear(RectTransform parent){for(int i=parent.childCount-1;i>=0;i--){var child=parent.GetChild(i);child.gameObject.SetActive(false);child.SetParent(null,false);Destroy(child.gameObject);}}
  void ClearSheet(){Clear(overlay);sheet="";VisualEnvironment.SetPaused(false);}
  void ChangeScreen(ScreenView next){
   draggingTray=false;game.CancelInteraction();
   if(reveal!=null){StopCoroutine(reveal);reveal=null;}if(screen){var existingGroup=screen.GetComponent<CanvasGroup>();if(existingGroup)existingGroup.alpha=1;}
-  if(completion!=null){StopCoroutine(completion);completion=null;}completionWaiting=false;ClearSheet();Clear(screen);view=next;counts.Clear();stockButtons.Clear();trayHalos.Clear();trayRoot=null;goalDots.Clear();selectedTools=null;tutorial=null;tutorialFinger=null;levelTitle=null;goalStatus=null;angleStatus=null;
+  if(completion!=null){StopCoroutine(completion);completion=null;}completionWaiting=false;RestoreHud();ClearSheet();Clear(screen);view=next;counts.Clear();stockButtons.Clear();trayHalos.Clear();trayRoot=null;goalDots.Clear();goalReadings.Clear();goalSymbols.Clear();selectedTools=null;tutorial=null;tutorialFinger=null;levelTitle=null;goalStatus=null;angleStatus=null;undoButton=null;reviewTools=null;reviewMode=false;
  }
  public void ShowHome(){
-  tutorialReplay=false;
   ChangeScreen(ScreenView.Home);Backdrop(screen);
   var scene=Rect("Ana menü optik sahnesi",screen);At(scene,.5f,1,0,-255,328,310);scene.gameObject.AddComponent<PrismHomeScene>();
   var wordmark=Label(screen,"PRISM",46,PrismTheme.Ivory,new Vector2(0,0),new Vector2(320,68),new Vector2(.5f,.44f),true);wordmark.characterSpacing=8;
@@ -105,13 +152,20 @@ public sealed class PrismPresentation : MonoBehaviour {
  public void ShowGameplay(){
   ChangeScreen(ScreenView.Gameplay);
   interactionSeen=false;lastInteraction=Time.unscaledTime;
-  IconButton(screen,"map",new Vector2(30,-31),new Vector2(0,1),ShowMap,"Bölümler");
+  IconButton(screen,game.IsTutorialReplay?"back":"map",new Vector2(30,-31),new Vector2(0,1),game.IsTutorialReplay?(Action)game.EndTutorialReplay:ShowMap,game.IsTutorialReplay?"Deneyime dön":"Bölümler");
   IconButton(screen,"pause",new Vector2(-30,-31),new Vector2(1,1),ShowPause,"Duraklat");
   Label(screen,"BÖLÜM "+(game.CurrentIndex+1).ToString("00")+" · "+game.CurrentLevel.Chapter,12,PrismTheme.Muted,new Vector2(0,-24),new Vector2(232,24),new Vector2(.5f,1));
   levelTitle=Label(screen,"",17,PrismTheme.Ivory,new Vector2(0,-48),new Vector2(232,28),new Vector2(.5f,1),true);levelTitle.enableAutoSizing=true;levelTitle.fontSizeMin=12;levelTitle.fontSizeMax=17;
   var targetPlate=Image(screen,"Hedef ilerlemesi",PrismTheme.Surface);targetPlate.sprite=Rounded();targetPlate.type=UnityEngine.UI.Image.Type.Sliced;At(targetPlate.rectTransform,.5f,1,0,-82,Mathf.Max(124,game.CurrentLevel.Goals.Length*17+76),30);
-  int goals=game.CurrentLevel.Goals.Length;float total=goals*17;
-  for(int i=0;i<goals;i++){var dot=Image(screen,"Hedef "+(i+1),Alpha(PrismTheme.Ivory,.25f));dot.sprite=Circle();At(dot.rectTransform,.5f,1,-total*.5f+i*17-20,-82,9,9);goalDots.Add(dot);}
+  int goals=game.CurrentLevel.Goals.Length;float total=goals*48;
+  targetPlate.rectTransform.sizeDelta=new Vector2(Mathf.Max(124,total+80),44);targetPlate.rectTransform.anchoredPosition=new Vector2(0,-84);
+  for(int i=0;i<goals;i++){
+   int index=i;float x=-total*.5f+i*48-5;var dot=Image(screen,"Hedef "+(i+1),Alpha(PrismTheme.Ivory,.25f));dot.sprite=Circle();At(dot.rectTransform,.5f,1,x,-73,20,20);goalDots.Add(dot);
+   var symbol=Icon(screen,game.CurrentLevel.Goals[i].Band<0?"spectrum":"band"+game.CurrentLevel.Goals[i].Band,new Vector2(x,-73),18,PrismTheme.Ivory);symbol.rectTransform.anchorMin=symbol.rectTransform.anchorMax=new Vector2(.5f,1);goalSymbols.Add(symbol);
+   goalReadings.Add(Label(screen,"0%",12,PrismTheme.Muted,new Vector2(x,-95),new Vector2(44,18),new Vector2(.5f,1)));
+   var hit=Image(screen,"Hedef bilgisi "+(i+1),Color.clear);At(hit.rectTransform,.5f,1,x,-86,48,48);hit.raycastTarget=true;var button=hit.gameObject.AddComponent<Button>();button.onClick.AddListener(()=>ShowTarget(index));
+   var reading=goalReadings[index];var semantics=hit.gameObject.AddComponent<PrismAccessibilityLabel>();semantics.Label="Hedef "+(i+1)+", "+PieceInfo.BandName(game.CurrentLevel.Goals[i].Band);semantics.ValueGetter=()=>reading?reading.text:"";
+  }
   goalStatus=Label(screen,"",12,PrismTheme.Ivory,new Vector2(total*.5f+12,-82),new Vector2(48,24),new Vector2(.5f,1));
   var tray=Image(screen,"Parça tepsisi",PrismTheme.Surface);tray.sprite=Rounded();tray.type=UnityEngine.UI.Image.Type.Sliced;float slotWidth=Mathf.Min(86,320f/Mathf.Max(1,CountKinds()));At(tray.rectTransform,.5f,0,0,156,CountKinds()*slotWidth+14,84);tray.raycastTarget=true;trayRoot=tray.rectTransform;
   var kinds=new List<Kind>();foreach(var k in game.CurrentLevel.Stock)if(!kinds.Contains(k))kinds.Add(k);
@@ -121,7 +175,7 @@ public sealed class PrismPresentation : MonoBehaviour {
    var cardShadow=button.GetComponent<PrismPressMotion>().Shadow.GetComponent<Image>();cardShadow.sprite=Rounded();cardShadow.type=UnityEngine.UI.Image.Type.Sliced;
    var pieceIcon=button.GetComponentInChildren<PrismIcon>();pieceIcon.rectTransform.sizeDelta=new Vector2(30,30);
    button.transition=Selectable.Transition.None;
-   var caption=Label(button.transform,PieceInfo.Name(kind).Replace(" seçici",Environment.NewLine+"seçici"),12,PrismTheme.Ivory,new Vector2(0,-21),new Vector2(slotWidth-8,34),new Vector2(.5f,.5f));caption.textWrappingMode=TextWrappingModes.Normal;
+   var caption=Label(button.transform,PieceInfo.Name(kind).Replace(" seçici",Environment.NewLine+"seçici"),12,PrismTheme.Ivory,new Vector2(0,-21),new Vector2(slotWidth-8,34),new Vector2(.5f,.5f));caption.textWrappingMode=TextWrappingModes.Normal;caption.enableAutoSizing=true;caption.fontSizeMin=12;caption.fontSizeMax=12;
    var halo=Image(button.transform,"Seçili optik ışık",Color.clear);halo.sprite=Circle();At(halo.rectTransform,.5f,.5f,0,6,43,43);halo.transform.SetAsFirstSibling();trayHalos[kind]=halo;
    var count=Label(button.transform,"",12,PrismTheme.Muted,new Vector2(0,28),new Vector2(slotWidth-8,18),new Vector2(.5f,.5f));counts[kind]=count;stockButtons[kind]=button;
    var trigger=button.gameObject.AddComponent<EventTrigger>();
@@ -129,7 +183,7 @@ public sealed class PrismPresentation : MonoBehaviour {
    AddEvent(trigger,EventTriggerType.Drag,e=>{if(draggingTray)game.UpdateTrayDrag(((PointerEventData)e).position);});
    AddEvent(trigger,EventTriggerType.EndDrag,e=>{if(!draggingTray)return;game.EndTrayDrag(((PointerEventData)e).position);draggingTray=false;});
   }
-  var undo=IconButton(screen,"undo",new Vector2(68,48),new Vector2(0,0),()=>game.UndoAction(),"Geri al");Label(undo.transform,"Geri al",12,PrismTheme.Muted,new Vector2(0,-32),new Vector2(76,20),new Vector2(.5f,.5f));
+  var undo=IconButton(screen,"undo",new Vector2(68,48),new Vector2(0,0),()=>game.UndoAction(),"Geri al");undoButton=undo;Label(undo.transform,"Geri al",12,PrismTheme.Muted,new Vector2(0,-32),new Vector2(76,20),new Vector2(.5f,.5f));
   var hint=IconButton(screen,"hint",new Vector2(0,48),new Vector2(.5f,0),ShowHint,"İpucu");hint.GetComponentInChildren<PrismIcon>().color=PrismTheme.Accent;Label(hint.transform,"İpucu",12,PrismTheme.Accent,new Vector2(0,-32),new Vector2(76,20),new Vector2(.5f,.5f));
   var reset=IconButton(screen,"reset",new Vector2(-68,48),new Vector2(1,0),ShowRestart,"Yeniden başlat");Label(reset.transform,"Yeniden",12,PrismTheme.Muted,new Vector2(0,-32),new Vector2(76,20),new Vector2(.5f,.5f));
   selectedTools=Rect("Seçili parça",screen);At(selectedTools,.5f,0,0,244,300,48);
@@ -137,19 +191,21 @@ public sealed class PrismPresentation : MonoBehaviour {
   precisionControls.Clear();
   precisionControls.Add(TextButton(selectedTools,"−1°",new Vector2(-94,0),new Vector2(58,48),()=>game.RotateSelected(-1),new Vector2(.5f,.5f)).gameObject);
   angleStatus=Label(selectedTools,"",16,PrismTheme.Accent,new Vector2(-14,0),new Vector2(88,32),new Vector2(.5f,.5f),true);
+  var angleHit=Image(selectedTools,"Açı adımları",Color.clear);At(angleHit.rectTransform,.5f,.5f,-14,0,88,48);angleHit.raycastTarget=true;angleHit.gameObject.AddComponent<Button>().onClick.AddListener(ShowAngleTools);
   precisionControls.Add(TextButton(selectedTools,"+1°",new Vector2(64,0),new Vector2(48,48),()=>game.RotateSelected(1),new Vector2(.5f,.5f)).gameObject);
   removeControl=IconButton(selectedTools,"trash",new Vector2(124,0),new Vector2(.5f,.5f),()=>game.RemoveSelected(),"Parçayı kaldır").GetComponent<RectTransform>();
-  tutorial=Label(screen,"",12,PrismTheme.Muted,new Vector2(0,121),new Vector2(322,30),new Vector2(.5f,0));
+  tutorial=Label(screen,"",12,PrismTheme.Muted,new Vector2(0,90),new Vector2(322,24),new Vector2(.5f,0));
   tutorialFinger=Rect("Hayalet dokunuş",screen);At(tutorialFinger,.5f,0,-90,130,25,25);tutorialFinger.gameObject.AddComponent<CanvasGroup>();var finger=Image(tutorialFinger,"Dokunuş",Alpha(PrismTheme.Ivory,.55f));finger.sprite=Circle();Stretch(finger.rectTransform);
   feedback=Label(screen,"",12,PrismTheme.Ivory,new Vector2(0,304),new Vector2(310,32),new Vector2(.5f,0));
-  if(!game.IsAutomatedRun)foreach(var kind in kinds){string key="prism.discovered."+kind;if(PlayerPrefs.GetInt(key,0)!=0)continue;PlayerPrefs.SetInt(key,1);PlayerPrefs.Save();StartCoroutine(Discovery(kind));break;}
+  if(!game.IsAutomatedRun)foreach(var kind in kinds){string key="prism.discovered."+kind;if(PlayerPrefs.GetInt(key,0)!=0)continue;StartCoroutine(Discovery(kind));break;}
  }
  public void ShowMap(){
-  ChangeScreen(ScreenView.Map);chapter=Mathf.Clamp(game.CurrentIndex/10,0,9);DrawChapterMap();
+  if(view!=ScreenView.Map)mapOrigin=view;ChangeScreen(ScreenView.Map);chapter=Mathf.Clamp(game.CurrentIndex/10,0,9);DrawChapterMap();
  }
+ void LeaveMap(){if(mapOrigin==ScreenView.Gameplay)ShowGameplay();else if(mapOrigin==ScreenView.Final)ShowFinal();else ShowHome();}
  void DrawChapterMap(){
   mapLevels=false;
-  Clear(screen);Backdrop(screen);IconButton(screen,"back",new Vector2(30,-31),new Vector2(0,1),ShowHome,"Ana menü");Label(screen,"Işık yolları",20,PrismTheme.Ivory,new Vector2(0,-31),new Vector2(250,44),new Vector2(.5f,1),true);
+  Clear(screen);Backdrop(screen);IconButton(screen,"back",new Vector2(30,-31),new Vector2(0,1),LeaveMap,"Geri");Label(screen,"Işık yolları",20,PrismTheme.Ivory,new Vector2(0,-31),new Vector2(250,44),new Vector2(.5f,1),true);
   Label(screen,game.CompletedCount+" / "+game.CampaignLevels.Length+" keşfedildi",11,PrismTheme.Muted,new Vector2(0,-67),new Vector2(260,24),new Vector2(.5f,1));
   var scroll=Scroll(screen,"Chapter ışık yolu",new Vector2(16,92),new Vector2(-16,-104),false);var content=scroll.content;content.sizeDelta=new Vector2(0,1360);
   string[] roman={"I","II","III","IV","V","VI","VII","VIII","IX","X"};string[] glyphs={"mirror","spectrum","green","lens","split","gate","sphere","wave","interference","orbit"};
@@ -158,16 +214,19 @@ public sealed class PrismPresentation : MonoBehaviour {
   MapPath(content,centers,radii,completedLinks);
   for(int c=0;c<10;c++){
    int selected=c,index=c*10;float x=centers[c].x,y=centers[c].y,labelX=c%2==0?62:-62;bool open=game.IsLevelUnlocked(index);int done=0;for(int n=0;n<10;n++)if(game.IsLevelComplete(index+n))done++;
-   var node=CircleButton(content,open?glyphs[c]:"lock",new Vector2(x,y),radii[c]*2,()=>{chapter=selected;mapSelection=Mathf.Clamp(game.CurrentIndex,selected*10,selected*10+9);if(!game.IsLevelUnlocked(mapSelection))mapSelection=selected*10;DrawLevelMap();});node.interactable=open;node.GetComponent<Image>().color=c==chapter?PrismTheme.StoneLight:PrismTheme.Surface;
+   var node=CircleButton(content,open?glyphs[c]:"lock",new Vector2(x,y),radii[c]*2,()=>{if(!open){ShowLocked(index);return;}chapter=selected;mapSelection=Mathf.Clamp(game.CurrentIndex,selected*10,selected*10+9);if(!game.IsLevelUnlocked(mapSelection))mapSelection=selected*10;DrawLevelMap();});node.GetComponent<Image>().color=c==chapter?PrismTheme.StoneLight:PrismTheme.Surface;
+   node.gameObject.AddComponent<PrismAccessibilityLabel>().Label="Ünite "+(c+1)+", "+game.CampaignLevels[index].Chapter+(open?"":"; kilitli");
    if(c==chapter&&open)node.gameObject.AddComponent<PrismNodePulse>();
    var optical=node.GetComponentInChildren<PrismIcon>();if(optical)optical.color=open?PrismTheme.Ivory:Alpha(PrismTheme.Muted,.3f);
-   Label(content,roman[c]+(c==chapter?" · ŞİMDİ":""),12,open?PrismTheme.Accent:Alpha(PrismTheme.Muted,.4f),new Vector2(labelX,y+30),new Vector2(178,22),new Vector2(.5f,1),true);
-   Label(content,game.CampaignLevels[index].Chapter,17,open?PrismTheme.Ivory:Alpha(PrismTheme.Muted,.45f),new Vector2(labelX,y+2),new Vector2(178,30),new Vector2(.5f,1),true);
-   Label(content,open?done+" / 10 tamamlandı":"Önceki üniteyi keşfet",12,Alpha(PrismTheme.Muted,open?.9f:.4f),new Vector2(labelX,y-29),new Vector2(178,24),new Vector2(.5f,1));
+   Label(content,roman[c]+(c==chapter?" · ŞİMDİ":""),12,open?PrismTheme.Accent:PrismTheme.Muted,new Vector2(labelX,y+30),new Vector2(178,22),new Vector2(.5f,1),true);
+   Label(content,game.CampaignLevels[index].Chapter,17,open?PrismTheme.Ivory:PrismTheme.Muted,new Vector2(labelX,y+2),new Vector2(178,30),new Vector2(.5f,1),true);
+   Label(content,open?done+" / 10 tamamlandı":"Önceki üniteyi keşfet",12,PrismTheme.Muted,new Vector2(labelX,y-29),new Vector2(178,24),new Vector2(.5f,1));
    if(done==10){var badge=Image(node.transform,"Keşfedildi",PrismTheme.Success);badge.sprite=Circle();At(badge.rectTransform,.5f,.5f,29,-29,24,24);Icon(badge.transform,"check",Vector2.zero,16,PrismTheme.Background);}
   }
   Primary(screen,"Bölüm "+(game.CurrentIndex+1)+"'ya devam et",new Vector2(0,44),()=>game.ContinueGame());
-  scroll.verticalNormalizedPosition=Mathf.Clamp01(1-Mathf.Max(0,chapter*128-256)/(1360-Mathf.Max(200,SafeHeight()-196)));
+  Canvas.ForceUpdateCanvases();chapterScroll=scroll;
+  scroll.verticalNormalizedPosition=rememberedMapChapter==chapter&&rememberedMapScroll>=0?rememberedMapScroll:Mathf.Clamp01(1-Mathf.Max(0,chapter*128-256)/(1360-Mathf.Max(200,SafeHeight()-196)));
+  rememberedMapChapter=chapter;scroll.onValueChanged.AddListener(value=>{rememberedMapScroll=value.y;});
  }
  void DrawLevelMap(){
   mapLevels=true;
@@ -178,25 +237,56 @@ public sealed class PrismPresentation : MonoBehaviour {
   var radii=new float[10];int completedLinks=0;for(int i=0;i<10;i++){radii[i]=chapter*10+i==mapSelection?36:30;if(game.IsLevelComplete(chapter*10+i))completedLinks=i+1;}
   MapPath(content,centers,radii,completedLinks);
   for(int i=0;i<10;i++){
-   int index=chapter*10+i;if(index>=game.CampaignLevels.Length)break;bool done=game.IsLevelComplete(index),open=game.IsLevelUnlocked(index);var node=CircleButton(content,open?"":"lock",centers[i],radii[i]*2,()=>{mapSelection=index;DrawLevelMap();});node.interactable=open;node.GetComponent<Image>().color=index==mapSelection?PrismTheme.StoneLight:PrismTheme.Surface;
+   int index=chapter*10+i;if(index>=game.CampaignLevels.Length)break;bool done=game.IsLevelComplete(index),open=game.IsLevelUnlocked(index);var node=CircleButton(content,open?"":"lock",centers[i],radii[i]*2,()=>{if(!open){ShowLocked(index);return;}mapSelection=index;DrawLevelMap();});node.GetComponent<Image>().color=index==mapSelection?PrismTheme.StoneLight:PrismTheme.Surface;
+   node.gameObject.AddComponent<PrismAccessibilityLabel>().Label="Bölüm "+(index+1)+", "+game.CampaignLevels[index].Name+(done?"; tamamlandı":open?"":"; kilitli");
    if(index==mapSelection&&open)node.gameObject.AddComponent<PrismNodePulse>();
    if(open)Label(node.transform,(index+1).ToString("00"),18,PrismTheme.Ivory,Vector2.zero,new Vector2(56,36),new Vector2(.5f,.5f),true);
    if(done){var badge=Image(node.transform,"Tamamlandı",PrismTheme.Success);badge.sprite=Circle();At(badge.rectTransform,.5f,.5f,22,-22,18,18);Icon(badge.transform,"check",Vector2.zero,12,PrismTheme.Background);}
   }
   var selectedLevel=game.CampaignLevels[mapSelection];var card=Image(screen,"Seçilen ışık yolu",PrismTheme.Stone);card.sprite=Rounded();card.type=UnityEngine.UI.Image.Type.Sliced;At(card.rectTransform,.5f,0,0,81,328,148);
   Label(card.transform,"BÖLÜM "+(mapSelection+1),12,PrismTheme.Accent,new Vector2(0,52),new Vector2(300,22),new Vector2(.5f,.5f),true);
-  Label(card.transform,selectedLevel.Name,16,PrismTheme.Ivory,new Vector2(0,23),new Vector2(302,28),new Vector2(.5f,.5f),true);
+  var previewTitle=Label(card.transform,selectedLevel.Name,16,PrismTheme.Ivory,new Vector2(0,23),new Vector2(302,32),new Vector2(.5f,.5f),true);previewTitle.enableAutoSizing=true;previewTitle.fontSizeMin=13;previewTitle.fontSizeMax=16;previewTitle.textWrappingMode=TextWrappingModes.Normal;
   Label(card.transform,selectedLevel.Stock.Length+" optik parça · "+selectedLevel.Goals.Length+" hedef",12,PrismTheme.Muted,new Vector2(0,-3),new Vector2(302,22),new Vector2(.5f,.5f));
   Primary(card.transform,"Oyna",new Vector2(0,34),()=>game.OpenLevel(mapSelection));
  }
  void MapPath(RectTransform parent,Vector2[] points,float[] radii,int complete){var rt=Rect("Optik yol",parent);rt.anchorMin=rt.anchorMax=new Vector2(.5f,1);rt.pivot=new Vector2(.5f,1);rt.anchoredPosition=Vector2.zero;rt.sizeDelta=new Vector2(328,parent.sizeDelta.y);rt.gameObject.AddComponent<PrismMapPath>().Configure(points,radii,complete);}
  public void ShowPause(){
-  var body=Sheet("pause","Bir nefes.",310);
-  Primary(body,"Devam et",new Vector2(0,218),ClearSheet);
-  TextButton(body,"Yeniden başlat",new Vector2(0,162),new Vector2(290,48),ShowRestart);
-  TextButton(body,"Bölümler",new Vector2(-74,99),new Vector2(140,48),ShowMap);
-  TextButton(body,"Ayarlar",new Vector2(74,99),new Vector2(140,48),ShowSettings);
+  var body=Sheet("pause","Bir nefes.",370);
+  Primary(body,game.IsTutorialReplay?"Deneyime dön":"Devam et",new Vector2(0,278),game.IsTutorialReplay?(Action)game.EndTutorialReplay:ClearSheet);
+  TextButton(body,"Yeniden başlat",new Vector2(0,222),new Vector2(290,48),ShowRestart);
+  TextButton(body,"Bölümler",new Vector2(-74,159),new Vector2(140,48),ShowMap);
+  TextButton(body,"Ayarlar",new Vector2(74,159),new Vector2(140,48),ShowSettings);
+  TextButton(body,"Optik parçalar",new Vector2(0,103),new Vector2(290,48),ShowPieceHelp);
   TextButton(body,"Ana menü",new Vector2(0,41),new Vector2(290,48),ShowHome);
+ }
+ void ShowLocked(int index){
+  var body=Sheet("locked","Bu ışık yolu kilitli",230);
+  Label(body,"Önce "+Mathf.Max(1,index)+". bölümü tamamla.",16,PrismTheme.Ivory,new Vector2(0,125),new Vector2(300,54),new Vector2(.5f,0));
+  TextButton(body,"Anladım",new Vector2(0,44),new Vector2(290,48),ClearSheet);
+ }
+ void ShowTarget(int index){
+  var goal=game.CurrentLevel.Goals[index];float charge=Mathf.Clamp01((float)(game.CurrentResult.Energy[index]/goal.Threshold));
+  var body=Sheet("target","Hedef "+(index+1)+" · "+PieceInfo.BandName(goal.Band),290);
+  var icon=Icon(body,"band"+goal.Band,new Vector2(0,202),30,PrismTheme.Accent);icon.rectTransform.anchorMin=icon.rectTransform.anchorMax=new Vector2(.5f,0);if(goal.Band<0)icon.Symbol="spectrum";
+  string state=charge>=1?"Tamamlandı. Işık gücü yeterli.":charge>0?"Doğru ışık ulaşıyor; gücü yetersiz.":"Gereken ışık henüz hedefe ulaşmıyor.";
+  var text=Label(body,state+Environment.NewLine+"Işık gücü: %"+Mathf.RoundToInt(charge*100),16,PrismTheme.Ivory,new Vector2(0,132),new Vector2(296,90),new Vector2(.5f,0));text.textWrappingMode=TextWrappingModes.Normal;
+  TextButton(body,"Oyuna dön",new Vector2(0,44),new Vector2(290,48),ClearSheet);
+ }
+ void ShowAngleTools(){
+  if(game.SelectedIndex<0)return;var piece=game.CurrentPieces[game.SelectedIndex];if(!PieceInfo.CanRotate(piece.Kind)){ShowPieceHelp();return;}
+  var body=Sheet("angles",PieceInfo.Name(piece.Kind)+" · "+Mathf.RoundToInt((float)piece.Angle)+"°",260);
+  Label(body,"Açı adımı seç; sonra ışık yolunu izle.",13,PrismTheme.Muted,new Vector2(0,172),new Vector2(296,30),new Vector2(.5f,0));
+  int[] steps={-45,-15,-1,1,15,45};for(int i=0;i<steps.Length;i++){int delta=steps[i];TextButton(body,(delta>0?"+":"")+delta+"°",new Vector2((i%3-1)*98,125-i/3*58),new Vector2(92,48),()=>{ClearSheet();game.RotateSelected(delta);});}
+ }
+ void ShowPieceHelp(){var kind=game.SelectedIndex>=0?game.CurrentPieces[game.SelectedIndex].Kind:game.CurrentLevel.Stock.Length>0?game.CurrentLevel.Stock[0]:Kind.Mirror;DrawPieceHelp(kind);}
+ void DrawPieceHelp(Kind kind){
+  var body=Sheet("pieceHelp",PieceInfo.Name(kind),430);
+  var optic=Icon(body,Glyph(kind),new Vector2(0,330),46,kind==Kind.Red?new Color32(240,110,135,255):kind==Kind.Green?PrismTheme.Success:PrismTheme.Accent);optic.rectTransform.anchorMin=optic.rectTransform.anchorMax=new Vector2(.5f,0);
+  var text=Label(body,PieceInfo.Description(kind),16,PrismTheme.Ivory,new Vector2(0,244),new Vector2(296,118),new Vector2(.5f,0));text.textWrappingMode=TextWrappingModes.Normal;
+  var kinds=new HashSet<Kind>(game.CurrentLevel.Stock);foreach(var p in game.CurrentPieces)kinds.Add(p.Kind);int i=0;
+  var options=Scroll(body,"Optik parça açıklamaları",new Vector2(16,79),new Vector2(-16,-256),false);options.content.sizeDelta=new Vector2(0,Mathf.Ceil(kinds.Count/2f)*54);
+  foreach(var item in kinds){var selectedKind=item;TextButton(options.content,PieceInfo.Name(item),new Vector2((i%2-.5f)*150,-26-i/2*54),new Vector2(144,48),()=>DrawPieceHelp(selectedKind),new Vector2(.5f,1));i++;}
+  TextButton(body,"Oyuna dön",new Vector2(0,32),new Vector2(290,48),ClearSheet);
  }
  void ShowRestart(){
   var body=Sheet("restart","Baştan deneyelim mi?",240);Label(body,"Bu bölümdeki yerleşim temizlenecek.",12,PrismTheme.Muted,new Vector2(0,157),new Vector2(300,34),new Vector2(.5f,0));
@@ -227,10 +317,11 @@ public sealed class PrismPresentation : MonoBehaviour {
   ToggleRow(content,"Hareketi azalt",VisualEnvironment.ReducedMotion,game.SetReducedMotion,ref y);
   ToggleRow(content,"Renk desteği",VisualEnvironment.ColorSymbols,game.SetColorSymbols,ref y);
   ToggleRow(content,"Yüksek kontrast",VisualEnvironment.HighContrast,game.SetHighContrast,ref y);
+  ToggleRow(content,"Büyük yazı",VisualEnvironment.LargeText,VisualEnvironment.SetLargeText,ref y);
   Row(content,"Gelişmiş görüntü",ShowAdvanced,ref y,"Aç");
   Group(content,"OYUN",ref y);
   ToggleRow(content,"Hassas dönüş",VisualEnvironment.PrecisionMode,game.SetPrecisionMode,ref y);
-  Row(content,"Öğreticiyi tekrar izle",()=>{ClearSheet();tutorialReplay=true;game.OpenLevel(0);},ref y,"Göster");
+  Row(content,"Öğreticiyi tekrar izle",()=>{ClearSheet();game.BeginTutorialReplay();},ref y,"Göster");
   Group(content,"HAKKINDA",ref y);Row(content,"PRISM · "+Application.version,ShowAbout,ref y,"Bilgi");
   content.sizeDelta=new Vector2(0,-y+25);
  }
@@ -241,24 +332,36 @@ public sealed class PrismPresentation : MonoBehaviour {
    if(completionWaiting||sheet=="completion"||view==ScreenView.Final)return;game.CancelInteraction();draggingTray=false;ClearSheet();completionWaiting=true;completion=StartCoroutine(CompletionSequence(final));
  }
  IEnumerator CompletionSequence(bool final){
-  // Leave the optical solution alone long enough to be the reward.
-    var hud=screen.GetComponent<CanvasGroup>();if(!hud)hud=screen.gameObject.AddComponent<CanvasGroup>();hud.alpha=0;
-  yield return new WaitForSecondsRealtime(VisualEnvironment.ReducedMotion ? .8f : 1.15f);
+    skipCompletion=false;var hud=screen.GetComponent<CanvasGroup>();if(!hud)hud=screen.gameObject.AddComponent<CanvasGroup>();hud.alpha=0;hud.interactable=false;hud.blocksRaycasts=false;
+  float waitStart=Time.unscaledTime,waitDuration=VisualEnvironment.ReducedMotion?.05f:.65f;
+  while(!skipCompletion&&Time.unscaledTime-waitStart<waitDuration)yield return null;
     if(final&&!VisualEnvironment.ReducedMotion){
      float start=Time.unscaledTime;
-     while(Time.unscaledTime-start<1.1f){game.RenderSolutionReveal((Time.unscaledTime-start)/1.1f);yield return null;}
+     while(!skipCompletion&&Time.unscaledTime-start<1.1f){game.RenderSolutionReveal((Time.unscaledTime-start)/1.1f);yield return null;}
      game.RenderSolutionReveal(1f);
     }
-    hud.alpha=1;
+    RestoreHud();
   completionWaiting=false;completion=null;
   if(final){ShowFinal();yield break;}
-  var body=Sheet("completion",game.CurrentIndex%10==9?"Yeni bir ufuk.":"Işık yolu tamamlandı",256);
-  Label(body,game.CurrentLevel.Name,13,PrismTheme.Muted,new Vector2(0,173),new Vector2(300,26),new Vector2(.5f,0));
-  Label(body,game.CompletedCount+" ışık yolu keşfedildi",11,PrismTheme.Muted,new Vector2(0,139),new Vector2(300,24),new Vector2(.5f,0));
+  var body=Sheet("completion",game.CurrentIndex%10==9?"Yeni bir ufuk.":"Işık yolu tamamlandı",290);
+  Label(body,game.CurrentLevel.Name,13,PrismTheme.Muted,new Vector2(0,203),new Vector2(300,30),new Vector2(.5f,0));
+  Label(body,game.CurrentPieces.Count+" optik parça · "+game.CurrentLevel.Goals.Length+" hedef",13,PrismTheme.Ivory,new Vector2(0,169),new Vector2(300,24),new Vector2(.5f,0));
+  Label(body,game.CompletedCount+" ışık yolu keşfedildi",12,PrismTheme.Muted,new Vector2(0,137),new Vector2(300,24),new Vector2(.5f,0));
   Primary(body,game.CurrentIndex%10==9?"Yeni bölüme geç":"Devam et",new Vector2(0,87),()=>{ClearSheet();game.AdvanceLevel();});
-  TextButton(body,"Çözümü incele",new Vector2(0,32),new Vector2(290,48),ClearSheet);
+  TextButton(body,"Çözümü incele",new Vector2(0,32),new Vector2(290,48),ReviewSolution);
  }
- void ShowFinal(){
+ void RestoreHud(){if(!screen)return;var group=screen.GetComponent<CanvasGroup>();if(group){group.alpha=1;group.interactable=true;group.blocksRaycasts=true;}}
+ void ReviewSolution(){
+  ClearSheet();ShowGameplay();reviewMode=true;
+  if(trayRoot)trayRoot.gameObject.SetActive(false);
+  foreach(string name in new[]{"Geri al","İpucu","Yeniden başlat","Optik parçalar"}){var control=screen.Find(name);if(control)control.gameObject.SetActive(false);}
+  reviewTools=Rect("Çözüm inceleme",screen);At(reviewTools,.5f,0,0,145,320,210);
+  Label(reviewTools,"Işık yolunu incele.",14,PrismTheme.Muted,new Vector2(0,90),new Vector2(310,26),new Vector2(.5f,.5f));
+  Primary(reviewTools,game.CurrentIndex<99?"Sonraki bölüm":"Bölümlere dön",new Vector2(0,142),game.CurrentIndex<99?(Action)game.AdvanceLevel:ShowMap);
+  TextButton(reviewTools,"Tekrar oyna",new Vector2(-76,77),new Vector2(140,48),()=>game.RestartLevel());
+  TextButton(reviewTools,"Bölümler",new Vector2(76,77),new Vector2(140,48),ShowMap);
+ }
+ public void ShowFinal(){
   ChangeScreen(ScreenView.Final);Backdrop(screen);
   Brand(screen,new Vector2(0,50),164,new Vector2(.5f,.65f));
   Label(screen,"100 ışık yolu."+Environment.NewLine+"Tek bir başlangıç.",27,PrismTheme.Ivory,new Vector2(0,-65),new Vector2(320,100),new Vector2(.5f,.5f),true);
@@ -282,15 +385,18 @@ public sealed class PrismPresentation : MonoBehaviour {
   if(cover)Destroy(cover.gameObject);reveal=null;
  }
  IEnumerator Discovery(Kind kind){
-  yield return new WaitForSecondsRealtime(1.7f);if(view!=ScreenView.Gameplay)yield break;
-  string note;switch(kind){case Kind.Prism:note="Prizma · Beyaz ışık, yedi renk.";break;case Kind.Lens:note="Lens · Dağılan ışığı bir araya getir.";break;case Kind.Sphere:note="Cam küre · Işığa yeni bir yol aç.";break;case Kind.Red:case Kind.Green:note=PieceInfo.Name(kind)+" · Bir rengi geçir.";break;default:note="Ayna · Işığın yönünü değiştir.";break;}
-  var discovery=Label(screen,note,12,PrismTheme.Ivory,new Vector2(0,-113),new Vector2(316,44),new Vector2(.5f,1));FadeIn(discovery.rectTransform);yield return new WaitForSecondsRealtime(1.7f);if(discovery)Destroy(discovery.gameObject);
+  string discoveryLevel=game.CurrentLevel.Id;
+  yield return new WaitForSecondsRealtime(1.7f);if(view!=ScreenView.Gameplay||HasModal||game.CurrentLevel.Id!=discoveryLevel)yield break;
+  var owner=screen;string note=PieceInfo.Name(kind)+" · "+PieceInfo.Description(kind).Split(';','.')[0]+".";
+  var discovery=Label(owner,note,12,PrismTheme.Ivory,new Vector2(0,308),new Vector2(316,50),new Vector2(.5f,0));discovery.textWrappingMode=TextWrappingModes.Normal;FadeIn(discovery.rectTransform);
+  yield return new WaitForSecondsRealtime(.35f);if(!discovery||view!=ScreenView.Gameplay||HasModal||game.CurrentLevel.Id!=discoveryLevel){if(discovery)Destroy(discovery.gameObject);yield break;}
+  PlayerPrefs.SetInt("prism.discovered."+kind,1);PlayerPrefs.Save();yield return new WaitForSecondsRealtime(3f);if(discovery)Destroy(discovery.gameObject);
  }
- public void HandleBack(){if(completionWaiting)return;if(sheet=="advanced"||sheet=="quality"||sheet=="about"){ShowSettings();return;}if(sheet.Length>0){ClearSheet();return;}switch(view){case ScreenView.Gameplay:ShowPause();break;case ScreenView.Map:if(mapLevels)DrawChapterMap();else ShowHome();break;case ScreenView.Final:ShowHome();break;case ScreenView.Home:ShowSettings();break;}}
+ public void HandleBack(){if(completionWaiting){skipCompletion=true;return;}if(sheet=="advanced"||sheet=="quality"||sheet=="about"){ShowSettings();return;}if(sheet.Length>0){ClearSheet();return;}switch(view){case ScreenView.Gameplay:if(game.IsTutorialReplay)game.EndTutorialReplay();else ShowPause();break;case ScreenView.Map:if(mapLevels)DrawChapterMap();else LeaveMap();break;case ScreenView.Final:ShowHome();break;case ScreenView.Home:ShowSettings();break;}}
  public void ShowFeedback(string message){if(feedback){feedback.text=message;feedbackUntil=Time.unscaledTime+2.4f;}}
  RectTransform Sheet(string id,string title,float height){
    game.CancelInteraction();draggingTray=false;ClearSheet();sheet=id;VisualEnvironment.SetPaused(true);
-  var dim=Image(overlay,"Dünya perdesi",new Color(.015f,.012f,.03f,.64f));Stretch(dim.rectTransform);dim.raycastTarget=true;var close=dim.gameObject.AddComponent<Button>();close.onClick.AddListener(ClearSheet);
+  var dim=Image(overlay,"Pencereyi kapat",new Color(.015f,.012f,.03f,.64f));Stretch(dim.rectTransform);dim.raycastTarget=true;var close=dim.gameObject.AddComponent<Button>();close.onClick.AddListener(ClearSheet);
   var body=Image(overlay,"Cam yüzey",Alpha(PrismTheme.Surface,.98f));body.sprite=Rounded();body.type=UnityEngine.UI.Image.Type.Sliced;body.raycastTarget=true;
   At(body.rectTransform,.5f,0,0,height*.5f+8,344,height);body.rectTransform.anchorMin=new Vector2(0,0);body.rectTransform.anchorMax=new Vector2(1,0);body.rectTransform.sizeDelta=new Vector2(-16,height);
   Label(body.transform,title,20,PrismTheme.Ivory,new Vector2(0,-39),new Vector2(278,42),new Vector2(.5f,1),true);
@@ -316,7 +422,7 @@ public sealed class PrismPresentation : MonoBehaviour {
   float rowY=y;var row=TextButton(parent,"",new Vector2(0,rowY),new Vector2(296,48),()=>{},new Vector2(.5f,1));Label(row.transform,label,13,PrismTheme.Ivory,new Vector2(-25,0),new Vector2(230,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Left);
   var track=Image(row.transform,"Anahtar",value?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f));track.sprite=Rounded();track.type=UnityEngine.UI.Image.Type.Sliced;At(track.rectTransform,1,.5f,-24,0,36,20);
   var dot=Image(track.transform,"Durum",PrismTheme.Ivory);dot.sprite=Circle();At(dot.rectTransform,.5f,.5f,value?8:-8,0,14,14);
-  bool current=value;row.onClick.RemoveAllListeners();row.onClick.AddListener(()=>{current=!current;set(current);track.color=current?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f);StartCoroutine(ToggleMotion(dot.rectTransform,current?8:-8));Click();});y-=49;
+  bool current=value;var semantics=row.gameObject.AddComponent<PrismAccessibilityLabel>();semantics.Label=label;semantics.IsToggle=true;semantics.ValueGetter=()=>current?"Açık":"Kapalı";row.onClick.RemoveAllListeners();row.onClick.AddListener(()=>{current=!current;set(current);track.color=current?Alpha(PrismTheme.Accent,.65f):Alpha(PrismTheme.Muted,.2f);StartCoroutine(ToggleMotion(dot.rectTransform,current?8:-8));Click();});y-=49;
  }
  void Row(Transform parent,string label,Action action,ref float y,string value){var row=TextButton(parent,"",new Vector2(0,y),new Vector2(296,48),action,new Vector2(.5f,1));Label(row.transform,label,13,PrismTheme.Ivory,new Vector2(-45,0),new Vector2(190,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Left);Label(row.transform,value,11,PrismTheme.Muted,new Vector2(90,0),new Vector2(104,44),new Vector2(.5f,.5f),false,TextAlignmentOptions.Right);y-=49;}
  public void ShowQuality(){
@@ -369,7 +475,7 @@ public sealed class PrismPresentation : MonoBehaviour {
  Button IconButton(Transform parent,string symbol,Vector2 pos,Vector2 anchor,Action action,string accessible){var b=TextButton(parent,"",pos,new Vector2(48,48),action,anchor);b.name=accessible;b.GetComponent<Image>().sprite=Circle();b.GetComponent<Image>().type=UnityEngine.UI.Image.Type.Simple;b.GetComponent<PrismPressMotion>().Shadow.GetComponent<Image>().sprite=Circle();b.GetComponent<PrismPressMotion>().Shadow.GetComponent<Image>().type=UnityEngine.UI.Image.Type.Simple;Icon(b.transform,symbol,Vector2.zero,26,PrismTheme.Ivory);return b;}
  Button CircleButton(Transform parent,string symbol,Vector2 pos,float size,Action action){var b=TextButton(parent,"",pos,new Vector2(size,size),action,new Vector2(.5f,1));b.GetComponent<Image>().sprite=Circle();b.GetComponent<Image>().type=UnityEngine.UI.Image.Type.Simple;b.GetComponent<PrismPressMotion>().Shadow.GetComponent<Image>().sprite=Circle();b.GetComponent<PrismPressMotion>().Shadow.GetComponent<Image>().type=UnityEngine.UI.Image.Type.Simple;if(symbol.Length>0)Icon(b.transform,symbol,Vector2.zero,32,PrismTheme.Accent);return b;}
  PrismIcon Icon(Transform parent,string symbol,Vector2 pos,float size,Color color){var rt=Rect(symbol,parent);At(rt,.5f,.5f,pos.x,pos.y,size,size);var icon=rt.gameObject.AddComponent<PrismIcon>();icon.Symbol=symbol;icon.color=color;icon.raycastTarget=false;return icon;}
- TextMeshProUGUI Label(Transform parent,string value,float size,Color color,Vector2 pos,Vector2 bounds,Vector2 anchor,bool bold=false,TextAlignmentOptions alignment=TextAlignmentOptions.Center){var rt=Rect("Text",parent);At(rt,anchor.x,anchor.y,pos.x,pos.y,bounds.x,bounds.y);var text=rt.gameObject.AddComponent<TextMeshProUGUI>();text.font=PrismTheme.Font(bold);text.text=value;text.fontSize=Mathf.Max(12,size);text.color=color;text.alignment=alignment;text.raycastTarget=false;text.overflowMode=TextOverflowModes.Ellipsis;text.textWrappingMode=TextWrappingModes.NoWrap;return text;}
+ TextMeshProUGUI Label(Transform parent,string value,float size,Color color,Vector2 pos,Vector2 bounds,Vector2 anchor,bool bold=false,TextAlignmentOptions alignment=TextAlignmentOptions.Center){var rt=Rect("Text",parent);At(rt,anchor.x,anchor.y,pos.x,pos.y,bounds.x,bounds.y);var text=rt.gameObject.AddComponent<TextMeshProUGUI>();text.font=PrismTheme.Font(bold);text.text=value;text.fontSize=Mathf.Max(12,size);text.color=color;text.alignment=alignment;text.raycastTarget=false;text.overflowMode=TextOverflowModes.Ellipsis;text.textWrappingMode=TextWrappingModes.NoWrap;rt.gameObject.AddComponent<PrismReadableText>().BaseSize=Mathf.Max(12,size);return text;}
  static RectTransform Rect(string name,Transform parent){var obj=new GameObject(name,typeof(RectTransform));obj.transform.SetParent(parent,false);return obj.GetComponent<RectTransform>();}
  static Image Image(Transform parent,string name,Color color){var rt=Rect(name,parent);var img=rt.gameObject.AddComponent<Image>();img.color=color;img.raycastTarget=false;return img;}
  static void At(RectTransform rt,float ax,float ay,float x,float y,float w,float h){rt.anchorMin=rt.anchorMax=new Vector2(ax,ay);rt.pivot=new Vector2(.5f,.5f);rt.anchoredPosition=new Vector2(x,y);rt.sizeDelta=new Vector2(w,h);}
@@ -401,6 +507,16 @@ public sealed class PrismNodePulse : MonoBehaviour {
  Image image;Color baseColor;
  void Start(){image=GetComponent<Image>();baseColor=image.color;}
  void Update(){if(!image)return;Color next=baseColor;if(!VisualEnvironment.ReducedMotion)next.a=baseColor.a*(.88f+.12f*Mathf.Sin(Time.unscaledTime*1.5f));image.color=next;}
+}
+public sealed class PrismReadableText : MonoBehaviour {
+ public float BaseSize;
+ TMP_Text text;bool initialized,large;
+ void LateUpdate(){
+  if(!text)text=GetComponent<TMP_Text>();if(!text||BaseSize<=0)return;
+  if(initialized&&large==VisualEnvironment.LargeText)return;initialized=true;large=VisualEnvironment.LargeText;
+  float size=BaseSize+(large?(BaseSize<20?2:1):0);
+  text.fontSize=size;if(text.enableAutoSizing)text.fontSizeMax=size;
+ }
 }
 }
 

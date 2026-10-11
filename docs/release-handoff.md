@@ -5,9 +5,9 @@ Bu teslim Google Play Internal testing için hazırlanmış sürüm adayıdır. 
 ## Çıktılar
 
 - Windows deneme paketi: `Builds/Windows/PrisM.exe` ve yanındaki veri/DLL klasörleri.
-- Android: `Builds/Android/PrisM-0.9.2-92.aab`; paket `com.prismstudio.lightworkshop`, API 36, min API 26, ARM64, IL2CPP.
+- Android: `Builds/Android/PrisM-0.9.3-93.aab`; paket `com.prismstudio.lightworkshop`, API 36, min API 26, ARM64, IL2CPP.
 - Mağaza ikonu ve feature graphic: `Builds/StoreAssets`.
-- Sekiz 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20261011-124612` (spectrum, mastery, water/glass, reflection, symphony, map, menu, settings).
+- On iki 1080 × 1920 gerçek oyun görüntüsü: `Builds/StoreAssets/screens-20261011-172811` (oynanış, harita, menü, ayarlar, optik açıklaması, büyük yazı, çözüm inceleme ve öğretici).
 - TR/EN metinler: `docs/store-listing.md`; deklarasyon rehberi: `docs/play-console-declarations.md`.
 - Gizlilik politikası kaynağı: `docs/privacy-policy.md`. Play hesabında gerçek destek adresi ve herkese açık HTTPS politika URL'si tamamlanmalıdır.
 
@@ -23,7 +23,7 @@ Yerel upload anahtarı `Builds/Secrets/prism-upload.p12`, alias `prism-upload`. 
 
 30 Eylül görsel ve bölüm düzeni: sabit tuğla duvarlar artırıldı, son 20 bölümde en az 5 ve final ünitesinde en az 6 aktif ayna kullanılır. Genişleyen ışık hüzmesi, ön plandaki optik parçalar, belirgin döndürme yörüngesi ve sıcak/yuvarlak UI Windows'da derlenip 100 bölüm smoke testinden geçti. Yeni `LevelCatalog.asset` açılış için 100 bölümü önceden içerir.
 
-Son doğrulanmış signed AAB SHA256: `55ECD795FBFBC1D5365EA91E7E3621AC11656AE7C8DFAFCF1585044E4B668B31` (29.615.379 byte; bundletool validation, JAR imzası ve altı ARM64 ELF/16 KB kontrolü PASS). Manifest API 36/min API 26 ve yalnız VIBRATE iznini içerir.
+Son doğrulanmış signed AAB SHA256: `13ADE29CE1EC36BBDCF5F87DFB891584915BD770F1DE58603210ABD780E66BC9` (29.699.360 byte; bundletool validation, JAR imzası ve altı ARM64 ELF/16 KB kontrolü PASS). Manifest API 36/min API 26 ve yalnız VIBRATE iznini içerir.
 
 06 Ekim 0.9.1/91 kaynak teslimi: kullanıcı tarafından sağlanan uygulama/mağaza ikonu, Android 13 monochrome adaptive layer, ortak kalınlıklı fiziksel duvarlar, gate/corridor topolojisi, mixed-optics mastery odaları, UI gesture/undo/back düzeltmeleri ve 468 core kontrolü içeriyordu.
 
@@ -31,4 +31,6 @@ Son doğrulanmış signed AAB SHA256: `55ECD795FBFBC1D5365EA91E7E3621AC11656AE7C
 
 11 Ekim 0.9.2/92 tasarım teslimi: kullanıcının SVG/HTML tasarımı ana menü, harita, parça tepsisi, seçili parça kontrolleri, lavanta tuğlalar ve optik çizimlere uygulandı. 477 core kontrolü; 540×960 ve 1280×720 oyuncu çalışmalarında 215'er PASS (100 çözüm + 100 reset dahil) geçti. Çalışma kayıtları `TestResults/smoke-20261011-124532` ve `TestResults/smoke-20261011-124552`; bölüm önizlemesi ilk klasörde `map-preview.png`. Görsel sonuçlar incelendi; alt etiket taşması, kararan duvarlar ve seçili araç çubuğu çakışması düzeltildi. Ayrıntılar `docs/ui-design-implementation-20261011.md` içindedir.
 
-Kalan cihaz kontrolleri: farklı ekran/safe-area, touch/rotate, ünite geri dönüşü, Android Back, müzik/SFX ayarları, pause/resume, düşük/orta/yüksek kalite, ısınma ve uzun oturum. Bunlar masaüstü testleriyle doğrulanmış sayılmaz.
+11 Ekim 0.9.3/93 UX teslimi: deney snapshot kaydı, doğru Devam et, no-op undo filtresi, sabit sürükleme, 48px dönüş hedefi, denenen pozda invalid ghost, jest sonrası tamamlanma, kalıcı çözüm inceleme çıkışı, harita geri dönüşü, öğretici origin restorasyonu, ayrı simgeler, optik açıklamaları, hedef doluluk bilgisi, büyük yazı ve native UI erişilebilirlik hiyerarşisi uygulandı. 500 core kontrolü ve son 360×800 / 1280×720 koşularında 225'er PASS geçti. Koşular: `TestResults/smoke-20261011-172748` / `TestResults/smoke-20261011-173005`. Üç aynanın 37° pozları JSON üzerinden geri yüklendi; 75. bölüm öğretici dönüşünde pozlar ve undo korundu. Önceden tamamlanmış bölümün yarım tekrar denemesi de korunur. On iki RGB mağaza görüntüsü üretildi; yardım/büyük yazı/inceleme/öğretici ekranları görsel olarak kontrol edildi. Detay ve kapsam: `docs/ux-audit-resolution-20261011.md`.
+
+Kalan cihaz kontrolleri: farklı ekran/safe-area, touch/rotate, ünite geri dönüşü, Android Back, müzik/SFX ayarları, pause/resume, düşük/orta/yüksek kalite, ısınma, uzun oturum ve TalkBack/Narrator ile gerçek native odak/eylem kontrolü. Tamamen görmeden uzamsal bulmacayı oynama desteği iddia edilmez. Bunlar masaüstü testleriyle doğrulanmış sayılmaz; Play pre-launch testi ve gerçek destek/politika adresi hâlâ yayın öncesinde gereklidir.

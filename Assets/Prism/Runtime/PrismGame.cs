@@ -9,9 +9,15 @@ using UnityEngine.InputSystem.LowLevel;
 namespace Prism {
 public class PrismGame : MonoBehaviour {
  [Serializable] class ProgressData {
-  public int version=3;
+  public int version=4;
   public string lastLevelId="";
   public List<string> completedLevelIds=new List<string>();
+  public List<ExperimentData> experiments=new List<ExperimentData>();
+ }
+ [Serializable] class SavedPiece {public int kind;public double x,y,angle;}
+ [Serializable] class ExperimentData {
+  public string levelId="",catalogRevision="";
+  public List<SavedPiece> pieces=new List<SavedPiece>();
  }
 
  Level[] levels;
@@ -25,6 +31,12 @@ public class PrismGame : MonoBehaviour {
  Kind? trayKind;
  bool transitionBusy,completionPresented;
  Coroutine visualTransition;
+ Session tutorialOrigin;
+ int tutorialOriginIndex,tutorialOriginSelection;
+ bool tutorialOriginWon;
+ string savedExperimentSignature="";
+ bool savePendingFailure;
+ float nextExperimentFlush;
  float dragStarted;
  InputAction backAction;
  bool backRequested;
@@ -37,7 +49,7 @@ public class PrismGame : MonoBehaviour {
   backAction.performed+=OnBackPerformed;backAction.Enable();
  }
  void OnBackPerformed(InputAction.CallbackContext context){RequestBackNavigation();}
- void OnDisable(){Application.logMessageReceived-=OnAutomatedLog;CancelInteraction();if(backAction!=null){backAction.performed-=OnBackPerformed;backAction.Dispose();backAction=null;}}
+ void OnDisable(){Application.logMessageReceived-=OnAutomatedLog;CancelInteraction();if(session!=null)SaveProgress();if(backAction!=null){backAction.performed-=OnBackPerformed;backAction.Dispose();backAction=null;}}
  void OnAutomatedLog(string message,string stackTrace,LogType type){if(type==LogType.Exception||type==LogType.Error||type==LogType.Assert)Application.Quit(1);}
  float UiScale=>Mathf.Min(Screen.width/360f,Screen.height/800f);
  V OffsetPointer(Vector2 screenPosition,float amount=1f)=>ScreenWorld(screenPosition+Vector2.up*(26f*UiScale*amount));
@@ -75,16 +87,44 @@ public class PrismGame : MonoBehaviour {
  public bool InteractionBusy=>transitionBusy;
  public bool IsAutomatedRun=>smoke||storeCapture;
  public bool HasWon=>won;
+ public bool CanUndo=>session!=null&&session.CanUndo&&!won&&!transitionBusy;
+ public bool IsTutorialReplay=>tutorialOrigin!=null;
  public void RenderSolutionReveal(float fraction){board.SolutionReveal=Mathf.Clamp01(fraction);board.Draw(session.Level,session.Pieces,result,-1);}
  public void CancelInteraction(){
   if(transitionBusy&&visualTransition!=null){StopCoroutine(visualTransition);visualTransition=null;transitionBusy=false;}
   if(dragging||rotating)session?.EndEdit();
-  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;lastDragFailure=PlacementFailure.None;board?.SetPlacementPreview(-1,true);board?.SetPointerAnchor(null);presentation?.CancelTrayGesture();dirty=true;
+  dragging=rotating=false;trayGhost=null;trayKind=null;armed=null;lastDragFailure=PlacementFailure.None;board?.SetPlacementPreview(-1,true);board?.SetInvalidPlacementGhost(null);board?.SetPointerAnchor(null);presentation?.CancelTrayGesture();dirty=true;
  }
 
- public void ContinueGame(){presentation.ShowGameplay();}
+ public void ContinueGame(){
+  if(IsTutorialReplay)EndTutorialReplay();
+  // A new unfinished replay is still an experiment, even if this level has a
+  // completed campaign badge. Resume it before choosing the next chapter/finale.
+  bool hasExperiment=progress.experiments.Exists(e=>e.levelId==session.Level.Id)||session.CanUndo;
+  if(hasExperiment&&!session.IsComplete(Optics.Solve(session.Level,session.Pieces))){presentation.ShowGameplay();return;}
+  if(completedLevelIds.Count>=levels.Length){presentation.ShowFinal();return;}
+  if(completedLevelIds.Contains(session.Level.Id)){
+   int next=levelIndex+1;
+   while(next<levels.Length&&completedLevelIds.Contains(levels[next].Id))next++;
+   if(next>=levels.Length){next=0;while(next<levels.Length&&completedLevelIds.Contains(levels[next].Id))next++;}
+   if(next<levels.Length)Load(next);
+  }
+  presentation.ShowGameplay();
+ }
+ public void BeginTutorialReplay(){
+  if(IsTutorialReplay)return;
+  CancelInteraction();CaptureExperiment();SaveProgress();
+  tutorialOrigin=session;tutorialOriginIndex=levelIndex;tutorialOriginSelection=selected;tutorialOriginWon=won;
+  Load(0,true);
+ }
+ public void EndTutorialReplay(){
+  if(!IsTutorialReplay)return;
+  CancelInteraction();session=tutorialOrigin;levelIndex=tutorialOriginIndex;selected=tutorialOriginSelection;won=tutorialOriginWon;tutorialOrigin=null;
+  completionPresented=won;settle=0;armed=null;board.ClearHint();board.SetCelebration(0);VisualEnvironment.SetCelebration(0);Solve();
+  presentation.ShowGameplay();
+ }
  public void OpenLevel(int index){if(!IsUnlocked(index)){feedback?.Invalid();return;}Load(index);}
- public void AdvanceLevel(){if(levelIndex<levels.Length-1)OpenLevel(levelIndex+1);else presentation.ShowMap();}
+ public void AdvanceLevel(){if(IsTutorialReplay&&levelIndex>=2){EndTutorialReplay();return;}if(levelIndex<levels.Length-1)OpenLevel(levelIndex+1);else presentation.ShowMap();}
  public void ArmPiece(Kind kind){if(won||transitionBusy||session.Remaining(kind)<=0)return;armed=kind;selected=-1;dirty=true;feedback?.Click();}
  public void RotateSelected(double degrees){Rotate(degrees);}
  public void RemoveSelected(){if(selected<0||won||transitionBusy)return;session.Remove(selected);selected=-1;dirty=true;feedback?.Click();}
@@ -126,7 +166,7 @@ public class PrismGame : MonoBehaviour {
   }
   trayGhost=null;trayKind=null;board.SetPlacementPreview(-1,true);board.SetPointerAnchor(null);dirty=true;
  }
- public void UndoAction(){if(!transitionBusy&&!won){CancelInteraction();visualTransition=StartCoroutine(AnimateUndo());}}
+ public void UndoAction(){if(CanUndo){CancelInteraction();visualTransition=StartCoroutine(AnimateUndo());}}
  public void RestartLevel(){if(!transitionBusy){CancelInteraction();visualTransition=StartCoroutine(AnimateReset());}}
  IEnumerator AnimateUndo(){
   transitionBusy=true;
@@ -220,6 +260,7 @@ public class PrismGame : MonoBehaviour {
  void LoadProgress(){
   progress=new ProgressData();
   completedLevelIds.Clear();
+  if(IsAutomatedRun)return;
   foreach(var path in new[]{SavePath,SavePath+".tmp",SavePath+".bak"}){
    if(!File.Exists(path))continue;
    try{
@@ -228,7 +269,9 @@ public class PrismGame : MonoBehaviour {
    }catch(Exception e){Debug.LogWarning("Progress copy could not be loaded: "+e.Message);}
   }
   if(progress.completedLevelIds==null)progress.completedLevelIds=new List<string>();
-  foreach(var id in progress.completedLevelIds)if(!string.IsNullOrEmpty(id))completedLevelIds.Add(id);
+  foreach(var id in progress.completedLevelIds)if(!string.IsNullOrEmpty(id)&&Array.Exists(levels,l=>l.Id==id))completedLevelIds.Add(id);
+  if(progress.experiments==null)progress.experiments=new List<ExperimentData>();
+  progress.experiments.RemoveAll(e=>!ValidateExperiment(e,out _));
 
   bool migrated=false;
   if(PlayerPrefs.HasKey("prism.completed")){
@@ -250,8 +293,9 @@ public class PrismGame : MonoBehaviour {
  }
 
  void SaveProgress(){
-  if(smoke||storeCapture)return;
-  progress.version=3;
+  if(smoke||storeCapture||IsTutorialReplay)return;
+  CaptureExperiment();
+  progress.version=4;
   var ids=new List<string>(completedLevelIds);
   ids.Sort(StringComparer.Ordinal);
   progress.completedLevelIds=ids;
@@ -261,14 +305,46 @@ public class PrismGame : MonoBehaviour {
    File.WriteAllText(temp,JsonUtility.ToJson(progress,true));
    if(File.Exists(SavePath))File.Replace(temp,SavePath,SavePath+".bak");
    else File.Move(temp,SavePath);
+   savePendingFailure=false;
   }catch(Exception e){
+   savePendingFailure=true;
    Debug.LogWarning("Progress could not be saved: "+e.Message);
   }
  }
 
- void OnApplicationPause(bool paused){if(paused){CancelInteraction();SaveProgress();}}
- void OnApplicationFocus(bool focused){if(!focused)CancelInteraction();}
- void OnApplicationQuit(){SaveProgress();}
+ bool ValidateExperiment(ExperimentData experiment,out List<Piece> pieces){
+  pieces=null;
+  if(experiment==null||experiment.catalogRevision!=LevelCatalogLoader.CampaignRevision||experiment.pieces==null)return false;
+  var level=Array.Find(levels,l=>l.Id==experiment.levelId);if(level==null||experiment.pieces.Count>level.Stock.Length+level.Initial.Length)return false;
+  var candidate=new List<Piece>();
+  foreach(var p in experiment.pieces){if(p==null)return false;candidate.Add(new Piece((Kind)p.kind,new V(p.x,p.y),p.angle));}
+  var check=new Session(level);if(!check.RestorePieces(candidate))return false;
+  pieces=check.Pieces;return true;
+ }
+ string ExperimentSignature(){
+  var data=new ExperimentData{levelId=session.Level.Id,catalogRevision=LevelCatalogLoader.CampaignRevision};
+  foreach(var p in session.Pieces)data.pieces.Add(new SavedPiece{kind=(int)p.Kind,x=p.Position.X,y=p.Position.Y,angle=p.Angle});
+  return JsonUtility.ToJson(data);
+ }
+ void CaptureExperiment(){
+  if(session==null||IsTutorialReplay)return;
+  bool wasSaved=progress.experiments.Exists(e=>e.levelId==session.Level.Id);
+  bool completed=completedLevelIds.Contains(session.Level.Id);
+  bool keepReplay=completed&&(wasSaved||session.CanUndo)&&!session.IsComplete(Optics.Solve(session.Level,session.Pieces));
+  progress.experiments.RemoveAll(e=>e.levelId==session.Level.Id);
+  savedExperimentSignature=ExperimentSignature();
+  if(!completed||keepReplay)progress.experiments.Add(JsonUtility.FromJson<ExperimentData>(savedExperimentSignature));
+ }
+ void RestoreExperiment(){
+  if(IsTutorialReplay)return;
+  var experiment=progress.experiments.Find(e=>e.levelId==session.Level.Id);
+  if(ValidateExperiment(experiment,out var pieces))session.RestorePieces(pieces);
+  savedExperimentSignature=ExperimentSignature();
+ }
+
+ void OnApplicationPause(bool paused){if(paused&&session!=null){CancelInteraction();SaveProgress();}}
+ void OnApplicationFocus(bool focused){if(!focused&&session!=null){CancelInteraction();SaveProgress();}}
+ void OnApplicationQuit(){if(session!=null){CancelInteraction();SaveProgress();}}
 
  void Layout(){
   Rect safe=Screen.safeArea;
@@ -300,8 +376,11 @@ public class PrismGame : MonoBehaviour {
  void Load(int index,bool force=false){
   index=Mathf.Clamp(index,0,levels.Length-1);
   if(!force&&!IsUnlocked(index)){feedback?.Invalid();Notify("Bu bölüm henüz kilitli.",danger);return;}
+  CancelInteraction();
+  if(session!=null&&!force){CaptureExperiment();SaveProgress();}
   levelIndex=index;
   session=new Session(levels[levelIndex]);
+  if(!force||(!IsAutomatedRun&&!IsTutorialReplay))RestoreExperiment();
   previousLit=0;
   completionPresented=false;trayGhost=null;trayKind=null;dragging=rotating=false;
   board?.ClearHint();
@@ -310,7 +389,7 @@ public class PrismGame : MonoBehaviour {
   Solve();
   board?.SetCelebration(0f);
   VisualEnvironment.SetCelebration(0f);
-  if(!smoke&&!storeCapture){progress.lastLevelId=session.Level.Id;SaveProgress();}
+  if(!smoke&&!storeCapture&&!IsTutorialReplay){progress.lastLevelId=session.Level.Id;SaveProgress();}
   presentation?.ShowGameplay();
  }
 
@@ -335,7 +414,7 @@ public class PrismGame : MonoBehaviour {
   if(dirty)Solve();
 
   bool complete=session.IsComplete(result);
-  bool evaluating=presentation==null||presentation.IsGameplay&&!presentation.BlocksBoardInput;
+  bool evaluating=!dragging&&!rotating&&trayGhost==null&&(presentation==null||presentation.IsGameplay&&!presentation.BlocksBoardInput);
   if(!transitionBusy&&!won&&complete&&evaluating){
    settle+=Time.deltaTime;
    if(settle>.58f){
@@ -344,8 +423,7 @@ public class PrismGame : MonoBehaviour {
     winShownAt=Time.unscaledTime;
     bool milestone=(levelIndex+1)%10==0||levelIndex==levels.Length-1;
     if(!smoke&&!storeCapture){
-     completedLevelIds.Add(session.Level.Id);
-     SaveProgress();
+     if(!IsTutorialReplay){completedLevelIds.Add(session.Level.Id);SaveProgress();}
      feedback?.Complete(milestone);
     }
    }
@@ -358,11 +436,15 @@ public class PrismGame : MonoBehaviour {
    if(!completionPresented&&!smoke&&!storeCapture){completionPresented=true;presentation.ShowCompletion(levelIndex==levels.Length-1);}
   }
   VisualEnvironment.SetPaused(presentation!=null&&presentation.BlocksBoardInput&&(!won||presentation.HasModal));
-  // Finger clearance is physical placement, so preview, beams and drop share one position.
+  // Existing pieces retain a fixed grab offset; new tray previews share their drop pose.
   float lift=0f;
   board?.SetInteraction(trayGhost!=null?session.Pieces.Count:selected,dragging||trayGhost!=null,rotating,lift);
   board?.SetCelebration(celebration);
   VisualEnvironment.SetCelebration(celebration);
+  if(!IsAutomatedRun&&!IsTutorialReplay&&!dragging&&!rotating&&!transitionBusy&&Time.unscaledTime>=nextExperimentFlush){
+   nextExperimentFlush=Time.unscaledTime+.5f;
+   if(savePendingFailure||ExperimentSignature()!=savedExperimentSignature)SaveProgress();
+  }
  }
 
  Vector2 Design(Vector2 screen)=>new Vector2((screen.x-offsetX)/scale,(Screen.height-screen.y-offsetY)/scale);
@@ -412,7 +494,13 @@ public class PrismGame : MonoBehaviour {
   bool onBoard=Math.Abs(w.X)<4.8&&Math.Abs(w.Y)<4.8;
   if(down&&IsOverPresentation(raw))return;
 
-  if(down&&onBoard&&!won){
+  bool handleHit=false;
+  if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)){
+   var piece=session.Pieces[selected];V handle=piece.Position+V.Angle(piece.Angle)*PieceInfo.SelectionRadius(piece.Kind);
+   Vector3 point=cam.WorldToScreenPoint(new Vector3((float)handle.X,(float)handle.Y,0));
+   handleHit=Vector2.Distance(raw,new Vector2(point.x,point.y))<=24f*UiScale;
+  }
+  if(down&&(onBoard||handleHit)&&!won){
    if(armed.HasValue){
     if(session.Place(armed.Value,w,DefaultPieceAngle(armed.Value))){
      selected=session.Pieces.Count-1;armed=null;board.SetPlacementPreview(-1,true);dirty=true;feedback?.Place();
@@ -423,8 +511,7 @@ public class PrismGame : MonoBehaviour {
     return;
    }
 
-   if(selected>=0&&PieceInfo.CanRotate(session.Pieces[selected].Kind)&&
-    (w-(session.Pieces[selected].Position+V.Angle(session.Pieces[selected].Angle)*PieceInfo.SelectionRadius(session.Pieces[selected].Kind))).Length<.29){
+   if(handleHit){
     rotating=true;dragging=false;startAngle=session.Pieces[selected].Angle;startDirection=w-session.Pieces[selected].Position;session.BeginEdit();
    }else{
     selected=-1;
@@ -448,20 +535,22 @@ public class PrismGame : MonoBehaviour {
    var piece=session.Pieces[selected];
    if(dragging){
     dirty=true;
-    float clearance=Mathf.Clamp01((Time.unscaledTime-dragStarted-.12f)/.12f);
-    V proposed=OffsetPointer(raw,clearance)+new V(dragOffset.x,dragOffset.y);
-    proposed=new V(Math.Max(-4.25,Math.Min(4.25,proposed.X)),Math.Max(-4.25,Math.Min(4.25,proposed.Y)));
+    // Keep the captured finger-to-piece offset constant; holding is not moving.
+    V proposed=w+new V(dragOffset.x,dragOffset.y);
     lastDragFailure=PlacementRules.Check(session.Level,session.Pieces,piece.Kind,proposed,selected,piece.Angle);
-    board.SetPlacementPreview(selected,lastDragFailure==PlacementFailure.None);
+    board.SetPlacementPreview(-1,true);
+    board.SetInvalidPlacementGhost(lastDragFailure==PlacementFailure.None?null:new Piece(piece.Kind,proposed,piece.Angle));
     if(lastDragFailure==PlacementFailure.None)piece.Position=proposed;
    }
    if(rotating&&PieceInfo.CanRotate(piece.Kind)){
     V dir=w-piece.Position;
     double before=piece.Angle;
     double rotation=(Math.Atan2(dir.Y,dir.X)-Math.Atan2(startDirection.Y,startDirection.X))*180/Math.PI;
-    double proposed=Normalize(startAngle+rotation*(VisualEnvironment.PrecisionMode ? .35 : 1));
+    double proposed=Normalize(startAngle+rotation);
+    if(!VisualEnvironment.PrecisionMode){double snap=Math.Round(proposed/15)*15;if(Math.Abs(proposed-snap)<=2)proposed=Normalize(snap);}
     lastDragFailure=PlacementRules.Check(session.Level,session.Pieces,piece.Kind,piece.Position,selected,proposed);
-    board.SetPlacementPreview(selected,lastDragFailure==PlacementFailure.None);
+    board.SetPlacementPreview(-1,true);
+    board.SetInvalidPlacementGhost(lastDragFailure==PlacementFailure.None?null:new Piece(piece.Kind,piece.Position,proposed));
     if(lastDragFailure==PlacementFailure.None){
      piece.Angle=proposed;
      if((int)(before/15)!=(int)(piece.Angle/15))feedback?.Rotate();
@@ -476,7 +565,7 @@ public class PrismGame : MonoBehaviour {
    if(changedAngle)feedback?.Rotate();
    else feedback?.Click();
    if(lastDragFailure!=PlacementFailure.None)Notify(PlacementMessage(lastDragFailure),danger);
-   lastDragFailure=PlacementFailure.None;dragging=rotating=false;board.SetPlacementPreview(-1,true);board.SetPointerAnchor(null);dirty=true;
+   lastDragFailure=PlacementFailure.None;dragging=rotating=false;board.SetPlacementPreview(-1,true);board.SetInvalidPlacementGhost(null);board.SetPointerAnchor(null);dirty=true;
   }
  }
 
@@ -548,6 +637,23 @@ public class PrismGame : MonoBehaviour {
   yield return new WaitForSeconds(.3f);
   yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"08-settings.png")));
 
+  Load(49,true);presentation.ShowPause();yield return null;
+  var help=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>Array.Exists(b.GetComponentsInChildren<TMPro.TextMeshProUGUI>(),t=>t.text=="Optik parçalar"));
+  help.onClick.Invoke();yield return new WaitForSecondsRealtime(.3f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"09-optic-help.png")));
+  bool originalLarge=VisualEnvironment.LargeText;
+  try{
+   VisualEnvironment.SetLargeText(true);presentation.ShowSettings();yield return new WaitForSecondsRealtime(.3f);
+   yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"10-large-text.png")));
+  }finally{VisualEnvironment.SetLargeText(originalLarge);}
+  Load(94,true);session.Reveal();Solve();presentation.ShowCompletion(false);yield return new WaitForSecondsRealtime(.9f);
+  var inspect=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>Array.Exists(b.GetComponentsInChildren<TMPro.TextMeshProUGUI>(),t=>t.text=="Çözümü incele"));
+  inspect.onClick.Invoke();yield return new WaitForSecondsRealtime(.15f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"11-solution-review.png")));
+  BeginTutorialReplay();yield return new WaitForSecondsRealtime(.3f);
+  yield return StartCoroutine(CaptureStoreFrame(Path.Combine(output,"12-onboarding.png")));
+  EndTutorialReplay();
+
   File.WriteAllText(Path.Combine(output,"capture-complete.txt"),"PrisM store capture complete: "+DateTime.UtcNow.ToString("O"));
   Application.Quit(0);
  }
@@ -598,6 +704,46 @@ public class PrismGame : MonoBehaviour {
   InputSystem.QueueStateEvent(testKeyboard,new KeyboardState());InputSystem.Update();InputSystem.RemoveDevice(testKeyboard);
   if(presentation.BlocksBoardInput)throw new Exception("Closing settings does not resume gameplay");
   checks.Add("PASS Canvas menu settings back input flow");
+  yield return StartCoroutine(presentation.AuditNavigationChecks());
+  Load(0,true);session.Place(Kind.Mirror,new V(0,-2),40);CaptureExperiment();
+  progress=JsonUtility.FromJson<ProgressData>(JsonUtility.ToJson(progress));
+  Load(1,true);Load(0);yield return null;
+  if(session.Pieces.Count!=1||(session.Pieces[0].Position-new V(0,-2)).Length>1e-6||Math.Abs(session.Pieces[0].Angle-40)>1e-6)throw new Exception("Unfinished experiment did not survive serialization and level navigation");
+  var corrupt=new ExperimentData{levelId=levels[0].Id,catalogRevision=LevelCatalogLoader.CampaignRevision};
+  corrupt.pieces.Add(new SavedPiece{kind=999,x=0,y=-2,angle=40});
+  if(ValidateExperiment(corrupt,out _))throw new Exception("Corrupt saved experiment accepted an unknown optic");
+  corrupt.pieces[0].kind=(int)Kind.Mirror;corrupt.catalogRevision="obsolete";
+  if(ValidateExperiment(corrupt,out _))throw new Exception("Obsolete catalog experiment was restored");
+  session.BeginEdit();session.Pieces[0].Angle=41;session.EndEdit();
+  var originSession=session;bool originUndo=session.CanUndo;
+  if(!originUndo)throw new Exception("Tutorial undo regression setup has no edit history");
+  BeginTutorialReplay();if(!IsTutorialReplay||levelIndex!=0)throw new Exception("Tutorial replay did not start independently");
+  session.Place(Kind.Mirror,new V(1,-2),30);EndTutorialReplay();
+  if(IsTutorialReplay||session!=originSession||session.CanUndo!=originUndo||Math.Abs(session.Pieces[0].Angle-41)>1e-6)throw new Exception("Tutorial replay discarded the original experiment or undo history");
+  session.Reveal();Solve();completedLevelIds.Add(levels[0].Id);ContinueGame();yield return null;
+  if(levelIndex!=1)throw new Exception("Continue replayed the completed last level");
+  Load(0,true);session.Place(Kind.Mirror,new V(0,-2),37);CaptureExperiment();progress=JsonUtility.FromJson<ProgressData>(JsonUtility.ToJson(progress));
+  Load(1,true);Load(0);ContinueGame();yield return null;
+  if(levelIndex!=0||session.Pieces.Count!=1||Math.Abs(session.Pieces[0].Angle-37)>1e-6)throw new Exception("Completed-level replay experiment was discarded");
+  checks.Add("PASS unfinished replay survives reopening an already completed level");
+  session.Reveal();Solve();
+  foreach(var level in levels)completedLevelIds.Add(level.Id);ContinueGame();yield return null;
+  var finaleLabel=Array.Find(presentation.GetComponentsInChildren<TMPro.TextMeshProUGUI>(),t=>t.text.Contains("100 ışık yolu"));
+  if(presentation.IsGameplay||!finaleLabel)throw new Exception("Continue did not open the completed campaign finale");
+  completedLevelIds.Clear();progress=new ProgressData();
+  Load(80,true);int restoredMirrors=0;var expectedPositions=new List<V>();
+  foreach(var optic in levels[80].Solution){if(optic.Kind!=Kind.Mirror||restoredMirrors==3)continue;if(!session.Place(Kind.Mirror,optic.Position,37))throw new Exception("Multi-piece resume regression setup cannot place a mirror");expectedPositions.Add(optic.Position);restoredMirrors++;}
+  if(restoredMirrors!=3)throw new Exception("Resume regression needs three mirrors");CaptureExperiment();progress=JsonUtility.FromJson<ProgressData>(JsonUtility.ToJson(progress));Load(0,true);Load(80);yield return null;
+  if(session.Pieces.Count!=3)throw new Exception("Resume lost a placed mirror");for(int i=0;i<3;i++)if((session.Pieces[i].Position-expectedPositions[i]).Length>1e-6||Math.Abs(session.Pieces[i].Angle-37)>1e-6)throw new Exception("Resume changed a saved position or precise angle");
+  Load(74,true);session.Reveal();session.BeginEdit();session.Pieces[0].Angle=37;session.EndEdit();var lessonOrigin=session;
+  BeginTutorialReplay();EndTutorialReplay();yield return null;
+  if(levelIndex!=74||session!=lessonOrigin||!session.CanUndo||Math.Abs(session.Pieces[0].Angle-37)>1e-6)throw new Exception("Tutorial replay did not restore level 75 and its experiment");
+  progress=new ProgressData();
+  checks.Add("PASS three mirrors preserve 37-degree poses across serialized reopen");
+  checks.Add("PASS tutorial returns to level 75 with poses and undo history");
+  checks.Add("PASS saved experiment validation and tutorial origin preservation");
+  checks.Add("PASS Continue advances a completed last level");
+  checks.Add("PASS Continue opens finale after campaign completion");
   Load(0,true);yield return null;presentation.ShowMap();yield return null;
   var chapterButton=Array.Find(presentation.GetComponentsInChildren<UnityEngine.UI.Button>(),b=>b.GetComponentInChildren<PrismIcon>()?.Symbol=="mirror");
   if(!chapterButton)throw new Exception("Chapter map lacks the first optical node");chapterButton.onClick.Invoke();yield return null;
@@ -628,11 +774,43 @@ public class PrismGame : MonoBehaviour {
   var testMouse=InputSystem.AddDevice<Mouse>();
   Vector3 dragStart=cam.WorldToScreenPoint(new Vector3(0,-2,0));
   InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(dragStart.x,dragStart.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();yield return null;
+  V heldPosition=session.Pieces[0].Position;
+  yield return new WaitForSecondsRealtime(.28f);
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(dragStart.x,dragStart.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();yield return null;
+  if((session.Pieces[0].Position-heldPosition).Length>1e-6)throw new Exception("Stationary hold moved the selected optic");
+  checks.Add("PASS stationary hold preserves optic position");
   Vector3 dragMove=cam.WorldToScreenPoint(new Vector3(.8f,-2,0));
   InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(dragMove.x,dragMove.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();yield return null;
   if(session.Pieces[0].Position.X<.7||result.Complete)throw new Exception("Held drag leaves beams at the previous solved position");
   InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(dragMove.x,dragMove.y)});InputSystem.Update();Pointer();InputSystem.RemoveDevice(testMouse);
   checks.Add("PASS held drag refreshes optical result before release");
+  Load(0,true);session.Place(Kind.Mirror,new V(0,-2),45);selected=0;dirty=true;yield return null;
+  testMouse=InputSystem.AddDevice<Mouse>();
+  V handleWorld=session.Pieces[0].Position+V.Angle(45)*PieceInfo.SelectionRadius(Kind.Mirror);
+  Vector3 handlePoint=cam.WorldToScreenPoint(new Vector3((float)handleWorld.X,(float)handleWorld.Y,0));
+  Vector2 handleTouch=new Vector2(handlePoint.x+20f*UiScale,handlePoint.y);
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=handleTouch}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();
+  if(!rotating)throw new Exception("Rotation handle lacks a 48 design-pixel touch target");
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=handleTouch});InputSystem.Update();Pointer();
+  checks.Add("PASS rotation handle accepts 48 design-pixel touch target");
+  Vector3 validDrag=cam.WorldToScreenPoint(new Vector3(0,-2,0));
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(validDrag.x,validDrag.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();
+  Vector3 blockedDrag=cam.WorldToScreenPoint(new Vector3(-3.8f,-2,0));
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(blockedDrag.x,blockedDrag.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();yield return null;
+  var ghostField=typeof(BoardRenderer).GetField("invalidPlacementGhost",System.Reflection.BindingFlags.NonPublic|System.Reflection.BindingFlags.Instance);
+  var rejectedGhost=(Piece)ghostField.GetValue(board);
+  if(rejectedGhost==null||(rejectedGhost.Position-new V(-3.8,-2)).Length>.001||(session.Pieces[0].Position-new V(0,-2)).Length>1e-6)throw new Exception("Invalid drag ghost is not at the attempted position");
+  AssertVisualSynchrony();
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(blockedDrag.x,blockedDrag.y)});InputSystem.Update();Pointer();InputSystem.RemoveDevice(testMouse);
+  if(ghostField.GetValue(board)!=null)throw new Exception("Invalid placement ghost survives release");
+  checks.Add("PASS invalid attempted-position ghost preserves committed optics");
+  Load(0,true);session.Reveal();dirty=true;yield return null;testMouse=InputSystem.AddDevice<Mouse>();
+  Vector3 solutionTouch=cam.WorldToScreenPoint(new Vector3((float)session.Pieces[0].Position.X,(float)session.Pieces[0].Position.Y,0));
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(solutionTouch.x,solutionTouch.y)}.WithButton(MouseButton.Left));InputSystem.Update();Pointer();
+  yield return new WaitForSecondsRealtime(.7f);if(won||settle>0)throw new Exception("Holding an unfinished gesture completed the level");
+  InputSystem.QueueStateEvent(testMouse,new MouseState{position=new Vector2(solutionTouch.x,solutionTouch.y)});InputSystem.Update();Pointer();InputSystem.RemoveDevice(testMouse);
+  yield return new WaitForSecondsRealtime(.7f);if(!won)throw new Exception("Committed solution did not complete after release");
+  checks.Add("PASS completion waits for gesture commit");
   Load(0,true);yield return null;
   Vector3 invalidPoint=cam.WorldToScreenPoint(new Vector3(-3.8f,-2,0));
   StartTrayDrag(Kind.Mirror,new Vector2(invalidPoint.x,invalidPoint.y)-Vector2.up*(26f*UiScale));

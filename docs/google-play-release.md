@@ -1,6 +1,6 @@
 # Google Play pre-release / upload checklist
 
-Status target: **0.9.2 (versionCode 92)** — internal/closed testing candidate.
+Status target: **0.9.3 (versionCode 93)** — internal/closed testing candidate.
 
 ## Build contract
 - Package ID: `com.prismstudio.lightworkshop`
@@ -37,13 +37,13 @@ $env:PRISM_KEYSTORE_PATH="D:\secure\prism-upload.keystore"
 $env:PRISM_KEYSTORE_PASS="..."
 $env:PRISM_KEY_ALIAS="prism-upload"
 $env:PRISM_KEY_ALIAS_PASS="..."
-$env:PRISM_VERSION_NAME="0.9.2"
-$env:PRISM_VERSION_CODE="92"
+$env:PRISM_VERSION_NAME="0.9.3"
+$env:PRISM_VERSION_CODE="93"
 .\Tools\Build-Android-AAB.ps1
 ```
 
 Expected artifact:
-`Builds/Android/PrisM-0.9.2-92.aab`
+`Builds/Android/PrisM-0.9.3-93.aab`
 
 The build fails before packaging if the 100-level known-solution release validation fails.
 

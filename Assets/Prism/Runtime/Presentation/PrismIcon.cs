@@ -14,7 +14,8 @@ public sealed class PrismIcon : MaskableGraphic {
    case "back":line(new Vector2(s*.35f,s*.7f),new Vector2(-s*.35f,0),stroke);line(new Vector2(-s*.35f,0),new Vector2(s*.35f,-s*.7f),stroke);break;
    case "close":line(new Vector2(-s*.55f,-s*.55f),new Vector2(s*.55f,s*.55f),stroke);line(new Vector2(-s*.55f,s*.55f),new Vector2(s*.55f,-s*.55f),stroke);break;
    case "pause":line(new Vector2(-s*.28f,-s*.65f),new Vector2(-s*.28f,s*.65f),stroke);line(new Vector2(s*.28f,-s*.65f),new Vector2(s*.28f,s*.65f),stroke);break;
-   case "reset":case "undo":for(int i=0;i<24;i++){float a=i/24f*4.5f-.8f,b=(i+1)/24f*4.5f-.8f;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.65f,new Vector2(Mathf.Cos(b),Mathf.Sin(b))*s*.65f,stroke);}line(new Vector2(-s*.55f,s*.45f),new Vector2(-s*.75f,s*.1f),stroke);line(new Vector2(-s*.75f,s*.1f),new Vector2(-s*.3f,s*.13f),stroke);break;
+   case "reset":for(int i=0;i<28;i++){float a=-.5f+i/28f*5.3f,b=-.5f+(i+1)/28f*5.3f;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.7f,new Vector2(Mathf.Cos(b),Mathf.Sin(b))*s*.7f,stroke);}line(new Vector2(s*.61f,-s*.34f),new Vector2(s*.3f,-s*.35f),stroke);line(new Vector2(s*.61f,-s*.34f),new Vector2(s*.6f,-s*.67f),stroke);break;
+   case "undo":for(int i=0;i<20;i++){float a=-Mathf.PI*.5f+i/20f*Mathf.PI,b=-Mathf.PI*.5f+(i+1)/20f*Mathf.PI;line(new Vector2(Mathf.Cos(a)*s*.55f,Mathf.Sin(a)*s*.55f),new Vector2(Mathf.Cos(b)*s*.55f,Mathf.Sin(b)*s*.55f),stroke);}line(new Vector2(0,s*.55f),new Vector2(-s*.75f,s*.55f),stroke);line(new Vector2(-s*.75f,s*.55f),new Vector2(-s*.35f,s*.9f),stroke);line(new Vector2(-s*.75f,s*.55f),new Vector2(-s*.35f,s*.2f),stroke);break;
    case "hint":ring(s*.45f,0);line(new Vector2(-s*.2f,-s*.65f),new Vector2(s*.2f,-s*.65f),stroke);for(int i=0;i<5;i++){float a=i*Mathf.PI/4;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.75f,new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s,stroke);}break;
    case "settings":ring(s*.55f,0);ring(s*.17f,0);for(int i=0;i<8;i++){float a=i*Mathf.PI/4;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.55f,new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.8f,stroke);}break;
    case "map":ring(s*.18f,0);line(new Vector2(-s*.7f,-s*.6f),Vector2.zero,stroke);line(Vector2.zero,new Vector2(s*.6f,s*.65f),stroke);break;
@@ -22,7 +23,16 @@ public sealed class PrismIcon : MaskableGraphic {
    case "mirror":line(new Vector2(-s*.65f,-s*.65f),new Vector2(s*.65f,s*.65f),stroke*1.8f);break;
    case "lens":for(int i=0;i<16;i++){float a=-Mathf.PI*.5f+i/16f*Mathf.PI,b=-Mathf.PI*.5f+(i+1)/16f*Mathf.PI;line(new Vector2(Mathf.Cos(a)*s*.35f,Mathf.Sin(a)*s),new Vector2(Mathf.Cos(b)*s*.35f,Mathf.Sin(b)*s),stroke);line(new Vector2(-Mathf.Cos(a)*s*.35f,Mathf.Sin(a)*s),new Vector2(-Mathf.Cos(b)*s*.35f,Mathf.Sin(b)*s),stroke);}break;
    case "sphere":ring(s*.75f,0);break;
-   case "red":case "green":line(new Vector2(-s*.55f,-s*.8f),new Vector2(s*.55f,s*.8f),stroke*2);ring(s*.16f,0);break;
+   // Shape is part of identity, independent of the selected tint or color settings.
+   case "red":for(int i=0;i<4;i++){float a=Mathf.PI*.5f+i*Mathf.PI*.5f,b=Mathf.PI*.5f+(i+1)*Mathf.PI*.5f;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.85f,new Vector2(Mathf.Cos(b),Mathf.Sin(b))*s*.85f,stroke);}for(int i=-1;i<=1;i+=2)line(new Vector2(-s*.3f,i*s*.16f),new Vector2(s*.3f,i*s*.16f),stroke);break;
+   case "green":for(int i=0;i<6;i++){float a=i*Mathf.PI/3,b=(i+1)*Mathf.PI/3;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*s*.85f,new Vector2(Mathf.Cos(b),Mathf.Sin(b))*s*.85f,stroke);}line(new Vector2(-s*.4f,0),new Vector2(s*.4f,0),stroke);break;
+   case "band6":ring(s*.75f,0);break;
+   case "band5":line(new Vector2(-s*.75f,0),new Vector2(s*.75f,0),stroke);line(new Vector2(0,-s*.75f),new Vector2(0,s*.75f),stroke);break;
+   case "band2":for(int i=-1;i<=1;i++)line(new Vector2(i*s*.4f,-s*.75f),new Vector2(i*s*.4f,s*.75f),stroke);break;
+   case "band0":case "band1":case "band3":case "band4":{
+    int corners=Symbol=="band0"?10:Symbol=="band3"?3:4;float rotation=Symbol=="band4"?Mathf.PI*.25f:Mathf.PI*.5f;
+    for(int i=0;i<corners;i++){float r0=Symbol=="band0"&&i%2==1?s*.34f:s*.75f,r1=Symbol=="band0"&&(i+1)%2==1?s*.34f:s*.75f;float a=rotation+i*Mathf.PI*2/corners,b=rotation+(i+1)*Mathf.PI*2/corners;line(new Vector2(Mathf.Cos(a),Mathf.Sin(a))*r0,new Vector2(Mathf.Cos(b),Mathf.Sin(b))*r1,stroke);}break;
+   }
    case "spectrum":for(int i=-2;i<=2;i++)line(new Vector2(-s*.7f,0),new Vector2(s*.75f,i*s*.3f),stroke*.7f);break;
    case "split":line(new Vector2(-s*.8f,0),Vector2.zero,stroke);line(Vector2.zero,new Vector2(s*.7f,s*.6f),stroke);line(Vector2.zero,new Vector2(s*.7f,-s*.6f),stroke);break;
    case "gate":line(new Vector2(-s*.5f,-s),new Vector2(-s*.5f,-s*.25f),stroke*1.6f);line(new Vector2(-s*.5f,s*.25f),new Vector2(-s*.5f,s),stroke*1.6f);line(new Vector2(-s*.8f,0),new Vector2(s*.85f,0),stroke);break;
